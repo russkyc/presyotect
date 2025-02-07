@@ -1,10 +1,12 @@
 ﻿using System.Text;
+using LiteDB.Async;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.Net.Http.Headers;
 using Microsoft.OpenApi.Models;
 using Presyotect.Features.Authentication;
+using Presyotect.Features.Authentication.Services;
 
 namespace Presyotect.Utilities;
 
@@ -36,8 +38,19 @@ public static class ServiceExtensions
             });
     }
 
+    public static void AddDataServices(this WebApplicationBuilder builder)
+    {
+        builder.Services.AddSingleton<ILiteDatabaseAsync>(services =>
+        {
+            var configuration = services.GetRequiredService<IConfiguration>();
+            var database = new LiteDatabaseAsync(configuration["ConnectionStrings:LiteDB"]);
+            return database;
+        });
+    }
+
     public static void AddAuthServices(this WebApplicationBuilder builder)
     {
+        builder.Services.AddSingleton<IAuthenticator, DevtestAuthenticator>();
         builder.Services.AddAuthentication(
                 authenticationOptions =>
                 {

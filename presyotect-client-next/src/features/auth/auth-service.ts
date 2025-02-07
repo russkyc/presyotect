@@ -11,13 +11,16 @@ export async function login(username: string, password: string): Promise<AuthSta
     try {
         console.log(axiosConfig.baseURL);
         const result = await axios.post('/auth/login', {username, password}, axiosConfig);
-        authStore.token = result.data.data;
+        if (result.data.success === false){
+            return {isAuthenticated: false, data: result.data.errors[0]};
+        }
+        authStore.token = result.data.content;
         return {isAuthenticated: true, data: authStore.userClaims};
     } catch (error) {
         if (error instanceof AxiosError) {
-            return {isAuthenticated: false, data: error.response?.data.errors["Account"]};
+            return {isAuthenticated: false, data: "Server cannot be reached."};
         }
-        return {isAuthenticated: false, data: "An error occurred"};
+        return {isAuthenticated: false, data: "Unknown error has occured."};
     }
 }
 
