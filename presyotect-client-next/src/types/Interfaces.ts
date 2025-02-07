@@ -10,6 +10,7 @@ export interface AuthState {
 
 // Entity Interfaces
 export type Product = {
+    id?: number,
     customIdentifier: string | null,
     sku: string | null,
     name: string,

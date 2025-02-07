@@ -12,6 +12,7 @@ import {useToast} from "primevue/usetoast";
 import {useConfirm} from "primevue/useconfirm";
 import router from "@/router.ts";
 import {useActionsStore} from "@features/stores.ts";
+import {ProductsService} from "@features/data/products-service.ts";
 
 const toast = useToast();
 const confirm = useConfirm();
@@ -40,10 +41,10 @@ const availableCategories = ref([
 ]);
 
 const availableClassifications = ref([
-    "Basic Necessities",
-    "Prime Commodities",
-    "Construction Materials",
-    "School Supplies"
+  "Basic Necessities",
+  "Prime Commodities",
+  "Construction Materials",
+  "School Supplies"
 ]);
 
 const resolver = ref(zodResolver(
@@ -83,6 +84,26 @@ const onFormSubmit = async (form: any) => {
       label: 'Add'
     },
     accept: async () => {
+
+      const product = {
+        sku: form.values.sku,
+        customIdentifier: form.values.customIdentifier,
+        name: form.values.name,
+        size: form.values.size,
+        classification: form.values.classification,
+        category: form.values.category,
+        srp: form.values.srp
+      };
+      const response = await ProductsService.addProduct(product);
+      if (!response){
+        toast.add({
+          severity: 'error',
+          summary: `Product Not Added`,
+          detail: `An error occurred while adding ${form.values.name} to products.`,
+          life: 2000
+        });
+        return;
+      }
       toast.add({
         severity: 'success',
         summary: `Product Added`,
@@ -110,14 +131,16 @@ const onFormSubmit = async (form: any) => {
             <div class="flex flex-col gap-4">
               <div class="flex flex-col gap-1">
                 <label for="customIdentifier">Custom Identifier (optional)</label>
-                <InputText variant="filled" name="customIdentifier" placeholder="Numbers, letters, or alphanumeric" type="text" fluid/>
+                <InputText variant="filled" name="customIdentifier" placeholder="Numbers, letters, or alphanumeric"
+                           type="text" fluid/>
                 <Message v-if="$form.customIdentifier?.invalid" severity="error" size="small" variant="simple">
                   {{ $form.customIdentifier.error?.message }}
                 </Message>
               </div>
               <div class="flex flex-col gap-1">
                 <label for="sku">Product Sku (optional)</label>
-                <InputText variant="filled" name="sku" placeholder="EAN, Code 39, Code 128, or others" type="text" fluid/>
+                <InputText variant="filled" name="sku" placeholder="EAN, Code 39, Code 128, or others" type="text"
+                           fluid/>
                 <Message v-if="$form.sku?.invalid" severity="error" size="small" variant="simple">
                   {{ $form.sku.error?.message }}
                 </Message>
@@ -131,21 +154,24 @@ const onFormSubmit = async (form: any) => {
               </div>
               <div class="flex flex-col gap-1">
                 <label for="name">Product Size (with unit)</label>
-                <InputText variant="filled" name="size" placeholder="Size in weight, volume, or pieces" type="text" fluid/>
+                <InputText variant="filled" name="size" placeholder="Size in weight, volume, or pieces" type="text"
+                           fluid/>
                 <Message v-if="$form.size?.invalid" severity="error" size="small" variant="simple">
                   {{ $form.size.error?.message }}
                 </Message>
               </div>
               <div class="flex flex-col gap-1">
                 <label for="classification">Classification</label>
-                <Select name="classification" variant="filled" :options="availableClassifications" placeholder="Select classification" fluid />
+                <Select name="classification" variant="filled" :options="availableClassifications"
+                        placeholder="Select classification" fluid/>
                 <Message v-if="$form.classification?.invalid" severity="error" size="small" variant="simple">
                   {{ $form.classification.error?.message }}
                 </Message>
               </div>
               <div class="flex flex-col gap-1">
                 <label for="category">Categories (multiple, optional)</label>
-                <MultiSelect name="category" variant="filled" :options="availableCategories" :maxSelectedLabels="3" placeholder="Select categories" fluid />
+                <MultiSelect name="category" variant="filled" :options="availableCategories" :maxSelectedLabels="3"
+                             placeholder="Select categories" fluid/>
                 <Message v-if="$form.category?.invalid" severity="error" size="small" variant="simple">
                   {{ $form.category.error?.message }}
                 </Message>
