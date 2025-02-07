@@ -4,9 +4,9 @@ import {Card} from "primevue";
 </script>
 
 <template>
-  <Card class="rounded-lg grow">
+  <Card class="rounded-lg">
     <template #content>
-      <div class="flex flex-col">
+      <div class="flex flex-col gap-3">
         <div class="flex">
           <div class="flex grow">
             <slot name="card-title"></slot>

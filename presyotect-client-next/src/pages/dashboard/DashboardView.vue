@@ -10,14 +10,13 @@ import {getAxiosConfig} from "@utils/ApiUtils.ts";
 const iconSize = 27;
 const totalProducts = ref(0);
 const totalEstablishments = ref(0);
+const axiosConfig = getAxiosConfig();
 
 onBeforeMount(async () => {
-  const axiosConfig = getAxiosConfig();
-  const productsResponse = await axios.get(`/products?page=0&itemsPerPage=1`, axiosConfig);
-  const establishmentsResponse = await axios.get(`/establishments?page=0&itemsPerPage=1`, axiosConfig);
   
-  totalProducts.value = productsResponse.data.pagination.totalItems;
-  totalEstablishments.value = establishmentsResponse.data.pagination.totalItems;
+  const productsResponse = await axios.get(`/products/count`, axiosConfig);
+  totalProducts.value = productsResponse.data.content;
+  
 })
 
 </script>

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 
-import {useAuthStore} from "@features/auth/auth-store.ts";
+import {useAuthStore} from "@features/stores.ts";
 import {defineProps, onBeforeMount, ref} from "vue";
 
 const props = defineProps<{

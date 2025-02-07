@@ -1,5 +1,5 @@
 import axios, {AxiosError} from 'axios';
-import {useAuthStore} from "@features/auth/auth-store.ts";
+import {useAuthStore} from "@features/stores.ts";
 import {getAxiosConfig} from "@utils/ApiUtils.ts";
 import type {AuthState} from "@/types/Interfaces.ts";
 

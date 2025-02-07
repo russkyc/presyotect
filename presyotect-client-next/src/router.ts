@@ -1,17 +1,20 @@
 import {createRouter, createWebHistory} from 'vue-router';
-import {useAuthStore} from "@features/auth/auth-store.ts";
+import {useAuthStore, useActionsStore} from "@features/stores.ts";
 import {Roles} from "@/types/Constants.ts";
+import {useConfirm} from "primevue/useconfirm";
 
 import DashboardView from '@pages/dashboard/DashboardView.vue';
 import LoginView from "@pages/auth/LoginView.vue";
 import PriceMonitoringView from "@pages/dashboard/PriceMonitoringView.vue";
 import NotFoundView from "@pages/status/NotFoundView.vue";
-import ProductsView from "@pages/dashboard/ProductsView.vue";
+import ProductsView from "@pages/dashboard/products/ProductsView.vue";
 import EstablishmentsView from "@pages/dashboard/EstablishmentsView.vue";
 import UsersView from "@pages/dashboard/UsersView.vue";
 import SettingsView from "@pages/dashboard/SettingsView.vue";
 import AnalyticsView from "@pages/dashboard/AnalyticsView.vue";
 import NotAuthorizedView from "@pages/status/NotAuthorizedView.vue";
+import AddProductView from "@pages/dashboard/products/AddProductView.vue";
+import {useToast} from "primevue/usetoast";
 
 const defaultTitle = 'Presyotect';
 
@@ -37,11 +40,22 @@ const routes = [
     {
         name: 'products',
         path: '/products',
-        component: ProductsView,
-        meta: {
-            title: 'Products',
-            roles: [Roles.Admin, Roles.Personnel]
-        }
+        children: [
+            {
+                path: '', component: ProductsView,
+                meta: {
+                    title: 'Products',
+                    roles: [Roles.Admin, Roles.Personnel]
+                }
+            },
+            {
+                path: 'add', component: AddProductView,
+                meta: {
+                    title: 'Products',
+                    roles: [Roles.Admin]
+                }
+            },
+        ]
     },
     {
         name: 'establishments',
@@ -112,11 +126,43 @@ const router = createRouter({
 
 router.beforeEach(async (to, _, next) => {
 
-    const title = to.meta.title as string;
+    const toast = useToast();
+    const confirm = useConfirm();
     const authStore = useAuthStore();
+    const actionsStore = useActionsStore();
+    
+    const title = to.meta.title as string;
 
     const tokenIsNull = authStore.token === null || authStore.token === undefined;
     const toNameIsLogin = to.name === 'login';
+    
+    if (actionsStore.hasPendingActions){
+        confirm.require({
+            message: 'Leaving this page will discard any unsaved changes. Are you sure you want to leave?',
+            header: 'Discard Changes',
+            rejectProps: {
+                label: 'Cancel',
+                severity: 'secondary'
+            },
+            acceptProps: {
+                label: 'Leave'
+            },
+            accept: async () => {
+                actionsStore.hasPendingActions = false;
+                toast.add({
+                    severity: 'info',
+                    summary: 'Changes Discarded',
+                    detail: 'You have successfully discarded any unsaved changes.',
+                    life: 2000
+                });
+                await router.push(to);
+            },
+            reject: () => {
+                return;
+            }
+        });
+        return;
+    }
 
     if (tokenIsNull && !toNameIsLogin) {
         document.title = title ? `${defaultTitle} - ${title}` : defaultTitle;

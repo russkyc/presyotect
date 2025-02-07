@@ -22,12 +22,12 @@ watch(() => router.fullPath, (newPath) => {
 
 </script>
 <template>
-  <Toast class="lg:block hidden" position="bottom-right"/>
+  <Toast class="lg:block hidden" position="top-right"/>
   <Toast class="max-lg:block hidden" position="top-center"/>
   <ConfirmDialog/>
   <TopNav v-if="pageType === DashboardGroupType.Dashboard"/>
   <main class="relative flex overflow-clip" :class="{'grow': pageType === DashboardGroupType.Auth,'h-[calc(100vh-63.2px)]': pageType === DashboardGroupType.Dashboard,'h-[calc(100vh-126.4px)]': pageType === DashboardGroupType.Dashboard && mdAndSmaller}">
-    <Sidebar mini-width="69px" width="240px" v-if="pageType === DashboardGroupType.Dashboard && !mdAndSmaller"/>
+    <Sidebar mini-width="69px" width="260px" v-if="pageType === DashboardGroupType.Dashboard && !mdAndSmaller"/>
     <div class="flex flex-col grow overflow-auto">
       <RouterView/>
     </div>

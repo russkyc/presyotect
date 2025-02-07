@@ -3,6 +3,7 @@
 import {Breadcrumb, Drawer} from "primevue";
 import {defineProps, ref} from "vue";
 import type {BreadcrumbItem} from "@/types/Interfaces.ts";
+import router from "@/router.ts";
 
 const props = defineProps<{
   title: string,
@@ -12,7 +13,8 @@ const props = defineProps<{
 }>();
 
 const home = ref({
-  label: 'Dashboard'
+  label: 'Dashboard',
+  url: '/'
 });
 
 const openDrawer = ref(false);
@@ -20,6 +22,11 @@ const showDrawerToggle = props.showDrawerToggle ?? false;
 
 const toggleDrawer = () => {
   openDrawer.value = !openDrawer.value;
+};
+
+const navigate = (url: string|undefined) => {
+  if (url === undefined) return;
+  router.push({path: url});
 };
 
 </script>
@@ -33,9 +40,9 @@ const toggleDrawer = () => {
       </div>
       <Breadcrumb class="ml-auto" :home="home" :model="breadcrumbs">
         <template #item="{ item }">
-          <a class="cursor-pointer" :href="item.url">
+          <button @click="navigate(item.url)">
             <p>{{ item.label }}</p>
-          </a>
+          </button>
         </template>
         <template #separator> /</template>
       </Breadcrumb>
