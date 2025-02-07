@@ -1,0 +1,4 @@
+# copy to .env and fill in the values
+# eg; .env
+
+VITE_APP_VERSION=

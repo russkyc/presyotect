@@ -1,0 +1,4 @@
+# copy to .env.[mode] and fill in the values
+# eg; .env.development, .env.production
+
+VITE_API_HOST=

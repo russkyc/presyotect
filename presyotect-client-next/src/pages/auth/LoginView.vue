@@ -10,6 +10,7 @@ import router from '@/router';
 import {z} from 'zod';
 
 const toast = useToast();
+const version = import.meta.env.VITE_APP_VERSION;
 
 const initialValues = ref({
   username: '',
@@ -93,7 +94,7 @@ const authenticate = async (form: any) => {
         </Form>
       </div>
       <div class="flex p-6 absolute bottom-0 w-full justify-center">
-        <p class="text-zinc-400">Presyotect VNext 0.0.1</p>
+        <p class="text-zinc-400">Presyotect Next v{{ version }}</p>
       </div>
     </div>
     <div
