@@ -9,7 +9,8 @@ export async function login(username: string, password: string): Promise<AuthSta
     const authStore = useAuthStore();
     
     try {
-        const result = await axios.post('/authentication/login', {username, password}, axiosConfig);
+        console.log(axiosConfig.baseURL);
+        const result = await axios.post('/auth/login', {username, password}, axiosConfig);
         authStore.token = result.data.data;
         return {isAuthenticated: true, data: authStore.userClaims};
     } catch (error) {

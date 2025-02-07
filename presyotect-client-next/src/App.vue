@@ -1,6 +1,5 @@
 <script setup lang="ts">
-
-import {ref, watchEffect} from "vue";
+import {ref, watch} from "vue";
 import {useRoute} from 'vue-router';
 import {getPageType} from "@utils/PathUtils.ts";
 import TopNav from "@/components/TopNav.vue";
@@ -17,8 +16,8 @@ const mdAndSmaller = breakpoints.smallerOrEqual('lg');
 const router = useRoute();
 const pageType = ref(getPageType(router.fullPath));
 
-watchEffect(() => {
-  pageType.value = getPageType(router.fullPath);
+watch(() => router.fullPath, (newPath) => {
+  pageType.value = getPageType(newPath);
 });
 
 </script>
@@ -33,5 +32,5 @@ watchEffect(() => {
       <RouterView/>
     </div>
   </main>
-  <BottomNav v-if="pageType === DashboardGroupType.Dashboard && mdAndSmaller"/>
+  <BottomNav v-if="mdAndSmaller && pageType === DashboardGroupType.Dashboard"/>
 </template>
