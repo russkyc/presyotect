@@ -3,7 +3,7 @@
 import Page from "@/components/Page.vue";
 import type {BreadcrumbItem, Product} from "@/types/Interfaces.ts";
 import PageCard from "@/components/PageCard.vue";
-import {ref} from "vue";
+import {onMounted, ref} from "vue";
 import {Button, InputText, Message, Select, MultiSelect} from "primevue";
 import {Form} from '@primevue/forms';
 import {zodResolver} from "@primevue/forms/resolvers/zod";
@@ -11,9 +11,11 @@ import {z} from "zod";
 import {useToast} from "primevue/usetoast";
 import {useConfirm} from "primevue/useconfirm";
 import router from "@/router.ts";
+import {useActionsStore} from "@features/stores.ts";
 
 const toast = useToast();
 const confirm = useConfirm();
+const actionsStore = useActionsStore();
 
 const breadcrumbs: BreadcrumbItem[] = [
   {label: "Products", url: "/products"},
@@ -55,6 +57,10 @@ const resolver = ref(zodResolver(
     })
 ));
 
+onMounted(() => {
+  actionsStore.addPendingActions();
+});
+
 const onFormSubmit = async (form: any) => {
   console.log(form.values);
   if (!form.valid) {
@@ -67,7 +73,7 @@ const onFormSubmit = async (form: any) => {
     return;
   }
   confirm.require({
-    message: 'Are you sure you want to add this product?',
+    message: `Are you sure you want to add ${form.values.name} to the products list?`,
     header: 'Confirmation',
     rejectProps: {
       label: 'Cancel',
@@ -83,6 +89,7 @@ const onFormSubmit = async (form: any) => {
         detail: `${form.values.name} added to products.`,
         life: 2000
       });
+      actionsStore.clearPendingActions();
       await router.push('/products');
     }
   });

@@ -3,7 +3,7 @@
 import {ref} from 'vue';
 import {Avatar, Button, Menu, Toolbar} from "primevue";
 import router from "@/router";
-import {useComponentStore} from "@features/auth/component-state-store.ts";
+import {useComponentStore} from "@features/stores.ts";
 import {useToast} from "primevue/usetoast";
 import {useConfirm} from "primevue/useconfirm";
 import {logout} from "@features/auth/auth-service.ts";

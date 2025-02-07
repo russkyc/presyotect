@@ -1,6 +1,7 @@
 import {createRouter, createWebHistory} from 'vue-router';
-import {useAuthStore} from "@features/auth/auth-store.ts";
+import {useAuthStore, useActionsStore} from "@features/stores.ts";
 import {Roles} from "@/types/Constants.ts";
+import {useConfirm} from "primevue/useconfirm";
 
 import DashboardView from '@pages/dashboard/DashboardView.vue';
 import LoginView from "@pages/auth/LoginView.vue";
@@ -13,6 +14,7 @@ import SettingsView from "@pages/dashboard/SettingsView.vue";
 import AnalyticsView from "@pages/dashboard/AnalyticsView.vue";
 import NotAuthorizedView from "@pages/status/NotAuthorizedView.vue";
 import AddProductView from "@pages/dashboard/products/AddProductView.vue";
+import {useToast} from "primevue/usetoast";
 
 const defaultTitle = 'Presyotect';
 
@@ -124,11 +126,43 @@ const router = createRouter({
 
 router.beforeEach(async (to, _, next) => {
 
-    const title = to.meta.title as string;
+    const toast = useToast();
+    const confirm = useConfirm();
     const authStore = useAuthStore();
+    const actionsStore = useActionsStore();
+    
+    const title = to.meta.title as string;
 
     const tokenIsNull = authStore.token === null || authStore.token === undefined;
     const toNameIsLogin = to.name === 'login';
+    
+    if (actionsStore.hasPendingActions){
+        confirm.require({
+            message: 'Leaving this page will discard any unsaved changes. Are you sure you want to leave?',
+            header: 'Discard Changes',
+            rejectProps: {
+                label: 'Cancel',
+                severity: 'secondary'
+            },
+            acceptProps: {
+                label: 'Leave'
+            },
+            accept: async () => {
+                actionsStore.hasPendingActions = false;
+                toast.add({
+                    severity: 'info',
+                    summary: 'Changes Discarded',
+                    detail: 'You have successfully discarded any unsaved changes.',
+                    life: 2000
+                });
+                await router.push(to);
+            },
+            reject: () => {
+                return;
+            }
+        });
+        return;
+    }
 
     if (tokenIsNull && !toNameIsLogin) {
         document.title = title ? `${defaultTitle} - ${title}` : defaultTitle;

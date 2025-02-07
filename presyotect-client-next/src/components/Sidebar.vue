@@ -1,7 +1,7 @@
 <script setup lang="ts">
 
 import {defineProps, ref} from "vue";
-import {useComponentStore} from "@features/auth/component-state-store.ts";
+import {useComponentStore} from "@features/stores.ts";
 import NavLink from "@/components/NavLink.vue";
 import Authorize from "@/components/dynamic/Authorize.vue";
 import {Roles} from "@/types/Constants.ts";
