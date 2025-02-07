@@ -1,6 +1,6 @@
 <script setup lang="ts">
 
-import {onMounted, ref} from 'vue'
+import {onBeforeMount, ref} from 'vue'
 import Page from "@/components/Page.vue";
 import {Card} from "primevue";
 import OverviewCard from "@/components/OverviewCard.vue";
@@ -11,7 +11,7 @@ const iconSize = 27;
 const totalProducts = ref(0);
 const totalEstablishments = ref(0);
 
-onMounted(async () => {
+onBeforeMount(async () => {
   const axiosConfig = getAxiosConfig();
   const productsResponse = await axios.get(`/products?page=0&itemsPerPage=1`, axiosConfig);
   const establishmentsResponse = await axios.get(`/establishments?page=0&itemsPerPage=1`, axiosConfig);

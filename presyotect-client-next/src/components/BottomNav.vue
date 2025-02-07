@@ -3,6 +3,7 @@
 import {Toolbar} from "primevue";
 import NavLink from "@/components/NavLink.vue";
 import Authorize from "@/components/dynamic/Authorize.vue";
+import {Roles} from "@/types/Constants.ts";
 
 const iconSize = 20;
 
@@ -65,7 +66,7 @@ const iconSize = 20;
               </svg>
             </template>
           </NavLink>
-          <Authorize :roles="['Admin']">
+          <Authorize :roles="[Roles.Admin]">
             <NavLink href="/users">
               <template #icon>
                 <svg xmlns="http://www.w3.org/2000/svg" :width="iconSize" :height="iconSize" viewBox="0 0 24 24" fill="none"
@@ -79,7 +80,7 @@ const iconSize = 20;
               </template>
             </NavLink>
           </Authorize>
-          <Authorize :roles="['Admin']">
+          <Authorize :roles="[Roles.Admin]">
             <NavLink href="/analytics">
               <template #icon>
                 <svg xmlns="http://www.w3.org/2000/svg" :width="iconSize" :height="iconSize" viewBox="0 0 24 24" fill="none"

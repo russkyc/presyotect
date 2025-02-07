@@ -4,6 +4,7 @@ import {defineProps, ref} from "vue";
 import {useComponentStore} from "@features/auth/component-state-store.ts";
 import NavLink from "@/components/NavLink.vue";
 import Authorize from "@/components/dynamic/Authorize.vue";
+import {Roles} from "@/types/Constants.ts";
 
 const props = defineProps<{
   miniWidth: string
@@ -74,7 +75,7 @@ componentStore.$subscribe(() => {
         </svg>
       </template>
     </NavLink>
-    <Authorize :roles="['Admin']">
+    <Authorize :roles="[Roles.Admin]">
       <NavLink content="Users" href="/users">
         <template #icon>
           <svg xmlns="http://www.w3.org/2000/svg" :width="iconSize" :height="iconSize" viewBox="0 0 24 24" fill="none"
@@ -88,7 +89,7 @@ componentStore.$subscribe(() => {
         </template>
       </NavLink>
     </Authorize>
-    <Authorize :roles="['Admin']">
+    <Authorize :roles="[Roles.Admin]">
       <NavLink content="Analytics" href="/analytics">
         <template #icon>
           <svg xmlns="http://www.w3.org/2000/svg" :width="iconSize" :height="iconSize" viewBox="0 0 24 24" fill="none"
