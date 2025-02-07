@@ -11,8 +11,10 @@ export default defineConfig(({ mode }) => {
         plugins: [
             vue(),
             VitePWA({
-                registerType: 'prompt',
+                registerType: 'autoUpdate',
                 workbox: {
+                    skipWaiting: true,
+                    clientsClaim: true,
                     sourcemap: true,
                     cleanupOutdatedCaches: true,
                     globPatterns: ['**/*.{js,css,html,ico,png,svg,jpg,jpeg}'],
