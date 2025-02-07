@@ -6,9 +6,11 @@ on:
   pull_request:
     branches:
       - master
+    types: [closed]
 
 jobs:
   build_and_deploy:
+    if: github.event.pull_request.merged == true
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v4
