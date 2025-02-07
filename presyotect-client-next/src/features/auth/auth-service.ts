@@ -1,15 +1,14 @@
 import axios, {AxiosError} from 'axios';
 import {useAuthStore} from "@features/auth/auth-store.ts";
+import {getAxiosConfig} from "@utils/ApiUtils.ts";
 import type {AuthState} from "@/types/Interfaces.ts";
-
-const axiosConfig = {baseURL: import.meta.env.VITE_API_HOST};
 
 export async function login(username: string, password: string): Promise<AuthState> {
 
     const authStore = useAuthStore();
+    const axiosConfig = getAxiosConfig();
     
     try {
-        console.log(axiosConfig.baseURL);
         const result = await axios.post('/auth/login', {username, password}, axiosConfig);
         if (result.data.success === false){
             return {isAuthenticated: false, data: result.data.errors[0]};
