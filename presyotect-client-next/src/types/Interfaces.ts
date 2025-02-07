@@ -1,4 +1,4 @@
-export interface BreadcrumbItem{
+export interface BreadcrumbItem {
     label: string;
     url?: string;
 }
@@ -6,4 +6,16 @@ export interface BreadcrumbItem{
 export interface AuthState {
     isAuthenticated: boolean;
     data: any;
+}
+
+// Entity Interfaces
+export type Product = {
+    customIdentifier: string | null,
+    sku: string | null,
+    name: string,
+    size: string | null,
+    status?: string,
+    category: string[] | null,
+    classification: string | null,
+    srp: number | null
 }

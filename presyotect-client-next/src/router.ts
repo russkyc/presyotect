@@ -6,12 +6,13 @@ import DashboardView from '@pages/dashboard/DashboardView.vue';
 import LoginView from "@pages/auth/LoginView.vue";
 import PriceMonitoringView from "@pages/dashboard/PriceMonitoringView.vue";
 import NotFoundView from "@pages/status/NotFoundView.vue";
-import ProductsView from "@pages/dashboard/ProductsView.vue";
+import ProductsView from "@pages/dashboard/products/ProductsView.vue";
 import EstablishmentsView from "@pages/dashboard/EstablishmentsView.vue";
 import UsersView from "@pages/dashboard/UsersView.vue";
 import SettingsView from "@pages/dashboard/SettingsView.vue";
 import AnalyticsView from "@pages/dashboard/AnalyticsView.vue";
 import NotAuthorizedView from "@pages/status/NotAuthorizedView.vue";
+import AddProductView from "@pages/dashboard/products/AddProductView.vue";
 
 const defaultTitle = 'Presyotect';
 
@@ -37,11 +38,22 @@ const routes = [
     {
         name: 'products',
         path: '/products',
-        component: ProductsView,
-        meta: {
-            title: 'Products',
-            roles: [Roles.Admin, Roles.Personnel]
-        }
+        children: [
+            {
+                path: '', component: ProductsView,
+                meta: {
+                    title: 'Products',
+                    roles: [Roles.Admin, Roles.Personnel]
+                }
+            },
+            {
+                path: 'add', component: AddProductView,
+                meta: {
+                    title: 'Products',
+                    roles: [Roles.Admin]
+                }
+            },
+        ]
     },
     {
         name: 'establishments',

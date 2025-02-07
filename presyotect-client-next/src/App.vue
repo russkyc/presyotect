@@ -22,7 +22,7 @@ watch(() => router.fullPath, (newPath) => {
 
 </script>
 <template>
-  <Toast class="lg:block hidden" position="bottom-right"/>
+  <Toast class="lg:block hidden" position="top-right"/>
   <Toast class="max-lg:block hidden" position="top-center"/>
   <ConfirmDialog/>
   <TopNav v-if="pageType === DashboardGroupType.Dashboard"/>

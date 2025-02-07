@@ -7,6 +7,7 @@ import InputIcon from 'primevue/inputicon';
 import Page from "@/components/Page.vue";
 import type {BreadcrumbItem} from "@/types/Interfaces.ts";
 import PageCard from "@/components/PageCard.vue";
+import router from "@/router.ts";
 
 const breadcrumbs: BreadcrumbItem[] = [
   {label: "Products"}
@@ -21,6 +22,9 @@ const items = [
   }
 ];
 
+const addProduct = () => {
+  router.push({path:"/products/add"});
+}
 
 </script>
 
@@ -43,7 +47,7 @@ const items = [
           </IconField>
         </template>
         <template #card-actions>
-          <SplitButton :model="items">
+          <SplitButton :model="items" @click="addProduct">
             <div class="flex gap-2">
               <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
