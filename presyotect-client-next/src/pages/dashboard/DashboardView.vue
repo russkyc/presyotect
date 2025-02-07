@@ -5,16 +5,14 @@ import Page from "@/components/Page.vue";
 import {Card} from "primevue";
 import OverviewCard from "@/components/OverviewCard.vue";
 import axios from 'axios';
-
+import {getAxiosConfig} from "@utils/ApiUtils.ts";
 
 const iconSize = 27;
-
-const axiosConfig = {baseURL: import.meta.env.VITE_API_HOST};
-
 const totalProducts = ref(0);
 const totalEstablishments = ref(0);
 
 onMounted(async () => {
+  const axiosConfig = getAxiosConfig();
   const productsResponse = await axios.get(`/products?page=0&itemsPerPage=1`, axiosConfig);
   const establishmentsResponse = await axios.get(`/establishments?page=0&itemsPerPage=1`, axiosConfig);
   

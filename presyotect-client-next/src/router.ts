@@ -1,5 +1,6 @@
 import {createRouter, createWebHistory} from 'vue-router';
 import {useAuthStore} from "@features/auth/auth-store.ts";
+import {Roles} from "@/types/Constants.ts";
 
 import DashboardView from '@pages/dashboard/DashboardView.vue';
 import LoginView from "@pages/auth/LoginView.vue";
@@ -21,7 +22,7 @@ const routes = [
         component: DashboardView,
         meta: {
             title: 'Dashboard',
-            roles: ['Admin', 'Personnel']
+            roles: [Roles.Admin, Roles.Personnel]
         }
     },
     {
@@ -30,7 +31,7 @@ const routes = [
         component: PriceMonitoringView,
         meta: {
             title: 'Price Monitoring',
-            roles: ['Admin', 'Personnel']
+            roles: [Roles.Admin, Roles.Personnel]
         }
     },
     {
@@ -39,7 +40,7 @@ const routes = [
         component: ProductsView,
         meta: {
             title: 'Products',
-            roles: ['Admin', 'Personnel']
+            roles: [Roles.Admin, Roles.Personnel]
         }
     },
     {
@@ -48,7 +49,7 @@ const routes = [
         component: EstablishmentsView,
         meta: {
             title: 'Establishments',
-            roles: ['Admin', 'Personnel']
+            roles: [Roles.Admin, Roles.Personnel]
         }
     },
     {
@@ -57,7 +58,7 @@ const routes = [
         component: UsersView,
         meta: {
             title: 'Users',
-            roles: ['Admin']
+            roles: [Roles.Admin]
         }
     },
     {
@@ -66,7 +67,7 @@ const routes = [
         component: AnalyticsView,
         meta: {
             title: 'Analytics',
-            roles: ['Admin']
+            roles: [Roles.Admin]
         }
     },
     {
@@ -75,7 +76,7 @@ const routes = [
         component: SettingsView,
         meta: {
             title: 'Settings',
-            roles: ['Admin', 'Personnel']
+            roles: [Roles.Admin, Roles.Personnel]
         }
     },
     {
