@@ -52,7 +52,7 @@ const routes = [
                 path: 'add', component: AddProductView,
                 meta: {
                     title: 'Products',
-                    roles: [Roles.Admin]
+                    roles: [Roles.Admin, Roles.Personnel]
                 }
             },
         ]

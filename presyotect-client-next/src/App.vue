@@ -22,12 +22,13 @@ watch(() => router.fullPath, (newPath) => {
 
 </script>
 <template>
-  <Toast class="lg:block hidden" position="top-right" />
-  <Toast class="max-lg:block hidden" position="top-center" />
+  <Toast class="max-sm:hidden mt-12 lg:mt-16" position="top-right" />
+  <Toast class="sm:hidden mt-14" position="top-center" />
   <ConfirmDialog />
   <TopNav v-if="pageType === DashboardGroupType.Dashboard" />
   <Sidebar mini-width="69px" width="260px" v-if="pageType === DashboardGroupType.Dashboard && !mdAndSmaller" />
-  <main class="flex flex-col overflow-y-auto" :class="{'col-span-2 row-span-3': pageType !== DashboardGroupType.Dashboard}">
+  <main class="flex flex-col overflow-y-auto"
+    :class="{'col-span-2 row-span-3': pageType !== DashboardGroupType.Dashboard}">
     <RouterView />
   </main>
   <BottomNav v-if="mdAndSmaller && pageType === DashboardGroupType.Dashboard" />

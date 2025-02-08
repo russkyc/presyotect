@@ -20,7 +20,7 @@ const actionsStore = useActionsStore();
 
 const breadcrumbs: BreadcrumbItem[] = [
   {label: "Products", url: "/products"},
-  {label: "Add Product"}
+  {label: "Add"}
 ];
 
 const initialValues = ref<Product>({

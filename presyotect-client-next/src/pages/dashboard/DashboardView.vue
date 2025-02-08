@@ -40,7 +40,7 @@ onBeforeMount(async () => {
               </svg>
             </template>
           </OverviewCard>
-          <OverviewCard title="Establishments" :content="totalEstablishments" sub-content="Registered Establishments">
+          <OverviewCard title="Establishments" :content="totalEstablishments" sub-content="Active Establishments">
             <template #icon>
               <svg xmlns="http://www.w3.org/2000/svg" :width="iconSize" :height="iconSize" viewBox="0 0 24 24"
                    fill="none"
@@ -55,7 +55,7 @@ onBeforeMount(async () => {
               </svg>
             </template>
           </OverviewCard>
-          <OverviewCard title="Policies" content="5" sub-content="Enforceable Policies">
+          <OverviewCard title="Policies" content="5" sub-content="Active Policies">
             <template #icon>
               <svg xmlns="http://www.w3.org/2000/svg" :width="iconSize" :height="iconSize" viewBox="0 0 24 24"
                    fill="none"
