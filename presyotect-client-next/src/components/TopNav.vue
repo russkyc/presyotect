@@ -59,7 +59,7 @@ const items = ref([
 </script>
 
 <template>
-  <header class="sticky">
+  <header class="top-0 static">
     <Toolbar class="px-3 py-2 border-b rounded-none">
       <template #start>
         <div class="flex gap-3">

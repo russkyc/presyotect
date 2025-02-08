@@ -10,7 +10,7 @@ const iconSize = 20;
 </script>
 
 <template>
-  <footer class="fixed bottom-0 w-full">
+  <footer class="static bottom-0 w-full">
     <Toolbar class="px-3 py-2 border-b rounded-none">
       
       <template #center>
