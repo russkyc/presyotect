@@ -155,6 +155,7 @@ router.beforeEach(async (to, _, next) => {
                     detail: 'You have successfully discarded any unsaved changes.',
                     life: 2000
                 });
+                document.title = title ? `${defaultTitle} - ${title}` : defaultTitle;
                 await router.push(to);
             },
             reject: () => {
