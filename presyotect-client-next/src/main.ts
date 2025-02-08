@@ -1,13 +1,13 @@
-import './style.css'
+import "./style.css";
 
-import App from './App.vue';
-import {createApp} from 'vue';
-import {createPinia} from 'pinia';
-import piniaPluginPersistedstate from 'pinia-plugin-persistedstate'
-import router from '@/router';
-import PrimeVue from 'primevue/config';
-import ToastService from 'primevue/toastservice';
-import ConfirmationService from 'primevue/confirmationservice';
+import router from "@/router";
+import { createPinia } from "pinia";
+import piniaPluginPersistedstate from "pinia-plugin-persistedstate";
+import PrimeVue from "primevue/config";
+import ConfirmationService from "primevue/confirmationservice";
+import ToastService from "primevue/toastservice";
+import { createApp } from "vue";
+import App from "./App.vue";
 
 const pinia = createPinia();
 pinia.use(piniaPluginPersistedstate);
@@ -16,9 +16,9 @@ const app = createApp(App);
 app.use(pinia);
 app.use(router);
 app.use(PrimeVue, {
-    theme: 'none'
+    theme: "none"
 })
 app.use(ToastService);
 app.use(ConfirmationService);
 
-app.mount('#app');
+app.mount("#app");

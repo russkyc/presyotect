@@ -1,7 +1,8 @@
-import {fileURLToPath, URL} from "url";
-import {defineConfig, loadEnv} from 'vite'
-import {VitePWA} from 'vite-plugin-pwa'
-import vue from '@vitejs/plugin-vue'
+import { URL, fileURLToPath } from "url";
+import { defineConfig, loadEnv } from 'vite';
+
+import vue from '@vitejs/plugin-vue';
+import { VitePWA } from 'vite-plugin-pwa';
 
 // https://vite.dev/config/
 export default defineConfig(({ mode }) => {

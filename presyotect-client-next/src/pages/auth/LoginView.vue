@@ -1,35 +1,35 @@
 <script setup lang="ts">
 
-import {ref} from 'vue';
-import {useToast} from "primevue/usetoast";
-import {Button, InputText, Message, Password} from "primevue";
-import {Form} from '@primevue/forms';
-import {login} from "@features/auth/auth-service.ts";
-import {zodResolver} from '@primevue/forms/resolvers/zod';
-import router from '@/router';
-import {z} from 'zod';
+import router from "@/router";
+import { login } from "@features/auth/auth-service.ts";
+import { Form } from "@primevue/forms";
+import { zodResolver } from "@primevue/forms/resolvers/zod";
+import { Button, InputText, Message, Password } from "primevue";
+import { useToast } from "primevue/usetoast";
+import { ref } from "vue";
+import { z } from "zod";
 
 const toast = useToast();
 const version = import.meta.env.VITE_APP_VERSION;
 
 const initialValues = ref({
-  username: '',
-  password: ''
+  username: "",
+  password: ""
 });
 
 const resolver = ref(zodResolver(
     z.object({
-      username: z.string().min(1, {message: 'Username is required.'}),
-      password: z.string().min(1, {message: 'Password is required.'})
+      username: z.string().min(1, {message: "Username is required."}),
+      password: z.string().min(1, {message: "Password is required."})
     })
 ));
 
 const onFormSubmit = async (form: any) => {
   if (!form.valid) {
     toast.add({
-      severity: 'error',
-      summary: 'Login Failed',
-      detail: 'Please fill-out all required fields.',
+      severity: "error",
+      summary: "Login Failed",
+      detail: "Please fill-out all required fields.",
       life: 2000
     });
     return;
@@ -39,26 +39,26 @@ const onFormSubmit = async (form: any) => {
 
 const authenticate = async (form: any) => {
   initialValues.value = {
-    username: '',
-    password: ''
+    username: "",
+    password: ""
   };
   const authState = await login(form.values.username, form.values.password);
   if (!authState.isAuthenticated){
     toast.add({
-      severity: 'error',
-      summary: 'Login Failed',
+      severity: "error",
+      summary: "Login Failed",
       detail: authState.data,
       life: 2000
     });
     return;
   }
   toast.add({
-    severity: 'success',
-    summary: 'Login Successful',
+    severity: "success",
+    summary: "Login Successful",
     detail: `Welcome back ${authState.data.username}!`,
     life: 2000
   });
-  await router.push('/');
+  await router.push("/");
 }
 </script>
 

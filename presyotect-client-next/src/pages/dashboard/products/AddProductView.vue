@@ -1,18 +1,18 @@
 <script setup lang="ts">
 
 import Page from "@/components/Page.vue";
-import type {BreadcrumbItem, Product} from "@/types/Interfaces.ts";
 import PageCard from "@/components/PageCard.vue";
-import {onMounted, ref} from "vue";
-import {Button, InputText, Message, Select, MultiSelect} from "primevue";
-import {Form} from '@primevue/forms';
-import {zodResolver} from "@primevue/forms/resolvers/zod";
-import {z} from "zod";
-import {useToast} from "primevue/usetoast";
-import {useConfirm} from "primevue/useconfirm";
 import router from "@/router.ts";
-import {useActionsStore} from "@features/stores.ts";
-import {ProductsService} from "@features/data/products-service.ts";
+import type { BreadcrumbItem, Product } from "@/types/Interfaces.ts";
+import { ProductsService } from "@features/data/products-service.ts";
+import { useActionsStore } from "@features/stores.ts";
+import { Form } from "@primevue/forms";
+import { zodResolver } from "@primevue/forms/resolvers/zod";
+import { Button, InputText, Message, MultiSelect, Select } from "primevue";
+import { useConfirm } from "primevue/useconfirm";
+import { useToast } from "primevue/usetoast";
+import { onMounted, ref } from "vue";
+import { z } from "zod";
 
 const toast = useToast();
 const confirm = useConfirm();
@@ -26,8 +26,8 @@ const breadcrumbs: BreadcrumbItem[] = [
 const initialValues = ref<Product>({
   sku: null,
   customIdentifier: null,
-  name: '',
-  size: '',
+  name: "",
+  size: "",
   classification: null,
   category: [],
   srp: null
@@ -51,8 +51,8 @@ const resolver = ref(zodResolver(
     z.object({
       sku: z.string().nullable(),
       customIdentifier: z.string().nullable(),
-      name: z.string().min(1, {message: 'Product name is required.'}),
-      size: z.string().min(1, {message: 'Product size is required.'}),
+      name: z.string().min(1, {message: "Product name is required."}),
+      size: z.string().min(1, {message: "Product size is required."}),
       classification: z.string(),
       category: z.array(z.string()).nullable()
     })
@@ -66,22 +66,22 @@ const onFormSubmit = async (form: any) => {
   console.log(form.values);
   if (!form.valid) {
     toast.add({
-      severity: 'error',
-      summary: 'Incomplete Product Details',
-      detail: 'Please fill-out all required fields.',
+      severity: "error",
+      summary: "Incomplete Product Details",
+      detail: "Please fill-out all required fields.",
       life: 2000
     });
     return;
   }
   confirm.require({
     message: `Are you sure you want to add ${form.values.name} to the products list?`,
-    header: 'Confirmation',
+    header: "Confirmation",
     rejectProps: {
-      label: 'Cancel',
-      severity: 'secondary'
+      label: "Cancel",
+      severity: "secondary"
     },
     acceptProps: {
-      label: 'Add'
+      label: "Add"
     },
     accept: async () => {
 
@@ -97,21 +97,21 @@ const onFormSubmit = async (form: any) => {
       const response = await ProductsService.addProduct(product);
       if (!response){
         toast.add({
-          severity: 'error',
-          summary: `Product Not Added`,
+          severity: "error",
+          summary: "Product Not Added",
           detail: `An error occurred while adding ${form.values.name} to products.`,
           life: 2000
         });
         return;
       }
       toast.add({
-        severity: 'success',
-        summary: `Product Added`,
+        severity: "success",
+        summary: "Product Added",
         detail: `${form.values.name} added to products.`,
         life: 2000
       });
       actionsStore.clearPendingActions();
-      await router.push('/products');
+      await router.push("/products");
     }
   });
 };

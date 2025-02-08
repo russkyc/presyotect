@@ -1,8 +1,8 @@
 <script setup lang="ts">
 
 import Page from "@/components/Page.vue";
-import {Card} from "primevue";
-import type {BreadcrumbItem} from "@/types/Interfaces.ts";
+import type { BreadcrumbItem } from "@/types/Interfaces.ts";
+import { Card } from "primevue";
 
 const breadcrumbs: BreadcrumbItem[] = [
   { label: "Analytics" }

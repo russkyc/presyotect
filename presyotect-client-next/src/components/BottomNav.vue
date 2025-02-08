@@ -1,13 +1,13 @@
 <script setup lang="ts">
 
-import {Toolbar} from "primevue";
 import NavLink from "@/components/NavLink.vue";
 import Authorize from "@/components/dynamic/Authorize.vue";
-import {Roles} from "@/types/Constants.ts";
-import { useBreakpoints, breakpointsTailwind } from '@vueuse/core';
+import { Roles } from "@/types/Constants.ts";
+import { breakpointsTailwind, useBreakpoints } from "@vueuse/core";
+import { Toolbar } from "primevue";
 
 const breakpoints = useBreakpoints(breakpointsTailwind)
-const mdAndSmaller = breakpoints.smallerOrEqual('lg');
+const mdAndSmaller = breakpoints.smallerOrEqual("lg");
 const iconSize = 20;
 
 </script>

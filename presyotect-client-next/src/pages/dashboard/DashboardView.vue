@@ -1,11 +1,11 @@
 <script setup lang="ts">
 
-import {onBeforeMount, ref} from 'vue'
-import Page from "@/components/Page.vue";
-import {Card} from "primevue";
 import OverviewCard from "@/components/OverviewCard.vue";
-import axios from 'axios';
-import {getAxiosConfig} from "@utils/ApiUtils.ts";
+import Page from "@/components/Page.vue";
+import { getAxiosConfig } from "@utils/ApiUtils.ts";
+import axios from "axios";
+import { Card } from "primevue";
+import { onBeforeMount, ref } from "vue";
 
 const iconSize = 27;
 const totalProducts = ref(0);
@@ -14,7 +14,7 @@ const axiosConfig = getAxiosConfig();
 
 onBeforeMount(async () => {
   
-  const productsResponse = await axios.get(`/products/count`, axiosConfig);
+  const productsResponse = await axios.get("/products/count", axiosConfig);
   totalProducts.value = productsResponse.data.content;
   
 })

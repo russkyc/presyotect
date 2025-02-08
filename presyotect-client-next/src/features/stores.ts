@@ -1,17 +1,19 @@
-import {computed, ref} from 'vue';
-import {defineStore} from "pinia";
-import {jwtDecode} from "jwt-decode";
+import { computed, ref } from "vue";
+
+import type { IDecodedToken } from "@/types/Interfaces.ts";
+import { jwtDecode } from "jwt-decode";
+import { defineStore } from "pinia";
 
 export const useAuthStore = defineStore(
-    'authStore',
+    "authStore",
     () => {
         const token = ref();
         const userClaims = computed(() => {
-            return jwtDecode(token.value) as any;
+            return jwtDecode(token.value) as IDecodedToken | null;
         });
         const userRoles = computed(() => {
-            const claims = jwtDecode(token.value) as any;
-            return claims?.role ?? null;
+            const claims = jwtDecode(token.value) as IDecodedToken | null;
+            return claims?.role;
         });
         return {token, userClaims, userRoles};
     },
@@ -21,7 +23,7 @@ export const useAuthStore = defineStore(
 )
 
 export const useComponentStore = defineStore(
-    'componentStore',
+    "componentStore",
     () => {
         const isSidebarOpen = ref(false)
         return {isSidebarOpen}
@@ -32,7 +34,7 @@ export const useComponentStore = defineStore(
 );
 
 export const useActionsStore = defineStore(
-    'actionsStore',
+    "actionsStore",
     () => {
         const hasPendingActions = ref(false);
         const addPendingActions = () => {

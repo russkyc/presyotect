@@ -1,13 +1,13 @@
 <script setup lang="ts">
 
-import {ref} from 'vue';
-import {Avatar, Button, Menu, Toolbar} from "primevue";
 import router from "@/router";
-import {useComponentStore} from "@features/stores.ts";
-import {useToast} from "primevue/usetoast";
-import {useConfirm} from "primevue/useconfirm";
-import {logout} from "@features/auth/auth-service.ts";
-import {breakpointsTailwind, useBreakpoints} from "@vueuse/core";
+import { logout } from "@features/auth/auth-service.ts";
+import { useComponentStore } from "@features/stores.ts";
+import { breakpointsTailwind, useBreakpoints } from "@vueuse/core";
+import { Avatar, Button, Menu, Toolbar } from "primevue";
+import { useConfirm } from "primevue/useconfirm";
+import { useToast } from "primevue/usetoast";
+import { ref } from 'vue';
 
 const componentStore = useComponentStore();
 const toast = useToast();
@@ -17,7 +17,7 @@ const profileMenu = ref();
 const breakpoints = useBreakpoints(breakpointsTailwind)
 const mdAndSmaller = breakpoints.smallerOrEqual('lg');
 
-const togglePopover = (e: any) => {
+const togglePopover = (e: unknown) => {
   profileMenu.value.toggle(e);
 }
 
