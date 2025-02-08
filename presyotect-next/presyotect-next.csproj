@@ -26,16 +26,11 @@
         <PackageReference Include="MinimalHelpers.Routing.Analyzers" Version="1.1.3" />
         <PackageReference Include="Scalar.AspNetCore" Version="2.0.12" />
         <PackageReference Include="Swashbuckle.AspNetCore" Version="7.2.0" />
+        <PackageReference Include="System.Linq.Dynamic.Core" Version="1.6.0.1" />
     </ItemGroup>
 
     <ItemGroup>
       <Folder Include="wwwroot\" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <None Update="appdata.ldb">
-        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      </None>
     </ItemGroup>
 
 </Project>

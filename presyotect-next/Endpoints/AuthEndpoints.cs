@@ -9,7 +9,8 @@ public class AuthEndpoints : IEndpointRouteHandlerBuilder
 {
     public static void MapEndpoints(IEndpointRouteBuilder endpoints)
     {
-        var group = endpoints.MapApiGroup("auth");
+        var group = endpoints.MapApiGroup("auth")
+            .WithTags("Auth");
         group.MapPost("/login", OnLogin);
     }
 

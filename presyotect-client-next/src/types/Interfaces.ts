@@ -18,7 +18,7 @@ export interface IDecodedToken {
 // Entity Interfaces
 export type Product = {
     id?: number,
-    customIdentifier: string | null,
+    key: string | null,
     sku: string | null,
     name: string,
     size: string | null,

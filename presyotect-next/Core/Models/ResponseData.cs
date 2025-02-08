@@ -6,4 +6,5 @@ public class ResponseData<T>
     public string? Message { get; set; }
     public string[]? Errors { get; set; }
     public T? Content { get; set; }
+    public Pagination? Pagination { get; set; }
 }

@@ -3,12 +3,12 @@ using Presyotect.Utilities;
 
 namespace Presyotect.Endpoints;
 
-public class ProductEndpoints : GenericEndpoint<Product>, IEndpointRouteHandlerBuilder
+public class EstablishmentEndpoints : GenericEndpoint<Establishment>, IEndpointRouteHandlerBuilder
 {
     public static void MapEndpoints(IEndpointRouteBuilder endpoints)
     {
-        var group = endpoints.MapApiGroup("products")
-            .WithTags("Products");
+        var group = endpoints.MapApiGroup("establishments")
+            .WithTags("Establishments");
 
         group.MapGet("/", OnGet);
         group.MapGet("/count", OnGetCount);
@@ -17,5 +17,4 @@ public class ProductEndpoints : GenericEndpoint<Product>, IEndpointRouteHandlerB
         group.MapPatch("/range", OnUpdateRange);
         group.MapDelete("/{id}", OnDelete);
     }
-
 }
