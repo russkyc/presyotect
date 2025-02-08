@@ -26,7 +26,7 @@ watch(() => router.fullPath, (newPath) => {
   <Toast class="max-lg:block hidden" position="top-center"/>
   <ConfirmDialog/>
   <TopNav v-if="pageType === DashboardGroupType.Dashboard"/>
-  <main class="flex overflow-clip" :class="{'grow': pageType === DashboardGroupType.Auth,'h-[calc(100vh-63.2px)]': pageType === DashboardGroupType.Dashboard && !mdAndSmaller,'h-[calc(100vh-112.9px)]': pageType === DashboardGroupType.Dashboard && mdAndSmaller}">
+  <main class="flex overflow-clip" :class="{'grow': pageType === DashboardGroupType.Auth,'h-[calc(100vh-63.2px)]': pageType === DashboardGroupType.Dashboard && !mdAndSmaller,'h-[calc(100vh-112.7px)]': pageType === DashboardGroupType.Dashboard && mdAndSmaller}">
     <Sidebar mini-width="69px" width="260px" v-if="pageType === DashboardGroupType.Dashboard && !mdAndSmaller"/>
     <div class="flex flex-col grow overflow-auto">
       <RouterView/>
