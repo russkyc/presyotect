@@ -7,7 +7,7 @@ import {Card} from "primevue";
   <Card class="rounded-lg">
     <template #content>
       <div class="flex flex-col gap-3">
-        <div class="flex">
+        <div class="flex gap-3">
           <div class="flex grow">
             <slot name="card-title"></slot>
           </div>

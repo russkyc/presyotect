@@ -36,7 +36,7 @@ const navigate = (url: string|undefined) => {
     <div class="flex gap-4">
       <div class="flex flex-col">
         <h1 class="text-xl font-medium">{{ title }}</h1>
-        <p class="opacity-60">{{ subtitle }}</p>
+        <p class="opacity-60 max-sm:hidden">{{ subtitle }}</p>
       </div>
       <Breadcrumb class="ml-auto" :home="home" :model="breadcrumbs">
         <template #item="{ item }">

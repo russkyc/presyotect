@@ -104,7 +104,7 @@ const menuModel = ref([
               </svg>
             </InputIcon>
             <InputText v-model="filters['global'].value" variant="filled" placeholder="Find Product" name="search"
-                       type="text" fluid class="w-80">
+                       type="text" fluid class="max-sm:grow md:w-80">
             </InputText>
           </IconField>
         </template>
@@ -113,7 +113,7 @@ const menuModel = ref([
             <div class="flex gap-2">
               <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                   class="my-auto lucide lucide-plus">
+                   class="my-auto lucide lucide-plus max-sm:hidden">
                 <path d="M5 12h14"/>
                 <path d="M12 5v14"/>
               </svg>
