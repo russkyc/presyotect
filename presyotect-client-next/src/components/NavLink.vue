@@ -1,6 +1,6 @@
 <script setup lang="ts">
 
-import {defineProps} from "vue";
+import { defineProps } from "vue";
 
 defineProps<{
   content?: string,

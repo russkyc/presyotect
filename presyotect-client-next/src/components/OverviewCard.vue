@@ -1,11 +1,11 @@
 <script setup lang="ts">
 
-import {Card} from "primevue";
-import {defineProps} from "vue";
+import { Card } from "primevue";
+import { defineProps } from "vue";
 
 defineProps<{
   title: string,
-  content: any,
+  content: unknown,
   subContent: string,
 }>();
 

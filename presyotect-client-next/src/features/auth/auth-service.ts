@@ -1,7 +1,8 @@
-import axios, {AxiosError} from 'axios';
-import {useAuthStore} from "@features/stores.ts";
-import {getAxiosConfig} from "@utils/ApiUtils.ts";
-import type {AuthState} from "@/types/Interfaces.ts";
+import axios, { AxiosError } from "axios";
+
+import type { AuthState } from "@/types/Interfaces.ts";
+import { useAuthStore } from "@features/stores.ts";
+import { getAxiosConfig } from "@utils/ApiUtils.ts";
 
 export async function login(username: string, password: string): Promise<AuthState> {
 
@@ -9,7 +10,7 @@ export async function login(username: string, password: string): Promise<AuthSta
     const axiosConfig = getAxiosConfig();
     
     try {
-        const result = await axios.post('/auth/login', {username, password}, axiosConfig);
+        const result = await axios.post("/auth/login", {username, password}, axiosConfig);
         if (result.data.success === false){
             return {isAuthenticated: false, data: result.data.errors[0]};
         }

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 
-import {useAuthStore} from "@features/stores.ts";
-import {defineProps, onBeforeMount, ref} from "vue";
+import { useAuthStore } from "@features/stores.ts";
+import { defineProps, onBeforeMount, ref } from "vue";
 
 const props = defineProps<{
   roles?: string[]
@@ -12,6 +12,7 @@ const isAuthorized = ref(false);
 
 onBeforeMount(() => {
   if (props.roles){
+    if (!authStore.userRoles) return;
     isAuthorized.value = props.roles.includes(authStore.userRoles);
     return;
   }
@@ -19,6 +20,7 @@ onBeforeMount(() => {
 });
 
 authStore.$subscribe(() => {
+    if (!authStore.userRoles) return;
   isAuthorized.value = props.roles === undefined ? true : props.roles.includes(authStore.userRoles);
   console.log(isAuthorized.value);
 });

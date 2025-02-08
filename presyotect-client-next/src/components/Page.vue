@@ -1,9 +1,9 @@
 <script setup lang="ts">
 
-import {Breadcrumb, Drawer} from "primevue";
-import {defineProps, ref} from "vue";
-import type {BreadcrumbItem} from "@/types/Interfaces.ts";
 import router from "@/router.ts";
+import type { BreadcrumbItem } from "@/types/Interfaces.ts";
+import { Breadcrumb, Drawer } from "primevue";
+import { defineProps, ref } from "vue";
 
 const props = defineProps<{
   title: string,
@@ -13,8 +13,8 @@ const props = defineProps<{
 }>();
 
 const home = ref({
-  label: 'Dashboard',
-  url: '/'
+  label: "Dashboard",
+  url: "/"
 });
 
 const openDrawer = ref(false);

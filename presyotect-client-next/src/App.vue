@@ -1,17 +1,17 @@
 <script setup lang="ts">
-import {ref, watch} from "vue";
-import {useRoute} from 'vue-router';
-import {getPageType} from "@utils/PathUtils.ts";
-import TopNav from "@/components/TopNav.vue";
-import Sidebar from "@/components/Sidebar.vue";
-import Toast from "primevue/toast";
-import ConfirmDialog from "primevue/confirmdialog";
-import {DashboardGroupType} from "@/types/Types.ts";
-import {breakpointsTailwind, useBreakpoints} from "@vueuse/core";
 import BottomNav from "@/components/BottomNav.vue";
+import Sidebar from "@/components/Sidebar.vue";
+import TopNav from "@/components/TopNav.vue";
+import { DashboardGroupType } from "@/types/Types.ts";
+import { getPageType } from "@utils/PathUtils.ts";
+import { breakpointsTailwind, useBreakpoints } from "@vueuse/core";
+import ConfirmDialog from "primevue/confirmdialog";
+import Toast from "primevue/toast";
+import { ref, watch } from "vue";
+import { useRoute } from "vue-router";
 
 const breakpoints = useBreakpoints(breakpointsTailwind)
-const mdAndSmaller = breakpoints.smallerOrEqual('lg');
+const mdAndSmaller = breakpoints.smallerOrEqual("lg");
 
 const router = useRoute();
 const pageType = ref(getPageType(router.fullPath));

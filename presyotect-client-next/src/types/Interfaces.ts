@@ -8,6 +8,13 @@ export interface AuthState {
     data: any;
 }
 
+export interface IDecodedToken {
+  role: string;
+  iat: number;
+  exp: number;
+}
+
+
 // Entity Interfaces
 export type Product = {
     id?: number,

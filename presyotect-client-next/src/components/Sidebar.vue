@@ -1,10 +1,10 @@
 <script setup lang="ts">
 
-import {defineProps, ref} from "vue";
-import {useComponentStore} from "@features/stores.ts";
 import NavLink from "@/components/NavLink.vue";
 import Authorize from "@/components/dynamic/Authorize.vue";
-import {Roles} from "@/types/Constants.ts";
+import { Roles } from "@/types/Constants.ts";
+import { useComponentStore } from "@features/stores.ts";
+import { defineProps, ref } from "vue";
 
 const props = defineProps<{
   miniWidth: string

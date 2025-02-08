@@ -1,14 +1,14 @@
 <script setup lang="ts">
 
-import {InputText, DataTable, Column, Chip, SplitButton, IconField, InputIcon, ContextMenu, useToast} from "primevue";
-import {FilterMatchMode} from "@primevue/core";
 import Page from "@/components/Page.vue";
-import type {BreadcrumbItem, Product} from "@/types/Interfaces.ts";
 import PageCard from "@/components/PageCard.vue";
 import router from "@/router.ts";
-import {ProductsService} from "@features/data/products-service.ts";
-import {onMounted, ref} from "vue";
-import {useConfirm} from "primevue/useconfirm";
+import type { BreadcrumbItem, Product } from "@/types/Interfaces.ts";
+import { ProductsService } from "@features/data/products-service.ts";
+import { FilterMatchMode } from "@primevue/core";
+import { Chip, Column, ContextMenu, DataTable, IconField, InputIcon, InputText, SplitButton, useToast } from "primevue";
+import { useConfirm } from "primevue/useconfirm";
+import { onMounted, ref } from "vue";
 
 const breadcrumbs: BreadcrumbItem[] = [
   {label: "Products"}
@@ -16,7 +16,7 @@ const breadcrumbs: BreadcrumbItem[] = [
 
 const items = [
   {
-    label: 'Import',
+    label: "Import",
     command: () => {
       // Import Command
     }
@@ -48,26 +48,26 @@ const addProduct = () => {
 
 const deleteProduct = (product: Product) => {
   confirm.require({
-    header: 'Delete Product',
+    header: "Delete Product",
     message: `This will remove ${product.name} permanently. Are you sure?`,
     rejectProps: {
-      label: 'Cancel',
-      severity: 'secondary'
+      label: "Cancel",
+      severity: "secondary"
     },
     acceptProps: {
-      label: 'Delete',
-      severity: 'danger'
+      label: "Delete",
+      severity: "danger"
     },
     accept: async () => {
       if (product.id == null) return;
       const deleted = await ProductsService.deleteProduct(product.id);
       
       if (!deleted){
-        toast.add({severity: 'error', summary: 'Unsuccessful Deletion', detail: `${product.name} cannot be deleted.`, life: 3000});
+        toast.add({severity: "error", summary: "Unsuccessful Deletion", detail: `${product.name} cannot be deleted.`, life: 3000});
         return;
       }
       
-      toast.add({severity: 'success', summary: 'Product Deleted', detail: `Successfully removed ${product.name} from producs.`, life: 3000});
+      toast.add({severity: "success", summary: "Product Deleted", detail: `Successfully removed ${product.name} from producs.`, life: 3000});
       products.value = products.value.filter((p: Product) => p.id !== product.id);
       selectedProduct.value = null;
     }
@@ -77,12 +77,12 @@ const deleteProduct = (product: Product) => {
 const contextMenu = ref();
 const menuModel = ref([
   {
-    label: 'Edit',
-    icon: 'pi pi-fw pi-pencil'
+    label: "Edit",
+    icon: "pi pi-fw pi-pencil"
   },
   {
-    label: 'Delete',
-    icon: 'pi pi-fw pi-times',
+    label: "Delete",
+    icon: "pi pi-fw pi-times",
     command: () => deleteProduct(selectedProduct.value)
   }
 ]);
