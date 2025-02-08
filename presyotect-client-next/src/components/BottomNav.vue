@@ -13,7 +13,7 @@ const iconSize = 20;
 </script>
 
 <template>
-  <Toolbar class="static bottom-0 px-3 py-2 border-b rounded-none">
+  <Toolbar class="col-span-2 px-3 py-2 border-b rounded-none">
     <template #center>
       <div class="flex gap-3">
         <NavLink href="/">

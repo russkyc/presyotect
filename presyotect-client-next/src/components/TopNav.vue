@@ -59,26 +59,27 @@ const items = ref([
 </script>
 
 <template>
-  <header class="top-0 static">
+  <header class="col-span-2">
     <Toolbar class="px-3 py-2 border-b rounded-none">
       <template #start>
         <div class="flex gap-3">
           <Button v-if="!mdAndSmaller" severity="secondary" class="p-3" @click="toggleSidebar" text>
             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
-                 stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                 class="lucide lucide-align-justify">
-              <path d="M3 12h18"/>
-              <path d="M3 18h18"/>
-              <path d="M3 6h18"/>
+              stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+              class="lucide lucide-align-justify">
+              <path d="M3 12h18" />
+              <path d="M3 18h18" />
+              <path d="M3 6h18" />
             </svg>
           </Button>
-          <img alt="" src="/branding/logo-horizontal.svg" class="h-7 my-auto"/></div>
+          <img alt="" src="/branding/logo-horizontal.svg" class="h-7 my-auto" />
+        </div>
       </template>
       <template #end>
         <Button @click="togglePopover" variant="text" class="p-0" rounded>
-          <Avatar image="https://i.pravatar.cc/100" shape="circle"/>
+          <Avatar image="https://i.pravatar.cc/100" shape="circle" />
         </Button>
-        <Menu ref="profileMenu" :popup="true" :model="items"/>
+        <Menu ref="profileMenu" :popup="true" :model="items" />
       </template>
     </Toolbar>
   </header>
