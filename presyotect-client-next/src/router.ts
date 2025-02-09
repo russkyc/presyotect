@@ -10,6 +10,7 @@ import AddProductView from "@features/products/AddProductView.vue";
 import ProductsView from "@features/products/ProductsView.vue";
 import SettingsView from "@features/settings/SettingsView.vue";
 import UsersView from "@features/users/UsersView.vue";
+import {refreshToken} from "@services/auth/auth-service.ts";
 import {useActionsStore} from "@stores/actions-store.ts";
 import {useAuthStore} from "@stores/auth-store.ts";
 import {useConfirm} from "primevue/useconfirm";
@@ -153,6 +154,16 @@ router.beforeEach(async (to, _, next) => {
 
     const tokenIsNull = authStore.token === null || authStore.token === undefined;
     const toNameIsLogin = to.name === "login";
+    
+    if (!tokenIsNull && authStore.isTokenExpired) {
+        try {
+            await refreshToken();
+        } catch {
+            console.error("Token refresh failed");
+            next({name: "login"});
+            return;
+        }
+    }
 
     if (actionsStore.hasPendingActions) {
         confirm.require({

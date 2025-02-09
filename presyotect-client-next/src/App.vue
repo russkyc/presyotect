@@ -19,7 +19,6 @@ const isDashboardPageType = computed(() => pageType.value === DashboardGroupType
 
 watch(() => router.fullPath, (newPath) => {
     pageType.value = getPageType(newPath);
-    console.log(isDashboardPageType.value);
 });
 
 </script>

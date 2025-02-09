@@ -17,6 +17,9 @@ onBeforeMount(async () => {
     const productsResponse = await axios.get("/products/count", axiosConfig);
     totalProducts.value = productsResponse.data.content;
 
+    const establishmentsResponse = await axios.get("/establishments/count", axiosConfig);
+    totalEstablishments.value = establishmentsResponse.data.content;
+
 })
 
 </script>
