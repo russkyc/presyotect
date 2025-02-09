@@ -1,12 +1,11 @@
 import "./style.css";
-
-import router from "@/router";
-import { createPinia } from "pinia";
+import {createPinia} from "pinia";
 import piniaPluginPersistedstate from "pinia-plugin-persistedstate";
 import PrimeVue from "primevue/config";
 import ConfirmationService from "primevue/confirmationservice";
 import ToastService from "primevue/toastservice";
-import { createApp } from "vue";
+import {createApp} from "vue";
+import router from "@/router";
 import App from "./App.vue";
 
 const pinia = createPinia();

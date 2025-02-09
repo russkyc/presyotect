@@ -1,17 +1,16 @@
-import axios, { AxiosError } from "axios";
-
-import type { AuthState } from "@/types/Interfaces.ts";
-import { useAuthStore } from "@features/stores.ts";
-import { getAxiosConfig } from "@utils/ApiUtils.ts";
+import {useAuthStore} from "@features/stores.ts";
+import {getAxiosConfig} from "@utils/ApiUtils.ts";
+import axios, {AxiosError} from "axios";
+import type {AuthState} from "@/types/Interfaces.ts";
 
 export async function login(username: string, password: string): Promise<AuthState> {
 
     const authStore = useAuthStore();
     const axiosConfig = getAxiosConfig();
-    
+
     try {
         const result = await axios.post("/auth/login", {username, password}, axiosConfig);
-        if (result.data.success === false){
+        if (result.data.success === false) {
             return {isAuthenticated: false, data: result.data.errors[0]};
         }
         authStore.token = result.data.content;

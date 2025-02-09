@@ -1,7 +1,4 @@
-import { useActionsStore, useAuthStore } from "@features/stores.ts";
-import { createRouter, createWebHistory } from "vue-router";
-
-import { Roles } from "@/types/Constants.ts";
+import {useActionsStore, useAuthStore} from "@features/stores.ts";
 import LoginView from "@pages/auth/LoginView.vue";
 import AnalyticsView from "@pages/dashboard/AnalyticsView.vue";
 import DashboardView from "@pages/dashboard/DashboardView.vue";
@@ -13,8 +10,10 @@ import SettingsView from "@pages/dashboard/SettingsView.vue";
 import UsersView from "@pages/dashboard/UsersView.vue";
 import NotAuthorizedView from "@pages/status/NotAuthorizedView.vue";
 import NotFoundView from "@pages/status/NotFoundView.vue";
-import { useConfirm } from "primevue/useconfirm";
-import { useToast } from "primevue/usetoast";
+import {useConfirm} from "primevue/useconfirm";
+import {useToast} from "primevue/usetoast";
+import {createRouter, createWebHistory} from "vue-router";
+import {Roles} from "@/types/Constants.ts";
 
 const defaultTitle = "Presyotect";
 
@@ -130,13 +129,13 @@ router.beforeEach(async (to, _, next) => {
     const confirm = useConfirm();
     const authStore = useAuthStore();
     const actionsStore = useActionsStore();
-    
+
     const title = to.meta.title as string;
 
     const tokenIsNull = authStore.token === null || authStore.token === undefined;
     const toNameIsLogin = to.name === "login";
-    
-    if (actionsStore.hasPendingActions){
+
+    if (actionsStore.hasPendingActions) {
         confirm.require({
             message: "Leaving this page will discard any unsaved changes. Are you sure you want to leave?",
             header: "Discard Changes",

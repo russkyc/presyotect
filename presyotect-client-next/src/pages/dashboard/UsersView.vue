@@ -1,19 +1,23 @@
-<script setup lang="ts">
+<script lang="ts" setup>
 
+import {Card} from "primevue";
 import Page from "@/components/Page.vue";
-import type { BreadcrumbItem } from "@/types/Interfaces.ts";
-import { Card } from "primevue";
+import type {BreadcrumbItem} from "@/types/Interfaces.ts";
 
 const breadcrumbs: BreadcrumbItem[] = [
-  { label: "Users" }
+    {label: "Users"}
 ];
 
 </script>
 
 <template>
-  <Page :breadcrumbs="breadcrumbs" title="Users" subtitle="Manage employees and user information">
+  <Page
+    :breadcrumbs="breadcrumbs"
+    subtitle="Manage employees and user information"
+    title="Users"
+  >
     <template #content>
-      <Card class="grow rounded-lg"></Card>
+      <Card class="grow rounded-lg" />
     </template>
   </Page>
 </template>

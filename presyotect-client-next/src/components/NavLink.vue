@@ -1,6 +1,6 @@
-<script setup lang="ts">
+<script lang="ts" setup>
 
-import { defineProps } from "vue";
+import {defineProps} from "vue";
 
 defineProps<{
   content?: string,
@@ -10,9 +10,20 @@ defineProps<{
 </script>
 
 <template>
-  <RouterLink class="p-3 rounded-md flex gap-3 overflow-clip" activeClass="bg-primary text-[--p-primary-contrast-color]" :to="href">
-    <div class="shrink-0"><slot name="icon"></slot></div>
-    <p class="my-auto text-sm font-medium" v-if="content">{{ content }}</p>
+  <RouterLink
+    :to="href"
+    active-class="bg-primary text-[--p-primary-contrast-color]"
+    class="p-3 rounded-md flex gap-3 overflow-clip"
+  >
+    <div class="shrink-0">
+      <slot name="icon" />
+    </div>
+    <p
+      v-if="content"
+      class="my-auto text-sm font-medium"
+    >
+      {{ content }}
+    </p>
   </RouterLink>
 </template>
 

@@ -1,3 +1,5 @@
+import tailwindCssPrimeUi from "tailwindcss-primeui";
+
 /** @type {import('tailwindcss').Config} */
 export default {
     darkMode: "class",
@@ -8,10 +10,10 @@ export default {
     theme: {
         extend: {
             transitionProperty: {
-                width: "width"
+                width: "width",
             },
         }
     },
-    plugins: [require('tailwindcss-primeui')],
+    plugins: [tailwindCssPrimeUi],
 }
 

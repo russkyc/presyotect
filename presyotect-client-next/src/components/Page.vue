@@ -1,9 +1,9 @@
-<script setup lang="ts">
+<script lang="ts" setup>
 
+import {Breadcrumb, Drawer} from "primevue";
+import {defineProps, ref} from "vue";
 import router from "@/router.ts";
-import type { BreadcrumbItem } from "@/types/Interfaces.ts";
-import { Breadcrumb, Drawer } from "primevue";
-import { defineProps, ref } from "vue";
+import type {BreadcrumbItem} from "@/types/Interfaces.ts";
 
 const props = defineProps<{
   title: string,
@@ -13,20 +13,20 @@ const props = defineProps<{
 }>();
 
 const home = ref({
-  label: "Dashboard",
-  url: "/"
+    label: "Dashboard",
+    url: "/"
 });
 
 const openDrawer = ref(false);
 const showDrawerToggle = props.showDrawerToggle ?? false;
 
 const toggleDrawer = () => {
-  openDrawer.value = !openDrawer.value;
+    openDrawer.value = !openDrawer.value;
 };
 
-const navigate = (url: string|undefined) => {
-  if (url === undefined) return;
-  router.push({path: url});
+const navigate = (url: string | undefined) => {
+    if (url === undefined) return;
+    router.push({path: url});
 };
 
 </script>
@@ -35,33 +35,65 @@ const navigate = (url: string|undefined) => {
   <div class="grow flex flex-col px-6 pb-6 pt-5 gap-4">
     <div class="flex gap-4">
       <div class="flex flex-col">
-        <h1 class="text-xl font-medium">{{ title }}</h1>
-        <p class="opacity-60 max-sm:hidden">{{ subtitle }}</p>
+        <h1 class="text-xl font-medium">
+          {{ title }}
+        </h1>
+        <p class="opacity-60 max-sm:hidden">
+          {{ subtitle }}
+        </p>
       </div>
-      <Breadcrumb class="ml-auto" :home="home" :model="breadcrumbs">
+      <Breadcrumb
+        :home="home"
+        :model="breadcrumbs"
+        class="ml-auto"
+      >
         <template #item="{ item }">
           <button @click="navigate(item.url)">
             <p>{{ item.label }}</p>
           </button>
         </template>
-        <template #separator> /</template>
+        <template #separator>
+          /
+        </template>
       </Breadcrumb>
-      <button v-if="showDrawerToggle" @click="toggleDrawer" class="my-auto p-button-secondary rounded-full p-1">
-        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
-             stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-             class="lucide lucide-bolt">
+      <button
+        v-if="showDrawerToggle"
+        class="my-auto p-button-secondary rounded-full p-1"
+        @click="toggleDrawer"
+      >
+        <svg
+          class="lucide lucide-bolt"
+          fill="none"
+          height="18"
+          stroke="currentColor"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          viewBox="0 0 24 24"
+          width="18"
+          xmlns="http://www.w3.org/2000/svg"
+        >
           <path
-              d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/>
-          <circle cx="12" cy="12" r="4"/>
+            d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"
+          />
+          <circle
+            cx="12"
+            cy="12"
+            r="4"
+          />
         </svg>
       </button>
     </div>
     <div class="flex flex-col grow">
-      <slot name="content"></slot>
+      <slot name="content" />
     </div>
   </div>
-  <Drawer v-model:visible="openDrawer" header="Right Drawer" position="right">
-    <slot name="drawer-content"></slot>
+  <Drawer
+    v-model:visible="openDrawer"
+    header="Right Drawer"
+    position="right"
+  >
+    <slot name="drawer-content" />
   </Drawer>
 </template>
 

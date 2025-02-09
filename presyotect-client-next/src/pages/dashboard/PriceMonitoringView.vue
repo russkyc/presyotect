@@ -1,18 +1,22 @@
-<script setup lang="ts">
+<script lang="ts" setup>
+import {Card} from "primevue";
 import Page from "@/components/Page.vue";
-import type { BreadcrumbItem } from "@/types/Interfaces.ts";
-import { Card } from "primevue";
+import type {BreadcrumbItem} from "@/types/Interfaces.ts";
 
 const breadcrumbs: BreadcrumbItem[] = [
-  { label: "Price Monitoring" }
+    {label: "Price Monitoring"}
 ];
 
 </script>
 
 <template>
-  <Page :breadcrumbs="breadcrumbs" title="Price Monitoring" subtitle="View latest recorded prices and product price movements">
+  <Page
+    :breadcrumbs="breadcrumbs"
+    subtitle="View latest recorded prices and product price movements"
+    title="Price Monitoring"
+  >
     <template #content>
-      <Card class="grow rounded-lg"></Card>
+      <Card class="grow rounded-lg" />
     </template>
   </Page>
 </template>

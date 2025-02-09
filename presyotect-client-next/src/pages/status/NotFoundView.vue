@@ -1,9 +1,9 @@
-<script setup lang="ts">
+<script lang="ts" setup>
 
 </script>
 
 <template>
-<p>Not Found</p>
+  <p>Not Found</p>
 </template>
 
 <style scoped>

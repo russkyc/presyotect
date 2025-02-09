@@ -1,6 +1,6 @@
-<script setup lang="ts">
+<script lang="ts" setup>
 
-import { Card } from "primevue";
+import {Card} from "primevue";
 </script>
 
 <template>
@@ -9,13 +9,13 @@ import { Card } from "primevue";
       <div class="flex flex-col gap-3">
         <div class="flex gap-3">
           <div class="flex grow">
-            <slot name="card-title"></slot>
+            <slot name="card-title" />
           </div>
           <div class="flex">
-            <slot name="card-actions"></slot>
+            <slot name="card-actions" />
           </div>
         </div>
-        <slot name="card-content"></slot>
+        <slot name="card-content" />
       </div>
     </template>
   </Card>

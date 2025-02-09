@@ -1,11 +1,11 @@
-import { useAuthStore } from "@features/stores.ts";
+import {useAuthStore} from "@features/stores.ts";
 
-export function getAxiosConfig(){
+export function getAxiosConfig() {
 
     const authStore = useAuthStore();
     const apiHost = import.meta.env.VITE_API_HOST;
 
-    if(authStore.token){
+    if (authStore.token) {
         return {
             baseURL: apiHost,
             headers: {

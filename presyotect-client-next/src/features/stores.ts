@@ -1,8 +1,7 @@
-import { computed, ref } from "vue";
-
-import type { IDecodedToken } from "@/types/Interfaces.ts";
-import { jwtDecode } from "jwt-decode";
-import { defineStore } from "pinia";
+import {jwtDecode} from "jwt-decode";
+import {defineStore} from "pinia";
+import {computed, ref} from "vue";
+import type {IDecodedToken} from "@/types/Interfaces.ts";
 
 export const useAuthStore = defineStore(
     "authStore",

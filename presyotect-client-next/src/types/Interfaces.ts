@@ -5,13 +5,14 @@ export interface BreadcrumbItem {
 
 export interface AuthState {
     isAuthenticated: boolean;
-    data: any;
+    data: IDecodedToken;
 }
 
 export interface IDecodedToken {
-  role: string;
-  iat: number;
-  exp: number;
+    role: string;
+    iat: number;
+    exp: number;
+    username: string;
 }
 
 
