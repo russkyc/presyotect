@@ -1,9 +1,9 @@
-﻿using Presyotect.Core.Models;
-using Presyotect.Features.Authentication.Models;
-using Presyotect.Features.Authentication.Services;
+﻿using Presyotect.Core.Contracts;
+using Presyotect.Features.Users.Models;
+using Presyotect.Features.Users.Services;
 using Presyotect.Utilities;
 
-namespace Presyotect.Endpoints;
+namespace Presyotect.Features.Users;
 
 public class AuthEndpoints : IEndpointRouteHandlerBuilder
 {
@@ -15,19 +15,19 @@ public class AuthEndpoints : IEndpointRouteHandlerBuilder
     }
 
     private static IResult OnLogin(HttpContext context, IConfiguration configuration, IAuthenticator authenticator,
-        Account account)
+        User user)
     {
         var response = new ResponseData<string>();
-        var validation = authenticator.Validate(account);
+        var validation = authenticator.Validate(user);
         
         if (!validation.Valid)
         {
             response.Success = false;
-            response.Errors = [validation.Message ?? "Account cannot be found."];
+            response.Errors = [validation.Message ?? "User cannot be found."];
             return Results.Ok(response);
         }
 
-        var token = authenticator.Tokenize(account);
+        var token = authenticator.Tokenize(user);
         response.Success = true;
         response.Message = "Login Successful";
         response.Content = token;

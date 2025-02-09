@@ -4,7 +4,7 @@ using System.Text.Encodings.Web;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.Extensions.Options;
 
-namespace Presyotect.Features.Authentication;
+namespace Presyotect.Features.Users;
 
 public class ApiKeyAuthenticator(
     IOptionsMonitor<AuthenticationSchemeOptions> options,

@@ -2,7 +2,7 @@
 using LiteDB;
 using Presyotect.Utilities;
 
-namespace Presyotect.Core.Models;
+namespace Presyotect.Core.Contracts;
 
 public abstract class DbEntity
 {
@@ -13,4 +13,5 @@ public abstract class DbEntity
     public DateTime? Created { get; set; } = DateTime.Now;
     public DateTime? Updated { get; set; }
     public DateTime? Deleted { get; set; }
+    public string Organization { get; set; }
 }

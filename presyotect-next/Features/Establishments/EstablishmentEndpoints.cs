@@ -1,7 +1,8 @@
-﻿using Presyotect.Core.Entities;
+﻿using Presyotect.Core.Abstractions;
+using Presyotect.Features.Establishments.Models;
 using Presyotect.Utilities;
 
-namespace Presyotect.Endpoints;
+namespace Presyotect.Features.Establishments;
 
 public class EstablishmentEndpoints : GenericEndpoint<Establishment>, IEndpointRouteHandlerBuilder
 {

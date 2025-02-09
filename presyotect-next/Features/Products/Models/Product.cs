@@ -1,6 +1,6 @@
-﻿using Presyotect.Core.Models;
+﻿using Presyotect.Core.Contracts;
 
-namespace Presyotect.Core.Entities;
+namespace Presyotect.Features.Products.Models;
 
 public class Product : DbEntity
 {

@@ -1,4 +1,4 @@
-﻿namespace Presyotect.Constants;
+﻿namespace Presyotect.Core.Constants;
 
 public static class Strings
 {

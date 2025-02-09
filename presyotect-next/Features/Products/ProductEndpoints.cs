@@ -1,7 +1,8 @@
-﻿using Presyotect.Core.Entities;
+﻿using Presyotect.Core.Abstractions;
+using Presyotect.Features.Products.Models;
 using Presyotect.Utilities;
 
-namespace Presyotect.Endpoints;
+namespace Presyotect.Features.Products;
 
 public class ProductEndpoints : GenericEndpoint<Product>, IEndpointRouteHandlerBuilder
 {

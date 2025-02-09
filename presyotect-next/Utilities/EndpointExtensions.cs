@@ -1,4 +1,4 @@
-﻿using Presyotect.Constants;
+﻿using Presyotect.Core.Constants;
 
 namespace Presyotect.Utilities;
 

@@ -1,4 +1,4 @@
-﻿namespace Presyotect.Core.Models;
+﻿namespace Presyotect.Core.Contracts;
 
 public class Pagination
 {

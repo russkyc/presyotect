@@ -5,8 +5,8 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.Net.Http.Headers;
 using Microsoft.OpenApi.Models;
-using Presyotect.Features.Authentication;
-using Presyotect.Features.Authentication.Services;
+using Presyotect.Features.Users;
+using Presyotect.Features.Users.Services;
 
 namespace Presyotect.Utilities;
 

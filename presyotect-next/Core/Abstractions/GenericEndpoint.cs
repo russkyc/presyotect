@@ -4,10 +4,11 @@ using LiteDB.Async;
 using LiteDB.Queryable;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Presyotect.Core.Models;
+using Presyotect.Core.Contracts;
 using Presyotect.Utilities;
+using DbEntity = Presyotect.Core.Contracts.DbEntity;
 
-namespace Presyotect.Endpoints;
+namespace Presyotect.Core.Abstractions;
 
 public abstract class GenericEndpoint<T> where T : DbEntity
 {

@@ -1,4 +1,4 @@
-﻿namespace Presyotect.Features.Authentication.Models;
+﻿namespace Presyotect.Features.Users.Models;
 
 public class Validation
 {

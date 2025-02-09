@@ -1,5 +1,5 @@
 ﻿using LiteDB.Queryable;
-using Presyotect.Core.Models;
+using Presyotect.Core.Contracts;
 
 namespace Presyotect.Utilities;
 
