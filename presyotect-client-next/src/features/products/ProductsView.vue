@@ -45,7 +45,6 @@ const filters = ref({
 
 onMounted(() => {
     ProductsService.getProducts().then((response) => {
-        console.log(response);
         products.value = response;
     });
 });

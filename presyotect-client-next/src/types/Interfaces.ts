@@ -28,3 +28,10 @@ export type Product = {
     classification: string | null,
     srp: number | null
 }
+
+export type Establishment = {
+    id?: number,
+    name: string,
+    location: string,
+    type: string
+};

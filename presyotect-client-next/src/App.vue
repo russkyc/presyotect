@@ -3,7 +3,7 @@ import {getPageType} from "@utils/PathUtils.ts";
 import {breakpointsTailwind, useBreakpoints} from "@vueuse/core";
 import ConfirmDialog from "primevue/confirmdialog";
 import Toast from "primevue/toast";
-import {ref, watch} from "vue";
+import {computed, ref, watch} from "vue";
 import {useRoute} from "vue-router";
 import BottomNav from "@/components/BottomNav.vue";
 import Sidebar from "@/components/Sidebar.vue";
@@ -15,9 +15,11 @@ const mdAndSmaller = breakpoints.smallerOrEqual("lg");
 
 const router = useRoute();
 const pageType = ref(getPageType(router.fullPath));
+const isDashboardPageType = computed(() => pageType.value === DashboardGroupType.Dashboard);
 
 watch(() => router.fullPath, (newPath) => {
     pageType.value = getPageType(newPath);
+    console.log(isDashboardPageType.value);
 });
 
 </script>
@@ -31,17 +33,17 @@ watch(() => router.fullPath, (newPath) => {
     position="top-center"
   />
   <ConfirmDialog />
-  <TopNav v-if="pageType === DashboardGroupType.Dashboard" />
+  <TopNav v-if="isDashboardPageType" />
   <Sidebar
-    v-if="pageType === DashboardGroupType.Dashboard && !mdAndSmaller"
+    v-if="isDashboardPageType && !mdAndSmaller"
     mini-width="69px"
     width="260px"
   />
   <main
-    :class="{'col-span-2 row-span-3': pageType !== DashboardGroupType.Dashboard}"
+    :class="{'col-span-2 row-span-3': !isDashboardPageType}"
     class="flex flex-col overflow-y-auto"
   >
     <RouterView />
   </main>
-  <BottomNav v-if="mdAndSmaller && pageType === DashboardGroupType.Dashboard" />
+  <BottomNav v-if="isDashboardPageType && mdAndSmaller" />
 </template>

@@ -1,6 +1,7 @@
 import AnalyticsView from "@features/analytics/AnalyticsView.vue";
 import LoginView from "@features/auth/LoginView.vue";
 import DashboardView from "@features/DashboardView.vue";
+import AddEstablishmentView from "@features/establishments/AddEstablishmentView.vue";
 import EstablishmentsView from "@features/establishments/EstablishmentsView.vue";
 import PriceMonitoringView from "@features/monitoring/PriceMonitoringView.vue";
 import NotAuthorizedView from "@features/NotAuthorizedView.vue";
@@ -42,14 +43,17 @@ const routes = [
         path: "/products",
         children: [
             {
-                path: "", component: ProductsView,
+                name: "products-home",
+                path: "",
+                component: ProductsView,
                 meta: {
                     title: "Products",
                     roles: [Roles.Admin, Roles.Personnel]
                 }
             },
             {
-                path: "add", component: AddProductView,
+                path: "add",
+                component: AddProductView,
                 meta: {
                     title: "Products",
                     roles: [Roles.Admin, Roles.Personnel]
@@ -60,11 +64,25 @@ const routes = [
     {
         name: "establishments",
         path: "/establishments",
-        component: EstablishmentsView,
-        meta: {
-            title: "Establishments",
-            roles: [Roles.Admin, Roles.Personnel]
-        }
+        children: [
+            {
+                name: "establishments-home",
+                path: "",
+                component: EstablishmentsView,
+                meta: {
+                    title: "Establishments",
+                    roles: [Roles.Admin, Roles.Personnel]
+                }
+            },
+            {
+                path: "add",
+                component: AddEstablishmentView,
+                meta: {
+                    title: "Establishments",
+                    roles: [Roles.Admin, Roles.Personnel]
+                }
+            },
+        ]
     },
     {
         name: "users",
