@@ -1,13 +1,13 @@
 <script lang="ts" setup>
 
-import {logout} from "@features/auth/auth-service.ts";
-import {useComponentStore} from "@features/stores.ts";
+import {useComponentStore} from "@stores/component-store.ts";
 import {breakpointsTailwind, useBreakpoints} from "@vueuse/core";
 import {Avatar, Button, Menu, Toolbar} from "primevue";
 import {useConfirm} from "primevue/useconfirm";
 import {useToast} from "primevue/usetoast";
 import {ref} from "vue";
 import router from "@/router";
+import {logout} from "@/services/auth/auth-service.ts";
 
 const componentStore = useComponentStore();
 const toast = useToast();

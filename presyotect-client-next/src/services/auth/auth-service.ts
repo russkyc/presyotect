@@ -1,4 +1,4 @@
-import {useAuthStore} from "@features/stores.ts";
+import {useAuthStore} from "@stores/auth-store.ts";
 import {getAxiosConfig} from "@utils/ApiUtils.ts";
 import axios, {AxiosError} from "axios";
 import type {AuthState} from "@/types/Interfaces.ts";

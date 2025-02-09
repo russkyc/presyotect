@@ -55,9 +55,9 @@ export default defineConfig(({mode}) => {
             alias: [
                 {find: "@", replacement: fileURLToPath(new URL("./src", import.meta.url))},
                 {find: "@features", replacement: fileURLToPath(new URL("./src/features", import.meta.url))},
-                {find: "@types", replacement: fileURLToPath(new URL("./src/types", import.meta.url))},
+                {find: "@stores", replacement: fileURLToPath(new URL("./src/stores", import.meta.url))},
                 {find: "@utils", replacement: fileURLToPath(new URL("./src/utils", import.meta.url))},
-                {find: "@pages", replacement: fileURLToPath(new URL("./src/pages", import.meta.url))}
+                {find: "@services", replacement: fileURLToPath(new URL("./src/services", import.meta.url))}
             ],
         },
         build: {

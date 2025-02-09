@@ -1,4 +1,4 @@
-import {useAuthStore} from "@features/stores.ts";
+import {useAuthStore} from "@stores/auth-store.ts";
 
 export function getAxiosConfig() {
 

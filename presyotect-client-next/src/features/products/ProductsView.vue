@@ -1,6 +1,5 @@
 <script lang="ts" setup>
 
-import {ProductsService} from "@features/data/products-service.ts";
 import {FilterMatchMode} from "@primevue/core";
 import {
     Chip,
@@ -18,7 +17,8 @@ import {useConfirm} from "primevue/useconfirm";
 import {onMounted, ref} from "vue";
 import Page from "@/components/Page.vue";
 import PageCard from "@/components/PageCard.vue";
-import router from "@/router";
+import router from "@/router.ts";
+import {ProductsService} from "@/services/data/products-service.ts";
 import type {BreadcrumbItem, Product} from "@/types/Interfaces.ts";
 
 const breadcrumbs: BreadcrumbItem[] = [

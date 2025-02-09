@@ -12,17 +12,17 @@
       "@/*": [
         "./src/*"
       ],
+      "@stores/*": [
+        "./src/stores/*"
+      ],
       "@features/*": [
         "./src/features/*"
-      ],
-      "@types/*": [
-        "./src/types/*"
       ],
       "@utils/*": [
         "./src/utils/*"
       ],
-      "@pages/*": [
-        "./src/pages/*"
+      "@services/*": [
+        "./src/services/*"
       ]
     }
   },

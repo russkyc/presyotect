@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 
 import {Breadcrumb, Drawer} from "primevue";
-import {defineProps, ref} from "vue";
+import {ref} from "vue";
 import router from "@/router.ts";
 import type {BreadcrumbItem} from "@/types/Interfaces.ts";
 

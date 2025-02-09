@@ -1,9 +1,8 @@
 <script lang="ts" setup>
 
-import {ProductsService} from "@features/data/products-service.ts";
-import {useActionsStore} from "@features/stores.ts";
 import {Form, type FormSubmitEvent} from "@primevue/forms";
 import {zodResolver} from "@primevue/forms/resolvers/zod";
+import {useActionsStore} from "@stores/actions-store";
 import {Button, InputText, Message, MultiSelect, Select} from "primevue";
 import {useConfirm} from "primevue/useconfirm";
 import {useToast} from "primevue/usetoast";
@@ -11,7 +10,8 @@ import {onMounted, ref} from "vue";
 import {z} from "zod";
 import Page from "@/components/Page.vue";
 import PageCard from "@/components/PageCard.vue";
-import router from "@/router";
+import router from "@/router.ts";
+import {ProductsService} from "@/services/data/products-service.ts";
 import type {BreadcrumbItem, Product} from "@/types/Interfaces.ts";
 
 const toast = useToast();

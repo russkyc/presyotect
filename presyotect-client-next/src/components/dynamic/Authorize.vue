@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 
-import {useAuthStore} from "@features/stores.ts";
-import {defineProps, onBeforeMount, ref} from "vue";
+import {onBeforeMount, ref} from "vue";
+import {useAuthStore} from "@/stores/auth-store.ts";
 
 const props = defineProps<{
   roles?: string[]

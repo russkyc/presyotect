@@ -1,6 +1,5 @@
 <script lang="ts" setup>
 
-import {login} from "@features/auth/auth-service.ts";
 import {Form, type FormSubmitEvent} from "@primevue/forms";
 import {zodResolver} from "@primevue/forms/resolvers/zod";
 import {Button, InputText, Message, Password} from "primevue";
@@ -8,6 +7,7 @@ import {useToast} from "primevue/usetoast";
 import {ref} from "vue";
 import {z} from "zod";
 import router from "@/router";
+import {login} from "@/services/auth/auth-service.ts";
 
 const toast = useToast();
 const version = import.meta.env.VITE_APP_VERSION;

@@ -1,7 +1,6 @@
 <script lang="ts" setup>
 
 import {Card} from "primevue";
-import {defineProps} from "vue";
 
 defineProps<{
   title: string,
