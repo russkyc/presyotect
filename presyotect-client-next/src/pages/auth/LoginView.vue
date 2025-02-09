@@ -52,6 +52,15 @@ const authenticate = async (form: FormSubmitEvent) => {
         });
         return;
     }
+    if (!authState.data || typeof authState.data === "string") {
+        toast.add({
+            severity: "error",
+            summary: "Login Failed",
+            detail: authState.data,
+            life: 2000
+        });
+        return;
+    }
     toast.add({
         severity: "success",
         summary: "Login Successful",

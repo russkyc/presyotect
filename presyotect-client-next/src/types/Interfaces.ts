@@ -5,7 +5,7 @@ export interface BreadcrumbItem {
 
 export interface AuthState {
     isAuthenticated: boolean;
-    data: IDecodedToken;
+    data: IDecodedToken | string | null;
 }
 
 export interface IDecodedToken {
