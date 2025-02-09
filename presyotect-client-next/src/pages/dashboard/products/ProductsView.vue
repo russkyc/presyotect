@@ -5,10 +5,10 @@ import PageCard from "@/components/PageCard.vue";
 import type { BreadcrumbItem, Product } from "@/types/Interfaces.ts";
 import { ProductsService } from "@features/data/products-service.ts";
 import { FilterMatchMode } from "@primevue/core";
-import { Chip, Column, ContextMenu, DataTable, IconField, InputIcon, InputText, SplitButton, useToast, Dialog } from "primevue";
+import { Chip, Column, ContextMenu, DataTable, IconField, InputIcon, InputText, SplitButton, useToast } from "primevue";
 import { useConfirm } from "primevue/useconfirm";
 import { onMounted, ref } from "vue";
-import AddProductView from "./AddProductView.vue";
+import router from "@/router";
 
 const breadcrumbs: BreadcrumbItem[] = [
   {label: "Products"}
@@ -23,7 +23,6 @@ const items = [
   }
 ];
 
-const showAdd = ref(false);
 const confirm = useConfirm();
 const toast = useToast();
 const selectedProduct = ref();
@@ -45,15 +44,7 @@ const onRowContextMenu = (event: any) => {
 };
 
 const addProduct = () => {
-  //router.push({path: "/products/add"});
-  showAdd.value = true;
-}
-
-const onProductAdded = () => {
-  showAdd.value = false;
-  ProductsService.getProducts().then((response) => {
-    products.value = response;
-  });
+  router.push({path: "/products/add"});
 }
 
 const deleteProduct = (product: Product) => {
@@ -167,9 +158,6 @@ const menuModel = ref([
       </PageCard>
     </template>
   </Page>
-  <Dialog v-model:visible="showAdd" class="w-full max-lg:mx-6 lg:w-1/2" header="Product Details" modal >
-    <AddProductView :completed-action="onProductAdded" />
-  </Dialog>
 </template>
 
 <style scoped>
