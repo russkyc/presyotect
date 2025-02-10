@@ -1,7 +1,9 @@
 <script lang="ts" setup>
 
 import {FilterMatchMode} from "@primevue/core";
+import {breakpointsTailwind, useBreakpoints} from "@vueuse/core";
 import {
+    Card,
     Chip,
     Column,
     ContextMenu,
@@ -95,6 +97,8 @@ const deleteProduct = (product: Product) => {
     });
 };
 
+const breakpoints = useBreakpoints(breakpointsTailwind);
+const isMobile = breakpoints.smallerOrEqual("sm");
 const contextMenu = ref();
 const menuModel = ref([
     {
@@ -118,147 +122,157 @@ const menuModel = ref([
     title="Products"
   >
     <template #content>
-      <PageCard>
-        <template #card-title>
-          <IconField>
-            <InputIcon>
-              <svg
-                class="lucide lucide-search my-auto"
-                fill="none"
-                height="16"
-                stroke="currentColor"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                viewBox="0 0 24 24"
-                width="16"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <circle
-                  cx="11"
-                  cy="11"
-                  r="8"
-                />
-                <path d="m21 21-4.3-4.3" />
-              </svg>
-            </InputIcon>
-            <InputText
-              v-model="filters['global'].value"
-              class="max-sm:grow md:w-80"
-              fluid
-              name="search"
-              placeholder="Find Product"
-              type="text"
-              variant="filled"
-            />
-          </IconField>
-        </template>
-        <template #card-actions>
-          <SplitButton
-            :model="items"
-            @click="addProduct"
-          >
-            <div class="flex gap-2">
-              <svg
-                class="my-auto lucide lucide-plus max-sm:hidden"
-                fill="none"
-                height="20"
-                stroke="currentColor"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                viewBox="0 0 24 24"
-                width="20"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path d="M5 12h14" />
-                <path d="M12 5v14" />
-              </svg>
-              <p class="my-auto">
-                Add
-              </p>
-            </div>
-          </SplitButton>
-        </template>
-        <template #card-content>
-          <ContextMenu
-            ref="contextMenu"
-            :model="menuModel"
-            @hide="selectedProduct = null"
-          />
-          <DataTable
-            v-model:context-menu-selection="selectedProduct"
-            v-model:filters="filters"
-            :global-filter-fields="['sku','key', 'name', 'size', 'category']"
-            :rows="8"
-            :rows-per-page-options="[8, 20, 50, 100]"
-            :value="products"
-            context-menu
-            paginator
-            removable-sort
-            table-style="min-width: 50rem"
-            @row-contextmenu="onRowContextMenu"
-          >
-            <Column
-              :sortable="true"
-              class="w-[15%]"
-              field="name"
-              header="Name"
-            />
-            <Column
-              :sortable="true"
-              class="w-[10%]"
-              field="size"
-              header="Size"
-            />
-            <Column
-              :sortable="true"
-              class="w-[10%]"
-              field="sku"
-              header="Sku"
-            />
-            <Column
-              :sortable="true"
-              class="w-[10%]"
-              field="category"
-              header="Category"
-            >
-              <template #body="slotProps">
-                <div
-                  v-if="slotProps.data.category && slotProps.data.category.length > 0"
-                  class="flex gap-2"
+      <template v-if="!isMobile">
+        <PageCard v-if="!isMobile">
+          <template #card-title>
+            <IconField>
+              <InputIcon>
+                <svg
+                  class="lucide lucide-search my-auto"
+                  fill="none"
+                  height="16"
+                  stroke="currentColor"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  viewBox="0 0 24 24"
+                  width="16"
+                  xmlns="http://www.w3.org/2000/svg"
                 >
-                  <Chip
-                    class="py-1 font-medium text-xs px-2 rounded-full text-[--p-primary-color] bg-[--p-highlight-background]"
-                  >
-                    {{ slotProps.data.category[0] }}
-                  </Chip>
-                  <Chip
-                    v-if="slotProps.data.category.length > 1"
-                    class="py-1 px-1.5 font-medium text-xs rounded-full  text-[--p-primary-color] bg-[--p-highlight-background]"
-                  >
-                    +{{ slotProps.data.category.length - 1 }}
-                  </Chip>
-                </div>
-              </template>
-            </Column>
-            <Column
-              :sortable="true"
-              class="w-[10%]"
-              field="classification"
-              header="Classification"
+                  <circle
+                    cx="11"
+                    cy="11"
+                    r="8"
+                  />
+                  <path d="m21 21-4.3-4.3" />
+                </svg>
+              </InputIcon>
+              <InputText
+                v-model="filters['global'].value"
+                class="max-sm:grow md:w-80"
+                fluid
+                name="search"
+                placeholder="Find Product"
+                type="text"
+                variant="filled"
+              />
+            </IconField>
+          </template>
+          <template #card-actions>
+            <SplitButton
+              :model="items"
+              @click="addProduct"
             >
-              <template #body="slotProps">
-                <Chip
-                  class="py-1 font-medium text-xs px-2 rounded-full  text-[--p-primary-color] bg-[--p-highlight-background]"
+              <div class="flex gap-2">
+                <svg
+                  class="my-auto lucide lucide-plus max-sm:hidden"
+                  fill="none"
+                  height="20"
+                  stroke="currentColor"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  viewBox="0 0 24 24"
+                  width="20"
+                  xmlns="http://www.w3.org/2000/svg"
                 >
-                  {{ slotProps.data.classification }}
-                </Chip>
-              </template>
-            </Column>
-          </DataTable>
-        </template>
-      </PageCard>
+                  <path d="M5 12h14" />
+                  <path d="M12 5v14" />
+                </svg>
+                <p class="my-auto">
+                  Add
+                </p>
+              </div>
+            </SplitButton>
+          </template>
+          <template #card-content>
+            <ContextMenu
+              ref="contextMenu"
+              :model="menuModel"
+              @hide="selectedProduct = null"
+            />
+            <DataTable
+              v-model:context-menu-selection="selectedProduct"
+              v-model:filters="filters"
+              :global-filter-fields="['sku','key', 'name', 'size', 'category']"
+              :rows="8"
+              :rows-per-page-options="[8, 20, 50, 100]"
+              :value="products"
+              context-menu
+              paginator
+              removable-sort
+              table-style="min-width: 50rem"
+              @row-contextmenu="onRowContextMenu"
+            >
+              <Column
+                :sortable="true"
+                class="w-[15%]"
+                field="name"
+                header="Name"
+              />
+              <Column
+                :sortable="true"
+                class="w-[10%]"
+                field="size"
+                header="Size"
+              />
+              <Column
+                :sortable="true"
+                class="w-[10%]"
+                field="sku"
+                header="Sku"
+              />
+              <Column
+                :sortable="true"
+                class="w-[10%]"
+                field="category"
+                header="Category"
+              >
+                <template #body="slotProps">
+                  <div
+                    v-if="slotProps.data.category && slotProps.data.category.length > 0"
+                    class="flex gap-2"
+                  >
+                    <Chip
+                      class="py-1 font-medium text-xs px-2 rounded-full text-[--p-primary-color] bg-[--p-highlight-background]"
+                    >
+                      {{ slotProps.data.category[0] }}
+                    </Chip>
+                    <Chip
+                      v-if="slotProps.data.category.length > 1"
+                      class="py-1 px-1.5 font-medium text-xs rounded-full  text-[--p-primary-color] bg-[--p-highlight-background]"
+                    >
+                      +{{ slotProps.data.category.length - 1 }}
+                    </Chip>
+                  </div>
+                </template>
+              </Column>
+              <Column
+                :sortable="true"
+                class="w-[10%]"
+                field="classification"
+                header="Classification"
+              >
+                <template #body="slotProps">
+                  <Chip
+                    class="py-1 font-medium text-xs px-2 rounded-full  text-[--p-primary-color] bg-[--p-highlight-background]"
+                  >
+                    {{ slotProps.data.classification }}
+                  </Chip>
+                </template>
+              </Column>
+            </DataTable>
+          </template>
+        </PageCard>
+      </template>
+      <template v-if="isMobile">
+        <div class="flex flex-col gap-4 grow">
+          <h2 class="font-semibold text-lg">
+            Products
+          </h2>
+          <Card class="grow rounded-lg" />
+        </div>
+      </template>
     </template>
   </Page>
 </template>

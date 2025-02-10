@@ -32,10 +32,10 @@ const navigate = (url: string | undefined) => {
 </script>
 
 <template>
-  <div class="grow flex flex-col px-6 pb-6 pt-5 gap-4">
-    <div class="flex gap-4">
+  <div class="grow flex flex-col p-6 gap-4">
+    <div class="flex gap-4 max-sm:hidden">
       <div class="flex flex-col">
-        <h1 class="text-xl font-medium">
+        <h1 class="text-xl font-semibold">
           {{ title }}
         </h1>
         <p

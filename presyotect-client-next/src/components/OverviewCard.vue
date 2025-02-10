@@ -15,10 +15,10 @@ defineProps<{
     <template #content>
       <div class="flex">
         <div class="grow flex flex-col">
-          <h6 class="font-medium max-sm:text-md text-lg">
+          <h6 class="font-medium text-md sm:text-lg">
             {{ title }}
           </h6>
-          <h4 class="max-sm:text-2xl text-3xl font-bold">
+          <h4 class="text-2xl sm:text-3xl font-bold">
             {{ content }}
           </h4>
           <p class="max-sm:hidden text-sm font-normal opacity-60">
