@@ -2,7 +2,6 @@
 
 import {useAuthStore} from "@stores/auth-store.ts";
 import {useComponentStore} from "@stores/component-store.ts";
-import {breakpointsTailwind, useBreakpoints} from "@vueuse/core";
 import {Avatar, Button, Chip, Menu, Toolbar} from "primevue";
 import {useConfirm} from "primevue/useconfirm";
 import {useToast} from "primevue/usetoast";
@@ -17,10 +16,6 @@ const toast = useToast();
 const confirm = useConfirm();
 const profileMenu = ref();
 const nickname = ref();
-
-const breakpoints = useBreakpoints(breakpointsTailwind)
-const mdAndSmaller = breakpoints.smallerOrEqual("lg");
-const small = breakpoints.smaller("sm");
 
 onMounted(() => {
     if (authStore.userClaims) {
@@ -75,8 +70,7 @@ const items = ref([
       <template #start>
         <div class="flex gap-3">
           <Button
-            v-if="!mdAndSmaller"
-            class="p-3"
+            class="p-3 max-lg:hidden"
             severity="secondary"
             text
             @click="toggleSidebar"
@@ -108,13 +102,13 @@ const items = ref([
       <template #end>
         <Authorize>
           <Chip
-            v-if="!small"
             @click="togglePopover"
             :label="nickname"
+            class="max-sm:hidden"
             image="https://i.pravatar.cc/100"
           />
           <Avatar
-            v-if="small"
+            class="sm:hidden"
             @click="togglePopover"
             shape="circle"
             image="https://i.pravatar.cc/100"

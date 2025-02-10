@@ -1,13 +1,10 @@
 <script lang="ts" setup>
 
-import {breakpointsTailwind, useBreakpoints} from "@vueuse/core";
 import {Toolbar} from "primevue";
 import Authorize from "@/components/dynamic/Authorize.vue";
 import NavLink from "@/components/NavLink.vue";
-import {Roles} from "@/types/Constants.ts";
+import {Roles, Routes} from "@/types/Constants.ts";
 
-const breakpoints = useBreakpoints(breakpointsTailwind)
-const mdAndSmaller = breakpoints.smallerOrEqual("lg");
 const iconSize = 20;
 
 </script>
@@ -16,7 +13,7 @@ const iconSize = 20;
   <Toolbar class="col-span-2 px-3 py-2 border-b rounded-none">
     <template #center>
       <div class="flex gap-3">
-        <NavLink href="/">
+        <NavLink :href="Routes.Dashboard">
           <template #icon>
             <svg
               :height="iconSize"
@@ -61,7 +58,7 @@ const iconSize = 20;
             </svg>
           </template>
         </NavLink>
-        <NavLink href="/price-monitoring">
+        <NavLink :href="Routes.Monitoring">
           <template #icon>
             <svg
               :height="iconSize"
@@ -82,7 +79,7 @@ const iconSize = 20;
             </svg>
           </template>
         </NavLink>
-        <NavLink href="/products">
+        <NavLink :href="Routes.Products">
           <template #icon>
             <svg
               :height="iconSize"
@@ -105,7 +102,7 @@ const iconSize = 20;
             </svg>
           </template>
         </NavLink>
-        <NavLink href="/establishments">
+        <NavLink :href="Routes.Establishments">
           <template #icon>
             <svg
               :height="iconSize"
@@ -130,10 +127,12 @@ const iconSize = 20;
           </template>
         </NavLink>
         <Authorize
-          v-if="!mdAndSmaller"
           :roles="[Roles.Admin]"
         >
-          <NavLink href="/users">
+          <NavLink
+            :href="Routes.Personnel"
+            class="max-md:hidden"
+          >
             <template #icon>
               <svg
                 :height="iconSize"
@@ -160,10 +159,12 @@ const iconSize = 20;
           </NavLink>
         </Authorize>
         <Authorize
-          v-if="!mdAndSmaller"
           :roles="[Roles.Admin]"
         >
-          <NavLink href="/analytics">
+          <NavLink
+            :href="Routes.Analytics"
+            class="max-sm:hidden"
+          >
             <template #icon>
               <svg
                 :height="iconSize"

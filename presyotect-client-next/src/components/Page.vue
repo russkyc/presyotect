@@ -38,14 +38,16 @@ const navigate = (url: string | undefined) => {
         <h1 class="text-xl font-medium">
           {{ title }}
         </h1>
-        <p class="opacity-60 max-sm:hidden">
+        <p
+          class="opacity-60 max-md:hidden"
+        >
           {{ subtitle }}
         </p>
       </div>
       <Breadcrumb
         :home="home"
         :model="breadcrumbs"
-        class="ml-auto"
+        class="ml-auto max-sm:hidden"
       >
         <template #item="{ item }">
           <button @click="navigate(item.url)">
@@ -58,7 +60,7 @@ const navigate = (url: string | undefined) => {
       </Breadcrumb>
       <button
         v-if="showDrawerToggle"
-        class="my-auto p-button-secondary rounded-full p-1"
+        class="my-auto max-sm:ml-auto p-button-secondary rounded-full p-1"
         @click="toggleDrawer"
       >
         <svg
