@@ -23,26 +23,28 @@ watch(() => router.fullPath, (newPath) => {
 
 </script>
 <template>
-  <Toast
-    class="max-sm:hidden mt-12 lg:mt-16"
-    position="top-right"
-  />
-  <Toast
-    class="sm:hidden mt-14"
-    position="top-center"
-  />
-  <ConfirmDialog />
-  <TopNav v-if="isDashboardPageType" />
-  <Sidebar
-    v-if="isDashboardPageType && !mdAndSmaller"
-    mini-width="69px"
-    width="260px"
-  />
-  <main
-    :class="{'col-span-2 row-span-3': !isDashboardPageType}"
-    class="flex flex-col overflow-y-auto"
-  >
-    <RouterView />
-  </main>
-  <BottomNav v-if="isDashboardPageType && mdAndSmaller" />
+  <div class="grid h-screen grid-cols-[1fr] lg:grid-cols-[auto_1fr] grid-rows-[auto_1fr_auto] bg-[--p-primary-contrast-color] text-[--p-text-color]">
+    <Toast
+      class="max-sm:hidden mt-12 lg:mt-16"
+      position="top-right"
+    />
+    <Toast
+      class="sm:hidden mt-14"
+      position="top-center"
+    />
+    <ConfirmDialog />
+    <TopNav v-if="isDashboardPageType" />
+    <Sidebar
+      v-if="isDashboardPageType && !mdAndSmaller"
+      mini-width="69px"
+      width="260px"
+    />
+    <main
+      :class="{'col-span-2 row-span-3': !isDashboardPageType}"
+      class="flex flex-1 flex-col overflow-hidden"
+    >
+      <RouterView />
+    </main>
+    <BottomNav v-if="isDashboardPageType && mdAndSmaller" />
+  </div>
 </template>

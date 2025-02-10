@@ -160,7 +160,7 @@ onBeforeMount(async () => {
               <OverviewCard
                 :content="totalProducts"
                 sub-content="Monitored Products"
-                title="Products"
+                title="Products to Monitor"
               >
                 <template #icon>
                   <svg
@@ -209,60 +209,6 @@ onBeforeMount(async () => {
                     <path
                       d="M22 7v3a2 2 0 0 1-2 2a2.7 2.7 0 0 1-1.59-.63.7.7 0 0 0-.82 0A2.7 2.7 0 0 1 16 12a2.7 2.7 0 0 1-1.59-.63.7.7 0 0 0-.82 0A2.7 2.7 0 0 1 12 12a2.7 2.7 0 0 1-1.59-.63.7.7 0 0 0-.82 0A2.7 2.7 0 0 1 8 12a2.7 2.7 0 0 1-1.59-.63.7.7 0 0 0-.82 0A2.7 2.7 0 0 1 4 12a2 2 0 0 1-2-2V7"
                     />
-                  </svg>
-                </template>
-              </OverviewCard>
-              <OverviewCard
-                content="5"
-                sub-content="Active Policies"
-                title="Policies"
-              >
-                <template #icon>
-                  <svg
-                    :height="iconSize"
-                    :width="iconSize"
-                    class="lucide lucide-package"
-                    fill="none"
-                    stroke="currentColor"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    viewBox="0 0 24 24"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      d="M11 21.73a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73z"
-                    />
-                    <path d="M12 22V12" />
-                    <polyline points="3.29 7 12 12 20.71 7" />
-                    <path d="m7.5 4.27 9 5.15" />
-                  </svg>
-                </template>
-              </OverviewCard>
-              <OverviewCard
-                content="1"
-                sub-content="Active Tickets"
-                title="Complaints"
-              >
-                <template #icon>
-                  <svg
-                    :height="iconSize"
-                    :width="iconSize"
-                    class="lucide lucide-package"
-                    fill="none"
-                    stroke="currentColor"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    viewBox="0 0 24 24"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      d="M11 21.73a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73z"
-                    />
-                    <path d="M12 22V12" />
-                    <polyline points="3.29 7 12 12 20.71 7" />
-                    <path d="m7.5 4.27 9 5.15" />
                   </svg>
                 </template>
               </OverviewCard>

@@ -17,7 +17,7 @@ export default defineConfig(({mode}) => {
                     clientsClaim: true,
                     sourcemap: true,
                     cleanupOutdatedCaches: true,
-                    globPatterns: ["**/*.{js,css,html,ico,png,svg,jpg,jpeg}"],
+                    globPatterns: ["**/*.{js,css,html,ico,png,svg,jpg,jpeg,json}"],
                     navigateFallbackDenylist: [/^\/_api/, /^\/_api_docs/]
                 },
                 injectRegister: "script",

@@ -32,7 +32,7 @@ const navigate = (url: string | undefined) => {
 </script>
 
 <template>
-  <div class="grow flex flex-col p-6 gap-4">
+  <div class="flex grow overflow-y-auto flex-col px-4 pt-3 sm:px-6 sm:pt-5 gap-3 sm:gap-4">
     <div class="flex gap-4 max-sm:hidden">
       <div class="flex flex-col">
         <h1 class="text-xl font-semibold">
@@ -86,9 +86,13 @@ const navigate = (url: string | undefined) => {
         </svg>
       </button>
     </div>
-    <div class="flex flex-col grow">
-      <slot name="content" />
+    <slot name="content-header" />
+    <div class="flex grow flex-col overflow-y-auto">
+      <div class="flex flex-col grow mb-6">
+        <slot name="content" />
+      </div>
     </div>
+    <slot name="content-footer" />
   </div>
   <Drawer
     v-model:visible="openDrawer"
