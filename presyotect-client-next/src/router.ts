@@ -10,9 +10,9 @@ import PersonnelView from "@features/personnel/PersonnelView.vue";
 import AddProductView from "@features/products/AddProductView.vue";
 import ProductsView from "@features/products/ProductsView.vue";
 import SettingsView from "@features/settings/SettingsView.vue";
+import {refreshToken} from "@services/auth/auth-service.ts";
 import {useActionsStore} from "@stores/actions-store.ts";
 import {useAuthStore} from "@stores/auth-store.ts";
-import {useTitle} from "@vueuse/core";
 import {useConfirm} from "primevue/useconfirm";
 import {useToast} from "primevue/usetoast";
 import {createRouter, createWebHistory} from "vue-router";
@@ -23,7 +23,7 @@ const defaultTitle = "Presyotect";
 const routes = [
     {
         name: "dashboard",
-        path: Routes.Dashboard,
+        path: "/",
         component: DashboardView,
         meta: {
             title: "Dashboard",
@@ -41,7 +41,7 @@ const routes = [
     },
     {
         name: "products",
-        path: Routes.Products,
+        path: "/products",
         children: [
             {
                 name: "products-home",
@@ -64,7 +64,7 @@ const routes = [
     },
     {
         name: "establishments",
-        path: Routes.Establishments,
+        path: "/establishments",
         children: [
             {
                 name: "establishments-home",
@@ -86,17 +86,17 @@ const routes = [
         ]
     },
     {
-        name: "personnel",
-        path: Routes.Personnel,
+        name: "users",
+        path: "/users",
         component: PersonnelView,
         meta: {
-            title: "Personnel",
+            title: "Users",
             roles: [Roles.Admin]
         }
     },
     {
         name: "analytics",
-        path: Routes.Analytics,
+        path: "/analytics",
         component: AnalyticsView,
         meta: {
             title: "Analytics",
@@ -105,7 +105,7 @@ const routes = [
     },
     {
         name: "settings",
-        path: Routes.Settings,
+        path: "/settings",
         component: SettingsView,
         meta: {
             title: "Settings",
@@ -114,7 +114,7 @@ const routes = [
     },
     {
         name: "login",
-        path: Routes.Login,
+        path: "/login",
         component: LoginView,
         meta: {
             title: "Login"
@@ -144,20 +144,38 @@ const router = createRouter({
 });
 
 router.beforeEach(async (to, _, next) => {
+
     const toast = useToast();
     const confirm = useConfirm();
     const authStore = useAuthStore();
     const actionsStore = useActionsStore();
 
-    const tokenIsNull = !authStore.token;
-    const toNameIsLogin = to.name === "login";
+    const title = to.meta.title as string;
 
-    const handlePendingActions = async () => {
+    const tokenIsNull = authStore.token === null || authStore.token === undefined;
+    const toNameIsLogin = to.name === "login";
+    
+    if (!tokenIsNull && authStore.isTokenExpired) {
+        try {
+            await refreshToken();
+        } catch {
+            console.error("Token refresh failed");
+            next({name: "login"});
+            return;
+        }
+    }
+
+    if (actionsStore.hasPendingActions) {
         confirm.require({
             message: "Leaving this page will discard any unsaved changes. Are you sure you want to leave?",
             header: "Discard Changes",
-            rejectProps: { label: "Cancel", severity: "secondary" },
-            acceptProps: { label: "Leave" },
+            rejectProps: {
+                label: "Cancel",
+                severity: "secondary"
+            },
+            acceptProps: {
+                label: "Leave"
+            },
             accept: async () => {
                 actionsStore.hasPendingActions = false;
                 toast.add({
@@ -166,60 +184,47 @@ router.beforeEach(async (to, _, next) => {
                     detail: "You have successfully discarded any unsaved changes.",
                     life: 2000
                 });
-                next();
+                document.title = title ? `${defaultTitle} - ${title}` : defaultTitle;
+                await router.push(to);
             },
-            reject: () => {}
+            reject: () => {
+                return;
+            }
         });
-    };
-
-    const handleUnauthorizedAccess = () => {
-        next({ name: "login" });
-    };
-
-    const handleAuthorizedAccess = () => {
-        next({ name: "dashboard" });
-    };
-
-    const handleRoleBasedAccess = () => {
-        const roles = to.meta.roles as string[] | null | undefined;
-        if (!roles || roles.length === 0) {
-            next();
-            return;
-        }
-        if (!authStore.userClaims || !roles.includes(authStore.userClaims.role)) {
-            next({ name: "not-authorized" });
-            return;
-        }
-        next();
-    };
-
-    if (actionsStore.hasPendingActions) {
-        await handlePendingActions();
         return;
     }
 
     if (tokenIsNull && !toNameIsLogin) {
-        handleUnauthorizedAccess();
+        document.title = title ? `${defaultTitle} - Login` : defaultTitle;
+        next({name: "login"});
         return;
     }
-
     if (!tokenIsNull && toNameIsLogin) {
-        handleAuthorizedAccess();
+        document.title = title ? `${defaultTitle} - ${title}` : defaultTitle;
+        next({name: "dashboard"});
         return;
     }
-
     if (!tokenIsNull && !toNameIsLogin) {
-        handleRoleBasedAccess();
-        return;
+        const roles = to.meta.roles as string[] | null | undefined;
+        if (roles == null || undefined) {
+            next();
+            return
+        }
+        if (roles.length === 0) {
+            next();
+            return;
+        }
+        if (!authStore.userClaims?.role) {
+            next({name: "not-authorized"});
+            return;
+        }
+        const includesRole = roles?.includes(authStore.userClaims.role);
+        if (!includesRole && to.name !== "not-authorized") {
+            next({name: "not-authorized"});
+            return;
+        }
     }
-
     next();
-});
-
-router.afterEach((to) => {
-    const documentTitle = useTitle();
-    const title = to.meta.title as string;
-    documentTitle.value = title ? `${defaultTitle} - ${title}` : defaultTitle;
 });
 
 export default router;

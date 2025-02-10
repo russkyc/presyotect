@@ -10,7 +10,7 @@ export class EstablishmentsService {
         return response.data.content;
     }
 
-    static async deleteEstablishment(id: number): Promise<boolean> {
+    static async deleteEstablishment(id: string): Promise<boolean> {
         const axiosConfig = getAxiosConfig();
         const response = await axios.delete(`/establishments/${id}`, axiosConfig);
         return response.data.success;

@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import {FilterMatchMode} from "@primevue/core";
 import {
+    Chip,
     Column,
     ContextMenu,
     DataTable,
@@ -179,15 +180,59 @@ const addEstablishment = () => {
             <Column
               :sortable="true"
               class="w-[10%]"
-              field="location"
-              header="Location"
+              field="cityMunicipality"
+              header="City / Municipality"
             />
             <Column
               :sortable="true"
               class="w-[10%]"
-              field="type"
-              header="Type"
-            />
+              field="categories"
+              header="Categories"
+            >
+              <template #body="slotProps">
+                <div
+                  v-if="slotProps.data.categories && slotProps.data.categories.length > 0"
+                  class="flex gap-2"
+                >
+                  <Chip
+                    class="py-1 font-medium text-xs px-2 rounded-full text-[--p-primary-color] bg-[--p-highlight-background]"
+                  >
+                    {{ slotProps.data.categories[0] }}
+                  </Chip>
+                  <Chip
+                    v-if="slotProps.data.categories.length > 1"
+                    class="py-1 px-1.5 font-medium text-xs rounded-full  text-[--p-primary-color] bg-[--p-highlight-background]"
+                  >
+                    +{{ slotProps.data.categories.length - 1 }}
+                  </Chip>
+                </div>
+              </template>
+            </Column>
+            <Column
+              :sortable="true"
+              class="w-[10%]"
+              field="classifications"
+              header="Classifications"
+            >
+              <template #body="slotProps">
+                <div
+                  v-if="slotProps.data.classifications && slotProps.data.classifications.length > 0"
+                  class="flex gap-2"
+                >
+                  <Chip
+                    class="py-1 font-medium text-xs px-2 rounded-full text-[--p-primary-color] bg-[--p-highlight-background]"
+                  >
+                    {{ slotProps.data.classifications[0] }}
+                  </Chip>
+                  <Chip
+                    v-if="slotProps.data.classifications.length > 1"
+                    class="py-1 px-1.5 font-medium text-xs rounded-full  text-[--p-primary-color] bg-[--p-highlight-background]"
+                  >
+                    +{{ slotProps.data.category.length - 1 }}
+                  </Chip>
+                </div>
+              </template>
+            </Column>
           </DataTable>
         </template>
         <template #card-actions>

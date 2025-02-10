@@ -2,7 +2,7 @@
 import {Form, type FormSubmitEvent} from "@primevue/forms";
 import {zodResolver} from "@primevue/forms/resolvers/zod";
 import {useActionsStore} from "@stores/actions-store";
-import {Button, InputText, Message, Select} from "primevue";
+import {Button, InputText, Message, MultiSelect, Select} from "primevue";
 import {useConfirm} from "primevue/useconfirm";
 import {useToast} from "primevue/usetoast";
 import {onMounted, ref} from "vue";
@@ -19,8 +19,21 @@ const actionsStore = useActionsStore();
 
 const initialValues = ref<Establishment>({
     name: "",
-    location: "",
-    type: ""
+    status: "",
+    cityMunicipality: "",
+    completeAddress: "",
+    categories: [],
+    classifications: [],
+    subClassifications: [],
+    tags: [],
+    owners: [],
+    ownershipType: "",
+    contactPerson: "",
+    designation: "",
+    website: "",
+    contactNumber: "",
+    email: "",
+    socials: {}
 });
 
 const breadcrumbs: BreadcrumbItem[] = [
@@ -28,20 +41,32 @@ const breadcrumbs: BreadcrumbItem[] = [
     {label: "Add"}
 ];
 
-const availableTypes = ref([
-    "Restaurant",
-    "Store",
-    "Warehouse",
-    "Office"
-]);
+const availableCategories = ref(["Category1", "Category2", "Category3"]);
+const availableClassifications = ref(["Classification1", "Classification2"]);
+const availableSubClassifications = ref(["SubClassification1", "SubClassification2"]);
+const availableTags = ref(["Tag1", "Tag2", "Tag3"]);
+const availableOwnershipTypes = ref(["Type1", "Type2"]);
 
 const resolver = ref(zodResolver(
     z.object({
         name: z.string().min(1, {message: "Establishment name is required."}),
-        location: z.string().min(1, {message: "Location is required."}),
-        type: z.string().min(1, {message: "Type is required."})
+        status: z.string().min(1, {message: "Status is required."}),
+        cityMunicipality: z.string().min(1, {message: "City/Municipality is required."}),
+        completeAddress: z.string().min(1, {message: "Complete address is required."}),
+        categories: z.array(z.string().nullable()).min(1, {message: "At least one category is required."}),
+        classifications: z.array(z.string()).min(1, {message: "At least one classification is required."}),
+        subClassifications: z.array(z.string().nullable()).min(1, {message: "At least one sub-classification is required."}),
+        tags: z.array(z.string().nullable()).min(1, {message: "At least one tag is required."}),
+        owners: z.array(z.string()).nullable(),
+        ownershipType: z.string().optional(),
+        contactPerson: z.string().min(1, {message: "Contact person is required."}),
+        designation: z.string().optional(),
+        website: z.string().optional(),
+        contactNumber: z.string().optional(),
+        email: z.string().optional(),
+        socials: z.record(z.string()).optional()
     })
-));
+)); 
 
 onMounted(() => {
     actionsStore.addPendingActions();
@@ -68,11 +93,7 @@ const onFormSubmit = async (form: FormSubmitEvent) => {
             label: "Add"
         },
         accept: async () => {
-            const establishment = {
-                name: form.values.name,
-                location: form.values.location,
-                type: form.values.type
-            };
+            const establishment = form.values as Establishment;
             const response = await EstablishmentsService.addEstablishment(establishment);
             if (!response) {
                 toast.add({
@@ -137,39 +158,282 @@ const onFormSubmit = async (form: FormSubmitEvent) => {
                 </Message>
               </div>
               <div class="flex flex-col gap-1">
-                <label for="location">Location</label>
+                <label for="status">Status</label>
                 <InputText
                   fluid
-                  name="location"
-                  placeholder="Location of the establishment"
+                  name="status"
+                  placeholder="Status of the establishment"
                   type="text"
                   variant="filled"
                 />
                 <Message
-                  v-if="$form.location?.invalid"
+                  v-if="$form.status?.invalid"
                   severity="error"
                   size="small"
                   variant="simple"
                 >
-                  {{ $form.location.error?.message }}
+                  {{ $form.status.error?.message }}
                 </Message>
               </div>
               <div class="flex flex-col gap-1">
-                <label for="type">Type</label>
-                <Select
-                  :options="availableTypes"
+                <label for="cityMunicipality">City/Municipality</label>
+                <InputText
                   fluid
-                  name="type"
-                  placeholder="Select type"
+                  name="cityMunicipality"
+                  placeholder="City or Municipality"
+                  type="text"
                   variant="filled"
                 />
                 <Message
-                  v-if="$form.type?.invalid"
+                  v-if="$form.cityMunicipality?.invalid"
                   severity="error"
                   size="small"
                   variant="simple"
                 >
-                  {{ $form.type.error?.message }}
+                  {{ $form.cityMunicipality.error?.message }}
+                </Message>
+              </div>
+              <div class="flex flex-col gap-1">
+                <label for="completeAddress">Complete Address</label>
+                <InputText
+                  fluid
+                  name="completeAddress"
+                  placeholder="Complete address"
+                  type="text"
+                  variant="filled"
+                />
+                <Message
+                  v-if="$form.completeAddress?.invalid"
+                  severity="error"
+                  size="small"
+                  variant="simple"
+                >
+                  {{ $form.completeAddress.error?.message }}
+                </Message>
+              </div>
+              <div class="flex flex-col gap-1">
+                <label for="categories">Categories</label>
+                <MultiSelect
+                  :options="availableCategories"
+                  fluid
+                  name="categories"
+                  placeholder="Select categories"
+                  variant="filled"
+                />
+                <Message
+                  v-if="$form.categories?.invalid"
+                  severity="error"
+                  size="small"
+                  variant="simple"
+                >
+                  {{ $form.categories.error?.message }}
+                </Message>
+              </div>
+              <div class="flex flex-col gap-1">
+                <label for="classifications">Classifications</label>
+                <MultiSelect
+                  :options="availableClassifications"
+                  fluid
+                  name="classifications"
+                  placeholder="Select classifications"
+                  variant="filled"
+                />
+                <Message
+                  v-if="$form.classifications?.invalid"
+                  severity="error"
+                  size="small"
+                  variant="simple"
+                >
+                  {{ $form.classifications.error?.message }}
+                </Message>
+              </div>
+              <div class="flex flex-col gap-1">
+                <label for="subClassifications">Sub-Classifications</label>
+                <MultiSelect
+                  :options="availableSubClassifications"
+                  fluid
+                  name="subClassifications"
+                  placeholder="Select sub-classifications"
+                  variant="filled"
+                />
+                <Message
+                  v-if="$form.subClassifications?.invalid"
+                  severity="error"
+                  size="small"
+                  variant="simple"
+                >
+                  {{ $form.subClassifications.error?.message }}
+                </Message>
+              </div>
+              <div class="flex flex-col gap-1">
+                <label for="tags">Tags</label>
+                <MultiSelect
+                  :options="availableTags"
+                  fluid
+                  name="tags"
+                  placeholder="Select tags"
+                  variant="filled"
+                />
+                <Message
+                  v-if="$form.tags?.invalid"
+                  severity="error"
+                  size="small"
+                  variant="simple"
+                >
+                  {{ $form.tags.error?.message }}
+                </Message>
+              </div>
+              <div class="flex flex-col gap-1">
+                <h3 class="text-lg font-medium">
+                  Ownership
+                </h3>
+              </div>
+              <div class="flex flex-col gap-1">
+                <label for="owners">Owners</label>
+                <MultiSelect
+                  fluid
+                  name="owners"
+                  placeholder="Enter owners"
+                  variant="filled"
+                />
+                <Message
+                  v-if="$form.owners?.invalid"
+                  severity="error"
+                  size="small"
+                  variant="simple"
+                >
+                  {{ $form.owners.error?.message }}
+                </Message>
+              </div>
+              <div class="flex flex-col gap-1">
+                <label for="ownershipType">Ownership Type</label>
+                <Select
+                  :options="availableOwnershipTypes"
+                  fluid
+                  name="ownershipType"
+                  placeholder="Select ownership type"
+                  variant="filled"
+                />
+                <Message
+                  v-if="$form.ownershipType?.invalid"
+                  severity="error"
+                  size="small"
+                  variant="simple"
+                >
+                  {{ $form.ownershipType.error?.message }}
+                </Message>
+              </div>
+              <div class="flex flex-col gap-1">
+                <h3 class="text-lg font-medium">
+                  Contact Information
+                </h3>
+              </div>
+              <div class="flex flex-col gap-1">
+                <label for="contactPerson">Contact Person</label>
+                <InputText
+                  fluid
+                  name="contactPerson"
+                  placeholder="Contact person"
+                  type="text"
+                  variant="filled"
+                />
+                <Message
+                  v-if="$form.contactPerson?.invalid"
+                  severity="error"
+                  size="small"
+                  variant="simple"
+                >
+                  {{ $form.contactPerson.error?.message }}
+                </Message>
+              </div>
+              <div class="flex flex-col gap-1">
+                <label for="designation">Designation</label>
+                <InputText
+                  fluid
+                  name="designation"
+                  placeholder="Designation"
+                  type="text"
+                  variant="filled"
+                />
+                <Message
+                  v-if="$form.designation?.invalid"
+                  severity="error"
+                  size="small"
+                  variant="simple"
+                >
+                  {{ $form.designation.error?.message }}
+                </Message>
+              </div>
+              <div class="flex flex-col gap-1">
+                <label for="website">Website</label>
+                <InputText
+                  fluid
+                  name="website"
+                  placeholder="Website"
+                  type="text"
+                  variant="filled"
+                />
+                <Message
+                  v-if="$form.website?.invalid"
+                  severity="error"
+                  size="small"
+                  variant="simple"
+                >
+                  {{ $form.website.error?.message }}
+                </Message>
+              </div>
+              <div class="flex flex-col gap-1">
+                <label for="contactNumber">Contact Number</label>
+                <InputText
+                  fluid
+                  name="contactNumber"
+                  placeholder="Contact number"
+                  type="text"
+                  variant="filled"
+                />
+                <Message
+                  v-if="$form.contactNumber?.invalid"
+                  severity="error"
+                  size="small"
+                  variant="simple"
+                >
+                  {{ $form.contactNumber.error?.message }}
+                </Message>
+              </div>
+              <div class="flex flex-col gap-1">
+                <label for="email">Email</label>
+                <InputText
+                  fluid
+                  name="email"
+                  placeholder="Email"
+                  type="text"
+                  variant="filled"
+                />
+                <Message
+                  v-if="$form.email?.invalid"
+                  severity="error"
+                  size="small"
+                  variant="simple"
+                >
+                  {{ $form.email.error?.message }}
+                </Message>
+              </div>
+              <div class="flex flex-col gap-1">
+                <label for="socials">Socials</label>
+                <InputText
+                  fluid
+                  name="socials"
+                  placeholder="Social media links"
+                  type="text"
+                  variant="filled"
+                />
+                <Message
+                  v-if="$form.socials?.invalid"
+                  severity="error"
+                  size="small"
+                  variant="simple"
+                >
+                  {{ $form.socials.error?.message }}
                 </Message>
               </div>
             </div>

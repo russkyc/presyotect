@@ -34,5 +34,7 @@
       <Folder Include="Features\Organzation\" />
       <Folder Include="wwwroot\" />
     </ItemGroup>
-
+    <PropertyGroup>
+        <NoWarn>8618</NoWarn>
+    </PropertyGroup>
 </Project>

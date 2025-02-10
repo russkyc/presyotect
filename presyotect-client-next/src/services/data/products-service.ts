@@ -10,7 +10,7 @@ export class ProductsService {
         return response.data.content;
     }
 
-    static async deleteProduct(productId: number): Promise<boolean> {
+    static async deleteProduct(productId: string): Promise<boolean> {
         const axiosConfig = getAxiosConfig();
         const response = await axios.delete(`/products/${productId}`, axiosConfig);
         return response.data.success;

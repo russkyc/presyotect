@@ -18,7 +18,7 @@ export interface TokenPayload extends JwtPayload{
 
 // Entity Interfaces
 export type Product = {
-    id?: number,
+    id?: string,
     key: string | null,
     sku: string | null,
     name: string,
@@ -29,9 +29,22 @@ export type Product = {
     srp: number | null
 }
 
-export type Establishment = {
-    id?: number,
-    name: string,
-    location: string,
-    type: string
-};
+export interface Establishment {
+    id?: string,
+    name: string;
+    status: string;
+    cityMunicipality: string;
+    completeAddress: string;
+    categories: (string | null)[];
+    classifications: string[];
+    subClassifications: (string | null)[];
+    tags: (string | null)[];
+    owners: string[];
+    ownershipType?: string;
+    contactPerson: string;
+    designation?: string;
+    website?: string;
+    contactNumber?: string;
+    email?: string;
+    socials?: Record<string, string>;
+}
