@@ -28,7 +28,7 @@ public class DevtestAuthenticator(IConfiguration configuration) : IAuthenticator
     public string Tokenize(User user)
     {
         var refreshToken = TokenUtils.CreateRefreshToken();
-        var token = TokenUtils.CreateToken(configuration, user.Username, refreshToken, user.Roles);
+        var token = TokenUtils.CreateToken(configuration, user.Username, refreshToken, user.Role);
         RefreshTokens[user.Username] = refreshToken; // Store refresh token by username
         return token;
     }
@@ -74,18 +74,17 @@ public class DevtestAuthenticator(IConfiguration configuration) : IAuthenticator
             validation.Message = "Token is invalid.";
             return validation;
         }
-        
+
         var username = claims.Claims
             .First(claim => claim.Type.Equals("username"))
             .Value;
-        var roles = claims.Claims
-            .Where(claim => claim.Type.Equals(ClaimTypes.Role))
-            .Select(claim => claim.Value)
-            .ToArray();
-        
+        var role = claims.Claims
+            .First(claim => claim.Type == ClaimTypes.Role)
+            .Value;
+
         var newRefreshToken = TokenUtils.CreateRefreshToken();
-        var newToken = TokenUtils.CreateToken(configuration, username, newRefreshToken, roles);
-        
+        var newToken = TokenUtils.CreateToken(configuration, username, newRefreshToken, role);
+
         RefreshTokens[username] = newRefreshToken; // Update refresh token by username
         RefreshTokens.TryRemove(refreshTokenRequest.Token, out _);
 

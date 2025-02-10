@@ -9,5 +9,5 @@ public class User : DbEntity
     public string FirstName { get; set; }
     public string MiddleName { get; set; }
     public string LastName { get; set; }
-    public string[] Roles { get; set; }
+    public string Role { get; set; }
 }

@@ -35,7 +35,7 @@ public class ApiKeyAuthenticator(
             claims: [new Claim("ClientID", "dev")],
             authenticationType: Scheme.Name);
 
-        var principal = new GenericPrincipal(identity, roles: ["Admin"]);
+        var principal = new GenericPrincipal(identity, ["admin"]);
         var ticket = new AuthenticationTicket(principal, Scheme.Name);
 
         return AuthenticateResult.Success(ticket);

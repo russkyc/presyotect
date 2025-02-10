@@ -12,17 +12,16 @@ const isAuthorized = ref(false);
 
 onBeforeMount(() => {
     if (props.roles) {
-        if (!authStore.userRoles) return;
-        isAuthorized.value = props.roles.includes(authStore.userRoles);
+        if (!authStore.userClaims) return;
+        isAuthorized.value = props.roles.includes(authStore.userClaims.role);
         return;
     }
     isAuthorized.value = true;
 });
 
 authStore.$subscribe(() => {
-    if (!authStore.userRoles) return;
-    isAuthorized.value = props.roles === undefined ? true : props.roles.includes(authStore.userRoles);
-    console.log(isAuthorized.value);
+    if (!authStore.userClaims) return;
+    isAuthorized.value = props.roles === undefined ? true : props.roles.includes(authStore.userClaims.role);
 });
 
 </script>

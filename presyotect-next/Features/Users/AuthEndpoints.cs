@@ -28,7 +28,7 @@ public class AuthEndpoints : IEndpointRouteHandlerBuilder
             return Results.Ok(response);
         }
 
-        user.Roles = [user.Username]; // Ensure roles are properly set
+        user.Role = user.Username; // Ensure roles are properly set
         var token = authenticator.Tokenize(user);
         response.Success = true;
         response.Message = "Login Successful";

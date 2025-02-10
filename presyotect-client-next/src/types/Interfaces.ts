@@ -1,3 +1,5 @@
+import type {JwtPayload} from "jwt-decode";
+
 export interface BreadcrumbItem {
     label: string;
     url?: string;
@@ -5,13 +7,11 @@ export interface BreadcrumbItem {
 
 export interface AuthState {
     isAuthenticated: boolean;
-    data: IDecodedToken | string | null;
+    data: TokenPayload | string | null;
 }
 
-export interface IDecodedToken {
+export interface TokenPayload extends JwtPayload{
     role: string;
-    iat: number;
-    exp: number;
     username: string;
 }
 

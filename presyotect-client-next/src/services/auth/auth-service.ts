@@ -1,6 +1,8 @@
+import {useActionsStore} from "@stores/actions-store.ts";
 import {useAuthStore} from "@stores/auth-store.ts";
 import {getAxiosConfig} from "@utils/ApiUtils.ts";
 import axios, {AxiosError} from "axios";
+import router from "@/router.ts";
 import type {AuthState} from "@/types/Interfaces.ts";
 
 export async function login(username: string, password: string): Promise<AuthState> {
@@ -32,11 +34,15 @@ export async function refreshToken(): Promise<void> {
         const result = await axios.post("/auth/refresh-token", {token: authStore.token}, axiosConfig);
         authStore.token = result.data.content;
     } catch {
-        console.log("Token refresh failed");
+        await logout();
     }
 }
 
 export async function logout(): Promise<void> {
     const authStore = useAuthStore();
+    const actionsStore = useActionsStore();
+    
+    actionsStore.clearPendingActions();
     authStore.token = null;
+    await router.push({name: "login"});
 }

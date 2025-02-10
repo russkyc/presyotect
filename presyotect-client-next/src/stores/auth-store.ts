@@ -1,49 +1,40 @@
-import {useIntervalFn} from "@vueuse/core";
+import {refreshToken} from "@services/auth/auth-service.ts";
+import {useIdle, useIntervalFn} from "@vueuse/core";
 import {jwtDecode} from "jwt-decode";
 import {defineStore} from "pinia";
 import {computed, ref} from "vue";
-import router from "@/router.ts";
-import type {IDecodedToken} from "@/types/Interfaces.ts";
+import type {TokenPayload} from "@/types/Interfaces.ts";
 
 export const useAuthStore = defineStore(
     "authStore",
     () => {
         const token = ref();
+        const {idle} = useIdle(5 * 60 * 1000);
         const userClaims = computed(() => {
-            return jwtDecode(token.value) as IDecodedToken | null;
+            return jwtDecode(token.value) as TokenPayload | null;
         });
-        const userRoles = computed(() => {
-            const claims = jwtDecode(token.value) as IDecodedToken | null;
-            return claims?.role;
-        });
-
-        const isTokenExpired = ref(true);
-
-        const checkTokenExpiration = async () => {
-            if (!token.value) {
-                isTokenExpired.value = true;
-                await router.push({name: "login"});
-                return;
-            }
-            const claims = jwtDecode(token.value) as IDecodedToken | null;
-            if (!claims) {
-                isTokenExpired.value = true;
-                await router.push({name: "login"});
-                return;
+        
+        const isTokenExpired = computed(() => {
+            if (!userClaims.value) {
+                return true;
             }
             const currentTime = Math.floor(Date.now() / 1000);
-            isTokenExpired.value = claims.exp < currentTime;
-            if (isTokenExpired.value) {
-                await router.push({name: "login"});
+            return userClaims.value.exp! < currentTime;
+        });
+
+        const checkTokenExpiration = async () => {
+            console.log("Idle: ", idle.value);
+            if (isTokenExpired.value && !idle.value) {
+                console.log("Checking token expiration...");
+                await refreshToken();
             }
         };
 
-        // Check token expiration every minute
-        useIntervalFn(checkTokenExpiration, 15000);
+        useIntervalFn(checkTokenExpiration, 15 * 60 * 1000);
 
         checkTokenExpiration();
 
-        return {token, userClaims, userRoles, isTokenExpired};
+        return {token, userClaims, isTokenExpired};
     },
     {
         persist: true,

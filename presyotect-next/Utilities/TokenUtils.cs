@@ -7,7 +7,7 @@ namespace Presyotect.Utilities;
 
 public static class TokenUtils
 {
-    public static string CreateToken(IConfiguration configuration, string username, string refreshToken, params string[] roles)
+    public static string CreateToken(IConfiguration configuration, string username, string refreshToken, string role)
     {
         var issuer = configuration["Jwt:Issuer"]!;
         var audience = configuration["Jwt:Audience"]!;
@@ -17,19 +17,14 @@ public static class TokenUtils
         {
             new Claim("id", Guid.NewGuid().ToString()),
             new Claim("username", username),
-            new Claim(JwtRegisteredClaimNames.Jti, refreshToken)
+            new Claim(JwtRegisteredClaimNames.Jti, refreshToken),
+            new Claim(ClaimTypes.Role, role)
         };
-
-        // Add all roles from account to the token
-        if (roles.Length != 0)
-        {
-            roles.ToList().ForEach(role => claims.Add(new Claim(ClaimTypes.Role, role)));
-        }
 
         var tokenDescriptor = new SecurityTokenDescriptor
         {
             Subject = new ClaimsIdentity(claims),
-            Expires = DateTime.UtcNow.AddHours(8),
+            Expires = DateTime.UtcNow.AddHours(12),
             Issuer = issuer,
             Audience = audience,
             SigningCredentials = new SigningCredentials(
