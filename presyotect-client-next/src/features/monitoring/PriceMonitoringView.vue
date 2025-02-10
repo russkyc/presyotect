@@ -3,7 +3,7 @@ import {EstablishmentsService} from "@services/data/establishments-service.ts";
 import {ProductsService} from "@services/data/products-service.ts";
 import {useMonitoringStore} from "@stores/monitoring-store.ts";
 import {breakpointsTailwind, useBreakpoints, watchDebounced} from "@vueuse/core";
-import {Card, IconField, InputIcon, InputText} from "primevue";
+import {Button, Card, IconField, InputIcon, InputText} from "primevue";
 import {useConfirm} from "primevue/useconfirm";
 import {onMounted, ref} from "vue";
 import Page from "@/components/Page.vue";
@@ -118,7 +118,38 @@ const endMonitoring = () => {
           @click="endMonitoring()"
         >
           <template #content>
-            {{ monitoringStore.activeEstablishment.name }}
+            <div class="flex flex-row gap-3">
+              <div class="flex flex-col overflow-hidden grow">
+                <p class="truncate font-semibold">
+                  {{ monitoringStore.activeEstablishment.name }}
+                </p>
+                <p class="truncate text-xs opacity-60">
+                  {{ monitoringStore.activeEstablishment.categories[0] }}
+                </p>
+              </div>
+              <div class="flex grow-0 rounded-md bg-[--p-primary-color] text-[--p-primary-contrast-color] p-2">
+                <svg
+                  :height="24"
+                  :width="24"
+                  class="lucide lucide-store"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  viewBox="0 0 24 24"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path d="m2 7 4.41-4.41A2 2 0 0 1 7.83 2h8.34a2 2 0 0 1 1.42.59L22 7" />
+                  <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8" />
+                  <path d="M15 22v-4a2 2 0 0 0-2-2h-2a2 2 0 0 0-2 2v4" />
+                  <path d="M2 7h20" />
+                  <path
+                    d="M22 7v3a2 2 0 0 1-2 2a2.7 2.7 0 0 1-1.59-.63.7.7 0 0 0-.82 0A2.7 2.7 0 0 1 16 12a2.7 2.7 0 0 1-1.59-.63.7.7 0 0 0-.82 0A2.7 2.7 0 0 1 12 12a2.7 2.7 0 0 1-1.59-.63.7.7 0 0 0-.82 0A2.7 2.7 0 0 1 8 12a2.7 2.7 0 0 1-1.59-.63.7.7 0 0 0-.82 0A2.7 2.7 0 0 1 4 12a2 2 0 0 1-2-2V7"
+                  />
+                </svg>
+              </div>
+            </div>
           </template>
         </Card>
         <IconField>
@@ -153,6 +184,26 @@ const endMonitoring = () => {
             variant="filled"
           />
         </IconField>
+        <Button
+          class="sm:ml-auto shrink-0 flex"
+          size="small"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="14"
+            height="14"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            class="lucide lucide-scan-barcode my-auto shrink-0"
+          ><path d="M3 7V5a2 2 0 0 1 2-2h2" /><path d="M17 3h2a2 2 0 0 1 2 2v2" /><path d="M21 17v2a2 2 0 0 1-2 2h-2" /><path d="M7 21H5a2 2 0 0 1-2-2v-2" /><path d="M8 7v10" /><path d="M12 7v10" /><path d="M17 7v10" /></svg>
+          <p class="font-medium my-auto truncate">
+            Barcode Scanner
+          </p>
+        </Button>
       </template>
       <template v-else-if="!monitoringStore.activeEstablishment && isMobile">
         <h2 class="font-semibold text-lg">
@@ -205,7 +256,19 @@ const endMonitoring = () => {
             >
               <Card class="rounded-lg [&>.p-card-body]:px-4 [&>.p-card-body]:py-3">
                 <template #content>
-                  {{ product.name }}
+                  <div class="flex gap-4">
+                    <div class="flex flex-col grow">
+                      <p class="truncate font-semibold">
+                        {{ product.name }}
+                      </p>
+                      <p class="truncate text-sm font-semibold opacity-60">
+                        {{ product.size }}
+                      </p>
+                    </div>
+                    <p class="font-bold text-md">
+                      ₱0.00
+                    </p>
+                  </div>
                 </template>
               </Card>
             </template>
@@ -216,11 +279,45 @@ const endMonitoring = () => {
               :key="establishment.id"
             >
               <Card
-                class="rounded-lg [&>.p-card-body]:px-4 [&>.p-card-body]:py-3"
+                class="rounded-lg [&>.p-card-body]:p-3"
                 @click="startMonitoring(establishment)"
               >
                 <template #content>
-                  {{ establishment.name }}
+                  <div class="flex flex-row gap-3">
+                    <div class="flex grow flex-col mb-auto overflow-hidden">
+                      <p class="truncate font-semibold">
+                        {{ establishment.name }}
+                      </p>
+                      <p class="truncate font-semibold text-xs opacity-60">
+                        {{ establishment.completeAddress }}
+                      </p>
+                      <p class="truncate mt-4 opacity-60 mr-auto text-xs font-medium rounded-full">
+                        {{ establishment.categories[0] }}
+                      </p>
+                    </div>
+                    <div class="flex grow-0 mb-auto rounded-md bg-[--p-primary-color] text-[--p-primary-contrast-color] p-2">
+                      <svg
+                        :height="24"
+                        :width="24"
+                        class="lucide lucide-store"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        viewBox="0 0 24 24"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path d="m2 7 4.41-4.41A2 2 0 0 1 7.83 2h8.34a2 2 0 0 1 1.42.59L22 7" />
+                        <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8" />
+                        <path d="M15 22v-4a2 2 0 0 0-2-2h-2a2 2 0 0 0-2 2v4" />
+                        <path d="M2 7h20" />
+                        <path
+                          d="M22 7v3a2 2 0 0 1-2 2a2.7 2.7 0 0 1-1.59-.63.7.7 0 0 0-.82 0A2.7 2.7 0 0 1 16 12a2.7 2.7 0 0 1-1.59-.63.7.7 0 0 0-.82 0A2.7 2.7 0 0 1 12 12a2.7 2.7 0 0 1-1.59-.63.7.7 0 0 0-.82 0A2.7 2.7 0 0 1 8 12a2.7 2.7 0 0 1-1.59-.63.7.7 0 0 0-.82 0A2.7 2.7 0 0 1 4 12a2 2 0 0 1-2-2V7"
+                        />
+                      </svg>
+                    </div>
+                  </div>
                 </template>
               </Card>
             </template>

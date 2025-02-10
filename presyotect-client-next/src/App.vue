@@ -29,10 +29,10 @@ watch(() => router.fullPath, (newPath) => {
       position="top-right"
     />
     <Toast
-      class="sm:hidden mt-14"
+      class="max-sm:w-full max-sm:mx-4 sm:hidden mt-14"
       position="top-center"
     />
-    <ConfirmDialog />
+    <ConfirmDialog class="max-sm:w-full max-sm:mx-4" />
     <TopNav v-if="isDashboardPageType" />
     <Sidebar
       v-if="isDashboardPageType && !mdAndSmaller"
