@@ -4,8 +4,8 @@ namespace Presyotect.Features.Users.Services;
 
 public interface IAuthenticator
 {
-    public Validation Validate(User user);
-    public string Tokenize(User user);
-    public Validation ValidateRefreshToken(RefreshTokenRequest refreshTokenRequest);
-    public Validation RefreshToken(RefreshTokenRequest refreshTokenRequest);
+    public Task<Validation> Validate(LoginRequest credential);
+    public Task<string> Tokenize(LoginRequest credential);
+    public Task<Validation> ValidateRefreshToken(RefreshTokenRequest refreshTokenRequest);
+    public Task<Validation> RefreshToken(RefreshTokenRequest refreshTokenRequest);
 }

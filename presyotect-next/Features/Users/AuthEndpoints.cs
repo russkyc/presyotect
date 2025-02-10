@@ -15,21 +15,20 @@ public class AuthEndpoints : IEndpointRouteHandlerBuilder
         group.MapPost("/refresh-token", OnRefreshToken);
     }
 
-    private static IResult OnLogin(HttpContext context, IConfiguration configuration, IAuthenticator authenticator,
-        User user)
+    private static async Task<IResult> OnLogin(HttpContext context, IConfiguration configuration, IAuthenticator authenticator,
+        LoginRequest loginRequest)
     {
         var response = new ResponseData<string>();
-        var validation = authenticator.Validate(user);
+        var validation = await authenticator.Validate(loginRequest);
 
         if (!validation.Valid)
         {
             response.Success = false;
-            response.Errors = [validation.Message ?? "User cannot be found."];
+            response.Errors = [validation.Message ?? "Personnel cannot be found."];
             return Results.Ok(response);
         }
 
-        user.Role = user.Username; // Ensure roles are properly set
-        var token = authenticator.Tokenize(user);
+        var token = await authenticator.Tokenize(loginRequest);
         response.Success = true;
         response.Message = "Login Successful";
         response.Content = token;
@@ -37,12 +36,12 @@ public class AuthEndpoints : IEndpointRouteHandlerBuilder
         return Results.Ok(response);
     }
 
-    private static IResult OnRefreshToken(HttpContext context, IConfiguration configuration,
+    private static async Task<IResult> OnRefreshToken(HttpContext context, IConfiguration configuration,
         IAuthenticator authenticator,
         RefreshTokenRequest refreshTokenRequest)
     {
         var response = new ResponseData<string>();
-        var validation = authenticator.ValidateRefreshToken(refreshTokenRequest);
+        var validation = await authenticator.ValidateRefreshToken(refreshTokenRequest);
 
         if (!validation.Valid)
         {
@@ -51,7 +50,7 @@ public class AuthEndpoints : IEndpointRouteHandlerBuilder
             return Results.Ok(response);
         }
 
-        var newTokenValidation = authenticator.RefreshToken(refreshTokenRequest);
+        var newTokenValidation = await authenticator.RefreshToken(refreshTokenRequest);
 
         if (!newTokenValidation.Valid)
         {

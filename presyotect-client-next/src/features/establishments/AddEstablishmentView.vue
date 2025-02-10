@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import {Form, type FormSubmitEvent} from "@primevue/forms";
 import {zodResolver} from "@primevue/forms/resolvers/zod";
+import {AddressService} from "@services/data/address-service.ts";
 import {useActionsStore} from "@stores/actions-store";
 import {Button, InputText, Message, MultiSelect, Select} from "primevue";
 import {useConfirm} from "primevue/useconfirm";
@@ -45,6 +46,7 @@ const availableCategories = ref(["Category1", "Category2", "Category3"]);
 const availableClassifications = ref(["Classification1", "Classification2"]);
 const availableSubClassifications = ref(["SubClassification1", "SubClassification2"]);
 const availableTags = ref(["Tag1", "Tag2", "Tag3"]);
+const availableStatusTypes = ref(["Closed", "Included", "Unverified"]);
 const availableOwnershipTypes = ref(["Type1", "Type2"]);
 
 const resolver = ref(zodResolver(
@@ -55,8 +57,8 @@ const resolver = ref(zodResolver(
         completeAddress: z.string().min(1, {message: "Complete address is required."}),
         categories: z.array(z.string().nullable()).min(1, {message: "At least one category is required."}),
         classifications: z.array(z.string()).min(1, {message: "At least one classification is required."}),
-        subClassifications: z.array(z.string().nullable()).min(1, {message: "At least one sub-classification is required."}),
-        tags: z.array(z.string().nullable()).min(1, {message: "At least one tag is required."}),
+        subClassifications: z.array(z.string()).nullable(),
+        tags: z.array(z.string()).nullable(),
         owners: z.array(z.string()).nullable(),
         ownershipType: z.string().optional(),
         contactPerson: z.string().min(1, {message: "Contact person is required."}),
@@ -66,9 +68,13 @@ const resolver = ref(zodResolver(
         email: z.string().optional(),
         socials: z.record(z.string()).optional()
     })
-)); 
+));
 
-onMounted(() => {
+const citiesMunicipalities = ref();
+
+onMounted(async () => {
+    const addressDataCityMunicipality = await AddressService.GetCitiesMunicipalitiesByProvince("050500000");
+    citiesMunicipalities.value = addressDataCityMunicipality.map((cityMunicipality) => cityMunicipality.name);
     actionsStore.addPendingActions();
 });
 
@@ -158,30 +164,12 @@ const onFormSubmit = async (form: FormSubmitEvent) => {
                 </Message>
               </div>
               <div class="flex flex-col gap-1">
-                <label for="status">Status</label>
-                <InputText
-                  fluid
-                  name="status"
-                  placeholder="Status of the establishment"
-                  type="text"
-                  variant="filled"
-                />
-                <Message
-                  v-if="$form.status?.invalid"
-                  severity="error"
-                  size="small"
-                  variant="simple"
-                >
-                  {{ $form.status.error?.message }}
-                </Message>
-              </div>
-              <div class="flex flex-col gap-1">
-                <label for="cityMunicipality">City/Municipality</label>
-                <InputText
+                <label for="cityMunicipality">City / Municipality</label>
+                <Select
+                  :options="citiesMunicipalities"
                   fluid
                   name="cityMunicipality"
-                  placeholder="City or Municipality"
-                  type="text"
+                  placeholder="Select City or Municipality"
                   variant="filled"
                 />
                 <Message
@@ -263,6 +251,24 @@ const onFormSubmit = async (form: FormSubmitEvent) => {
                   variant="simple"
                 >
                   {{ $form.subClassifications.error?.message }}
+                </Message>
+              </div>
+              <div class="flex flex-col gap-1">
+                <label for="status">Status</label>
+                <Select
+                  :options="availableStatusTypes"
+                  fluid
+                  name="status"
+                  placeholder="Select Status"
+                  variant="filled"
+                />
+                <Message
+                  v-if="$form.status?.invalid"
+                  severity="error"
+                  size="small"
+                  variant="simple"
+                >
+                  {{ $form.status.error?.message }}
                 </Message>
               </div>
               <div class="flex flex-col gap-1">

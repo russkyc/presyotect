@@ -15,6 +15,31 @@ export interface TokenPayload extends JwtPayload{
     username: string;
 }
 
+// PSGC
+
+// Type for provinces.json
+export interface Province {
+    code: string;
+    name: string;
+    regionCode: string;
+    islandGroupCode: string;
+    psgc10DigitCode: string;
+}
+
+// Type for cities-municipalities.json
+export interface CityMunicipality {
+    code: string;
+    name: string;
+    oldName: string;
+    isCapital: boolean;
+    isCity: boolean;
+    isMunicipality: boolean;
+    provinceCode: string;
+    districtCode: boolean;
+    regionCode: string;
+    islandGroupCode: string;
+    psgc10DigitCode: string;
+}
 
 // Entity Interfaces
 export type Product = {
@@ -37,8 +62,8 @@ export interface Establishment {
     completeAddress: string;
     categories: (string | null)[];
     classifications: string[];
-    subClassifications: (string | null)[];
-    tags: (string | null)[];
+    subClassifications?: string[] | null;
+    tags?: string[] | null;
     owners: string[];
     ownershipType?: string;
     contactPerson: string;

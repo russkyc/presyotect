@@ -1,21 +1,32 @@
 <script lang="ts" setup>
 
+import {useAuthStore} from "@stores/auth-store.ts";
 import {useComponentStore} from "@stores/component-store.ts";
 import {breakpointsTailwind, useBreakpoints} from "@vueuse/core";
-import {Avatar, Button, Menu, Toolbar} from "primevue";
+import {Avatar, Button, Chip, Menu, Toolbar} from "primevue";
 import {useConfirm} from "primevue/useconfirm";
 import {useToast} from "primevue/usetoast";
-import {ref} from "vue";
+import {onMounted, ref} from "vue";
+import Authorize from "@/components/dynamic/Authorize.vue";
 import router from "@/router";
 import {logout} from "@/services/auth/auth-service.ts";
 
+const authStore = useAuthStore();
 const componentStore = useComponentStore();
 const toast = useToast();
 const confirm = useConfirm();
 const profileMenu = ref();
+const nickname = ref();
 
 const breakpoints = useBreakpoints(breakpointsTailwind)
 const mdAndSmaller = breakpoints.smallerOrEqual("lg");
+const small = breakpoints.smaller("sm");
+
+onMounted(() => {
+    if (authStore.userClaims) {
+        nickname.value = authStore.userClaims.username;
+    }
+});
 
 const togglePopover = (e: unknown) => {
     profileMenu.value.toggle(e);
@@ -95,17 +106,20 @@ const items = ref([
         </div>
       </template>
       <template #end>
-        <Button
-          class="p-0"
-          rounded
-          variant="text"
-          @click="togglePopover"
-        >
-          <Avatar
+        <Authorize>
+          <Chip
+            v-if="!small"
+            @click="togglePopover"
+            :label="nickname"
             image="https://i.pravatar.cc/100"
-            shape="circle"
           />
-        </Button>
+          <Avatar
+            v-if="small"
+            @click="togglePopover"
+            shape="circle"
+            image="https://i.pravatar.cc/100"
+          />
+        </Authorize>
         <Menu
           ref="profileMenu"
           :model="items"

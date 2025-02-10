@@ -185,7 +185,13 @@ const addEstablishment = () => {
             />
             <Column
               :sortable="true"
-              class="w-[10%]"
+              class="w-[15%]"
+              field="completeAddress"
+              header="Full Address"
+            />
+            <Column
+              :sortable="true"
+              class="w-[5%]"
               field="categories"
               header="Categories"
             >
@@ -210,7 +216,7 @@ const addEstablishment = () => {
             </Column>
             <Column
               :sortable="true"
-              class="w-[10%]"
+              class="w-[5%]"
               field="classifications"
               header="Classifications"
             >

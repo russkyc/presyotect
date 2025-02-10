@@ -1,7 +1,8 @@
 ﻿namespace Presyotect.Core.Types;
 
-public enum Role
+public static class Role
 {
-    Admin = 0,
-    
+    public const string Personnel = "personnel";
+    public const string OrgAdmin = "admin";
+    public const string SuperAdmin = "superadmin";
 }

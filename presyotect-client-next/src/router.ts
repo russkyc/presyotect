@@ -23,7 +23,7 @@ const defaultTitle = "Presyotect";
 const routes = [
     {
         name: "dashboard",
-        path: "/",
+        path: Routes.Dashboard,
         component: DashboardView,
         meta: {
             title: "Dashboard",
@@ -41,7 +41,7 @@ const routes = [
     },
     {
         name: "products",
-        path: "/products",
+        path: Routes.Products,
         children: [
             {
                 name: "products-home",
@@ -64,7 +64,7 @@ const routes = [
     },
     {
         name: "establishments",
-        path: "/establishments",
+        path: Routes.Establishments,
         children: [
             {
                 name: "establishments-home",
@@ -86,17 +86,17 @@ const routes = [
         ]
     },
     {
-        name: "users",
-        path: "/users",
+        name: "personnel",
+        path: Routes.Personnel,
         component: PersonnelView,
         meta: {
-            title: "Users",
+            title: "Personnel",
             roles: [Roles.Admin]
         }
     },
     {
         name: "analytics",
-        path: "/analytics",
+        path: Routes.Analytics,
         component: AnalyticsView,
         meta: {
             title: "Analytics",
@@ -105,7 +105,7 @@ const routes = [
     },
     {
         name: "settings",
-        path: "/settings",
+        path: Routes.Settings,
         component: SettingsView,
         meta: {
             title: "Settings",

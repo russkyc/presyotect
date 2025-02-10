@@ -50,7 +50,7 @@ public static class ServiceExtensions
 
     public static void AddAuthServices(this WebApplicationBuilder builder)
     {
-        builder.Services.AddSingleton<IAuthenticator, DevtestAuthenticator>();
+        builder.Services.AddSingleton<IAuthenticator, DbAuthenticator>();
         builder.Services.AddAuthentication(
                 authenticationOptions =>
                 {
