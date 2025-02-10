@@ -4,7 +4,7 @@ import {useComponentStore} from "@stores/component-store.ts";
 import {ref} from "vue";
 import Authorize from "@/components/dynamic/Authorize.vue";
 import NavLink from "@/components/NavLink.vue";
-import {Roles} from "@/types/Constants.ts";
+import {Roles, Routes} from "@/types/Constants.ts";
 
 const props = defineProps<{
   miniWidth: string
@@ -28,7 +28,7 @@ componentStore.$subscribe(() => {
   >
     <NavLink
       content="Dashboard"
-      href="/"
+      :href="Routes.Dashboard"
     >
       <template #icon>
         <svg
@@ -76,7 +76,7 @@ componentStore.$subscribe(() => {
     </NavLink>
     <NavLink
       content="Monitoring"
-      href="/price-monitoring"
+      :href="Routes.Monitoring"
     >
       <template #icon>
         <svg
@@ -100,7 +100,7 @@ componentStore.$subscribe(() => {
     </NavLink>
     <NavLink
       content="Products"
-      href="/products"
+      :href="Routes.Products"
     >
       <template #icon>
         <svg
@@ -126,7 +126,7 @@ componentStore.$subscribe(() => {
     </NavLink>
     <NavLink
       content="Establishments"
-      href="/establishments"
+      :href="Routes.Establishments"
     >
       <template #icon>
         <svg
@@ -153,8 +153,8 @@ componentStore.$subscribe(() => {
     </NavLink>
     <Authorize :roles="[Roles.Admin]">
       <NavLink
-        content="Users"
-        href="/users"
+        content="Personnel"
+        :href="Routes.Personnel"
       >
         <template #icon>
           <svg
@@ -184,7 +184,7 @@ componentStore.$subscribe(() => {
     <Authorize :roles="[Roles.Admin]">
       <NavLink
         content="Analytics"
-        href="/analytics"
+        :href="Routes.Analytics"
       >
         <template #icon>
           <svg
@@ -223,7 +223,7 @@ componentStore.$subscribe(() => {
     <NavLink
       class="mt-auto"
       content="Settings"
-      href="/settings"
+      :href="Routes.Settings"
     >
       <template #icon>
         <svg
