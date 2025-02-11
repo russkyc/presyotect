@@ -90,6 +90,8 @@ export interface Personnel {
     id?: string;
     nickname: string;
     fullName: string;
+    username: string;
+    password: string;
     assignedEstablishments?: string[] | null;
 }
 

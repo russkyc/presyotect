@@ -9,7 +9,7 @@ import {orderBy} from "natural-orderby";
 import {Button, Card, InputNumber, InputText, Message} from "primevue";
 import {useConfirm} from "primevue/useconfirm";
 import {useToast} from "primevue/usetoast";
-import {onMounted, ref} from "vue";
+import {onMounted, ref, watch} from "vue";
 import {z} from "zod";
 import {MonitoringService} from "@/services/data/monitoring-service.ts";
 import type {MonitoredPrice, Product} from "@/types/Interfaces.ts";
@@ -57,6 +57,9 @@ const resolver = ref(zodResolver(
 ));
 
 onMounted(() => getLastMonitoredPrice());
+watch(() => productValue, () => {
+    getLastMonitoredPrice();
+});
 
 const getLastMonitoredPrice = () => {
     const monitoringStore = useMonitoringStore();
@@ -64,6 +67,7 @@ const getLastMonitoredPrice = () => {
     const orderedMonitoredPrices = orderBy<MonitoredPrice>(monitoredPrices, [mp => mp.created], ["desc"]);
     if (orderedMonitoredPrices.length > 0) {
         lastMonitoredPrice.value = orderedMonitoredPrices[0].price;
+        console.log(lastMonitoredPrice.value);
     }
 };
 
@@ -92,32 +96,55 @@ const onFormSubmit = async (form: FormSubmitEvent) => {
             const monitoringStore = useMonitoringStore();
             const monitoredPrice = form.values as MonitoredPrice;
 
+            monitoredPrice.created = new Date();
             monitoredPrice.productId = props.product.id;
             monitoredPrice.price = monitoredPrice.price!;
             monitoredPrice.personnelId = authStore.userClaims?.nameid;
             monitoredPrice.establishmentId = monitoringStore.activeEstablishment?.id;
-            
-            console.log(monitoringStore.activeEstablishment);
 
-            const response = await MonitoringService.postMonitoredPrice(monitoredPrice);
-            productValue.value.monitoredPrices?.push(monitoredPrice);
-            if (!response) {
+            initialValues.value.created = new Date();
+          
+            const isOnline = await monitoringStore.isOnline;
+
+            if (!isOnline) {
+                monitoringStore.pendingMonitoredPrices.push(monitoredPrice);
+                productValue.value.monitoredPrices?.push(monitoredPrice);
+                showDetails.value = false;
+                getLastMonitoredPrice();
                 toast.add({
-                    severity: "error",
-                    summary: "Price Not Updated",
-                    detail: "An error occurred while updating the price.",
+                    severity: "success",
+                    summary: "Price Update Cached",
+                    detail: "Updates will sync automatically.",
                     life: 2000
                 });
-                return;
+            } else {
+                try {
+                    const response = await MonitoringService.postMonitoredPrice(monitoredPrice);
+                    if (!response) {
+                        throw new Error("Failed to update price online");
+                    }
+                    productValue.value.monitoredPrices?.push(monitoredPrice);
+                    showDetails.value = false;
+                    getLastMonitoredPrice();
+                    toast.add({
+                        severity: "success",
+                        summary: "Price Updated",
+                        detail: "Price updated successfully.",
+                        life: 2000
+                    });
+                } catch {
+                    monitoringStore.pendingMonitoredPrices.push(monitoredPrice);
+                    productValue.value.monitoredPrices?.push(monitoredPrice);
+                    showDetails.value = false;
+                    getLastMonitoredPrice();
+                    toast.add({
+                        severity: "error",
+                        summary: "Price Not Updated Online",
+                        detail: "An error occurred while updating the price online. The update has been cached.",
+                        life: 2000
+                    });
+                }
             }
-            toast.add({
-                severity: "success",
-                summary: "Price Updated",
-                detail: "Price updated successfully.",
-                life: 2000
-            });
-            showDetails.value = false;
-            getLastMonitoredPrice();
         }
     });
 };

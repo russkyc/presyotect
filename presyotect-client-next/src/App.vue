@@ -1,8 +1,10 @@
 <script lang="ts" setup>
+import {useMonitoringStore} from "@stores/monitoring-store.ts";
 import {getPageType} from "@utils/PathUtils.ts";
 import {breakpointsTailwind, useBreakpoints} from "@vueuse/core";
 import ConfirmDialog from "primevue/confirmdialog";
 import Toast from "primevue/toast";
+import {useToast} from "primevue/usetoast";
 import {computed, ref, watch} from "vue";
 import {useRoute} from "vue-router";
 import BottomNav from "@/components/BottomNav.vue";
@@ -13,12 +15,25 @@ import {DashboardGroupType} from "@/types/Types.ts";
 const breakpoints = useBreakpoints(breakpointsTailwind)
 const mdAndSmaller = breakpoints.smallerOrEqual("lg");
 
+const toast = useToast();
+const monitoringStore = useMonitoringStore();
 const router = useRoute();
 const pageType = ref(getPageType(router.fullPath));
 const isDashboardPageType = computed(() => pageType.value === DashboardGroupType.Dashboard);
 
 watch(() => router.fullPath, (newPath) => {
     pageType.value = getPageType(newPath);
+});
+
+monitoringStore.$onAction((action) => {
+    if (action.name === "localDataUploaded") {
+        toast.add({
+            severity: "success",
+            summary: "Records Uploaded",
+            detail: "Local monitored prices synced to the server successfully.",
+            life: 2000
+        });
+    }
 });
 
 </script>
