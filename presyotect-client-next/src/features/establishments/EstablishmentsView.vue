@@ -191,10 +191,18 @@ const addEstablishment = () => {
               />
               <Column
                 :sortable="true"
-                class="w-[15%]"
+                class="w-[15%] truncate overflow-hidden"
                 field="completeAddress"
                 header="Full Address"
-              />
+              >
+                <template #body="slotProps">
+                  <div class="flex overflow-hidden">
+                    <p class="truncate">
+                      {{ slotProps.data.completeAddress }}
+                    </p>
+                  </div>
+                </template>
+              </Column>
               <Column
                 :sortable="true"
                 class="w-[5%]"
@@ -207,7 +215,7 @@ const addEstablishment = () => {
                     class="flex gap-2"
                   >
                     <Chip
-                      class="py-1 font-medium text-xs px-2 rounded-full text-[--p-primary-color] bg-[--p-highlight-background]"
+                      class="py-1 text-nowrap font-medium text-xs px-2 rounded-full text-[--p-primary-color] bg-[--p-highlight-background]"
                     >
                       {{ slotProps.data.categories[0] }}
                     </Chip>
@@ -232,7 +240,7 @@ const addEstablishment = () => {
                     class="flex gap-2"
                   >
                     <Chip
-                      class="py-1 font-medium text-xs px-2 rounded-full text-[--p-primary-color] bg-[--p-highlight-background]"
+                      class="py-1 text-nowrap font-medium text-xs px-2 rounded-full text-[--p-primary-color] bg-[--p-highlight-background]"
                     >
                       {{ slotProps.data.classifications[0] }}
                     </Chip>
@@ -240,7 +248,7 @@ const addEstablishment = () => {
                       v-if="slotProps.data.classifications.length > 1"
                       class="py-1 px-1.5 font-medium text-xs rounded-full  text-[--p-primary-color] bg-[--p-highlight-background]"
                     >
-                      +{{ slotProps.data.category.length - 1 }}
+                      +{{ slotProps.data.classifications.length - 1 }}
                     </Chip>
                   </div>
                 </template>

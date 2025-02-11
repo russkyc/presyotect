@@ -11,7 +11,11 @@ export const useAuthStore = defineStore(
         const token = ref();
         const {idle} = useIdle(5 * 60 * 1000);
         const userClaims = computed(() => {
-            return jwtDecode(token.value) as TokenPayload | null;
+            if (token.value == null){
+                return null;
+            } else {
+                return jwtDecode(token.value) as TokenPayload | null;
+            }
         });
         
         const isTokenExpired = computed(() => {

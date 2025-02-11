@@ -1,5 +1,5 @@
 .p-toast {
-    @apply max-sm:w-80 sm:w-96 rounded-md whitespace-pre-line break-words
+    @apply max-sm:w-full sm:w-96 rounded-md whitespace-pre-line break-words
 }
 
 .p-toast-message {

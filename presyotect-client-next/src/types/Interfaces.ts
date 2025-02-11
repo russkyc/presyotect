@@ -11,6 +11,7 @@ export interface AuthState {
 }
 
 export interface TokenPayload extends JwtPayload{
+    nameid: string,
     role: string;
     username: string;
 }
@@ -42,7 +43,7 @@ export interface CityMunicipality {
 }
 
 // Entity Interfaces
-export type Product = {
+export interface Product {
     id?: string,
     key: string | null,
     sku: string | null,
@@ -52,6 +53,16 @@ export type Product = {
     category: string[] | null,
     classification: string | null,
     srp: number | null
+}
+
+export interface MonitoredEstablishment {
+    id?: string,
+    name: string;
+    cityMunicipality: string;
+    completeAddress: string;
+    categories: (string | null)[];
+    classifications: string[];
+    subClassifications?: string[] | null;
 }
 
 export interface Establishment {

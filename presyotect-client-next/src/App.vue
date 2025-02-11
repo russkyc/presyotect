@@ -29,7 +29,7 @@ watch(() => router.fullPath, (newPath) => {
       position="top-right"
     />
     <Toast
-      class="max-sm:w-full max-sm:mx-4 sm:hidden mt-14"
+      class="max-sm:px-4 sm:hidden sm:mt-14"
       position="top-center"
     />
     <ConfirmDialog class="max-sm:w-full max-sm:mx-4" />

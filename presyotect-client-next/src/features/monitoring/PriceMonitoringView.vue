@@ -1,13 +1,12 @@
 <script lang="ts" setup>
-import {EstablishmentsService} from "@services/data/establishments-service.ts";
-import {ProductsService} from "@services/data/products-service.ts";
+import {MonitoringService} from "@services/data/monitoring-service.ts";
 import {useMonitoringStore} from "@stores/monitoring-store.ts";
 import {breakpointsTailwind, useBreakpoints, watchDebounced} from "@vueuse/core";
 import {Button, Card, IconField, InputIcon, InputText} from "primevue";
 import {useConfirm} from "primevue/useconfirm";
 import {onMounted, ref} from "vue";
 import Page from "@/components/Page.vue";
-import type {BreadcrumbItem, Establishment, Product} from "@/types/Interfaces.ts";
+import type {BreadcrumbItem, Establishment, MonitoredEstablishment, Product} from "@/types/Interfaces.ts";
 
 const confirm = useConfirm();
 const monitoringStore = useMonitoringStore();
@@ -23,16 +22,17 @@ const establishments = ref();
 const filteredEstablishments = ref();
 
 const products = ref();
-const fiteredProducts = ref();
+const filteredProducts = ref();
 
 onMounted(() => {
     if (monitoringStore.activeEstablishment) {
-        ProductsService.getProducts().then((response) => {
-            products.value = response;
-            fiteredProducts.value = response;
+        MonitoringService.getMonitoredProducts().then((response) => {
+            const establishmentFilteredProducts = response?.filter((product:Product) => monitoringStore.activeEstablishment!.classifications.includes(product.classification!));
+            products.value = establishmentFilteredProducts;
+            filteredProducts.value = establishmentFilteredProducts;
         });
     } else {
-        EstablishmentsService.getEstablishments().then((response) => {
+        MonitoringService.getAssignedEstablishments().then((response) => {
             establishments.value = response;
             filteredEstablishments.value = response;
         });
@@ -42,20 +42,21 @@ onMounted(() => {
 watchDebounced(filter, (value) => {
     if (value && value.length > 0) {
         if (monitoringStore.activeEstablishment) {
-            fiteredProducts.value = products.value.filter((product:Product) => product.name.toLowerCase().includes(value.toLowerCase()));
+            filteredProducts.value = products.value.filter((product:Product) => product.name.toLowerCase().includes(value.toLowerCase()));
         } else {
             filteredEstablishments.value = establishments.value.filter((establishment:Establishment) => establishment.name.toLowerCase().includes(value.toLowerCase()));
         }
     } else {
         if (monitoringStore.activeEstablishment) {
-            fiteredProducts.value = products.value;
+            filteredProducts.value = products.value;
+            console.log(`${value}: ${filteredProducts.value}`);
         } else {
             filteredEstablishments.value = establishments.value;
         }
     }
 }, {debounce: 300});
 
-const startMonitoring = (establishment: Establishment) => {
+const startMonitoring = (establishment: MonitoredEstablishment) => {
     confirm.require({
         message: `Start monitoring ${establishment.name}?`,
         header: "Confirmation",
@@ -68,9 +69,10 @@ const startMonitoring = (establishment: Establishment) => {
         },
         accept: async () => {
             monitoringStore.activeEstablishment = establishment;
-            ProductsService.getProducts().then((response) => {
-                products.value = response;
-                fiteredProducts.value = response;
+            MonitoringService.getMonitoredProducts().then((response) => {
+                const establishmentFilteredProducts = response?.filter((product:Product) => monitoringStore.activeEstablishment!.classifications.includes(product.classification!));
+                products.value = establishmentFilteredProducts;
+                filteredProducts.value = establishmentFilteredProducts;
             });
         }
     });
@@ -90,7 +92,8 @@ const endMonitoring = () => {
         },
         accept: async () => {
             monitoringStore.activeEstablishment = null;
-            EstablishmentsService.getEstablishments().then((response) => {
+            filteredProducts.value = null;
+            MonitoringService.getAssignedEstablishments().then((response) => {
                 establishments.value = response;
                 filteredEstablishments.value = response;
             });
@@ -186,7 +189,6 @@ const endMonitoring = () => {
         </IconField>
         <Button
           class="sm:ml-auto shrink-0 flex"
-          size="small"
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -251,7 +253,7 @@ const endMonitoring = () => {
         <div class="flex flex-col gap-3 grow">
           <template v-if="monitoringStore.activeEstablishment">
             <template
-              v-for="product in fiteredProducts"
+              v-for="product in filteredProducts"
               :key="product.id"
             >
               <Card class="rounded-lg [&>.p-card-body]:px-4 [&>.p-card-body]:py-3">

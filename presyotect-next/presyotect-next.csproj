@@ -31,7 +31,6 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Features\Monitoring\" />
       <Folder Include="Features\Organzation\" />
       <Folder Include="wwwroot\" />
     </ItemGroup>

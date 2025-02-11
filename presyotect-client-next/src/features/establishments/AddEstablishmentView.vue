@@ -42,12 +42,42 @@ const breadcrumbs: BreadcrumbItem[] = [
     {label: "Add"}
 ];
 
-const availableCategories = ref(["Category1", "Category2", "Category3"]);
-const availableClassifications = ref(["Classification1", "Classification2"]);
-const availableSubClassifications = ref(["SubClassification1", "SubClassification2"]);
-const availableTags = ref(["Tag1", "Tag2", "Tag3"]);
-const availableStatusTypes = ref(["Closed", "Included", "Unverified"]);
-const availableOwnershipTypes = ref(["Type1", "Type2"]);
+const availableCategories = ref([
+    "Hardware",
+    "Supermarket",
+    "Grocery Store",
+    "Bread and Flour",
+    "School Supplies",
+    "Water Reffiling Station",
+    "Wet Market"
+]);
+
+const availableClassifications = ref([
+    "Basic Necessities",
+    "Prime Commodities",
+    "Construction Materials",
+    "School Supplies"
+]);
+
+const availableTags = ref([
+    "Gravel and Sand",
+    "Hollow Blocks",
+    "Contractor",
+    "Wholesaler"
+]);
+
+const availableStatusTypes = ref([
+    "Closed",
+    "Included",
+    "Unverified"]);
+
+const availableOwnershipTypes = ref([
+    "Sole Proprietorship",
+    "One-Person Corporation",
+    "Partnership",
+    "Corporation",
+    "Cooperative"
+]);
 
 const resolver = ref(zodResolver(
     z.object({
@@ -238,7 +268,7 @@ const onFormSubmit = async (form: FormSubmitEvent) => {
               <div class="flex flex-col gap-1">
                 <label for="subClassifications">Sub-Classifications</label>
                 <MultiSelect
-                  :options="availableSubClassifications"
+                  :options="availableClassifications"
                   fluid
                   name="subClassifications"
                   placeholder="Select sub-classifications"

@@ -1,5 +1,6 @@
 import {useActionsStore} from "@stores/actions-store.ts";
 import {useAuthStore} from "@stores/auth-store.ts";
+import {useMonitoringStore} from "@stores/monitoring-store.ts";
 import {getAxiosConfig} from "@utils/ApiUtils.ts";
 import axios, {AxiosError} from "axios";
 import router from "@/router.ts";
@@ -41,7 +42,9 @@ export async function refreshToken(): Promise<void> {
 export async function logout(): Promise<void> {
     const authStore = useAuthStore();
     const actionsStore = useActionsStore();
-    
+    const monitoringStore = useMonitoringStore();
+
+    monitoringStore.clearAll();
     actionsStore.clearPendingActions();
     authStore.token = null;
     await router.push({name: "login"});

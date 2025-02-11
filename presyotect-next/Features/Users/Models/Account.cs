@@ -1,6 +1,8 @@
-﻿namespace Presyotect.Features.Users.Models;
+﻿using Presyotect.Core.Contracts;
 
-public class Account
+namespace Presyotect.Features.Users.Models;
+
+public class Account : DbEntity
 {
     public string Username { get; set; }
     public string Password { get; set; }

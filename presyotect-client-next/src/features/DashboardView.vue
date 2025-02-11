@@ -1,8 +1,7 @@
 <script lang="ts" setup>
 
-import {getAxiosConfig} from "@utils/ApiUtils.ts";
+import {MonitoringService} from "@services/data/monitoring-service.ts";
 import {breakpointsTailwind, useBreakpoints} from "@vueuse/core";
-import axios from "axios";
 import {Card} from "primevue";
 import {onBeforeMount, ref} from "vue";
 import OverviewCard from "@/components/OverviewCard.vue";
@@ -14,16 +13,10 @@ const isMobile = breakpoints.smallerOrEqual("sm");
 const iconSize = 27;
 const totalProducts = ref(0);
 const totalEstablishments = ref(0);
-const axiosConfig = getAxiosConfig();
 
 onBeforeMount(async () => {
-
-    const productsResponse = await axios.get("/products/count", axiosConfig);
-    totalProducts.value = productsResponse.data.content;
-
-    const establishmentsResponse = await axios.get("/establishments/count", axiosConfig);
-    totalEstablishments.value = establishmentsResponse.data.content;
-
+    totalProducts.value = await MonitoringService.getMonitoredProductsCount();
+    totalEstablishments.value = await MonitoringService.getAssignedEstablishmentsCount();
 })
 
 </script>

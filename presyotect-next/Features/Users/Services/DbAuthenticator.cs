@@ -3,8 +3,10 @@ using Presyotect.Utilities;
 using System.Collections.Concurrent;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
+using LiteDB;
 using LiteDB.Async;
 using Presyotect.Core.Types;
+using JsonSerializer = System.Text.Json.JsonSerializer;
 
 namespace Presyotect.Features.Users.Services;
 
@@ -16,7 +18,9 @@ public class DbAuthenticator(IConfiguration configuration, ILiteDatabaseAsync da
     {
         var validation = new Validation();
         var passwordHash = credential.Password.Hash();
-        
+
+        Console.WriteLine(JsonSerializer.Serialize(credential));
+
         var personnelCollection = database.GetCollection<Personnel>();
         var personnel = await personnelCollection.FindOneAsync(personnel =>
             personnel.Username.Equals(credential.Username)
@@ -57,7 +61,7 @@ public class DbAuthenticator(IConfiguration configuration, ILiteDatabaseAsync da
     {
         var refreshToken = TokenUtils.CreateRefreshToken();
         var passwordHash = credential.Password.Hash();
-        
+
         var personnelCollection = database.GetCollection<Personnel>();
         var personnel = await personnelCollection.FindOneAsync(personnel =>
             personnel.Username.Equals(credential.Username)
@@ -66,7 +70,8 @@ public class DbAuthenticator(IConfiguration configuration, ILiteDatabaseAsync da
         if (personnel is not null)
         {
             RefreshTokens[credential.Username] = refreshToken;
-            return TokenUtils.CreateToken(configuration, personnel.Nickname, refreshToken, Role.Personnel);
+            return TokenUtils.CreateToken(configuration, personnel.Id.ToString(), personnel.Nickname ?? personnel.FullName,
+                refreshToken, Role.Personnel);
         }
 
         var accountCollection = database.GetCollection<Account>();
@@ -77,11 +82,12 @@ public class DbAuthenticator(IConfiguration configuration, ILiteDatabaseAsync da
         if (account is not null)
         {
             RefreshTokens[credential.Username] = refreshToken;
-            return TokenUtils.CreateToken(configuration, account.Nickname, refreshToken, Role.Personnel);
+            return TokenUtils.CreateToken(configuration, account.Id.ToString(), account.Nickname, refreshToken, Role.Personnel);
         }
-        
+
         RefreshTokens[credential.Username] = refreshToken;
-        var token = TokenUtils.CreateToken(configuration, credential.Username, refreshToken, credential.Username);
+        var token = TokenUtils.CreateToken(configuration, ObjectId.Empty.ToString(), credential.Username, refreshToken,
+            credential.Username);
         return token;
     }
 
@@ -133,9 +139,12 @@ public class DbAuthenticator(IConfiguration configuration, ILiteDatabaseAsync da
         var role = claims.Claims
             .First(claim => claim.Type == ClaimTypes.Role)
             .Value;
+        var userId = claims.Claims
+            .First(claim => claim.Type == JwtRegisteredClaimNames.NameId)
+            .Value;
 
         var newRefreshToken = TokenUtils.CreateRefreshToken();
-        var newToken = TokenUtils.CreateToken(configuration, username, newRefreshToken, role);
+        var newToken = TokenUtils.CreateToken(configuration, userId, username, newRefreshToken, role);
 
         RefreshTokens[username] = newRefreshToken;
         RefreshTokens.TryRemove(refreshTokenRequest.Token, out _);

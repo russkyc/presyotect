@@ -38,5 +38,6 @@ app.MapFallbackToFile("index.html");
 #endif
 
 app.MapEndpoints();
+app.MapGet("/_api/check", () => true);
 
 app.Run();

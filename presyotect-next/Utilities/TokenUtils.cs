@@ -1,13 +1,14 @@
 ﻿using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using LiteDB;
 using Microsoft.IdentityModel.Tokens;
 
 namespace Presyotect.Utilities;
 
 public static class TokenUtils
 {
-    public static string CreateToken(IConfiguration configuration, string username, string refreshToken, string role)
+    public static string CreateToken(IConfiguration configuration,string userId, string username, string refreshToken, string role)
     {
         var issuer = configuration["Jwt:Issuer"]!;
         var audience = configuration["Jwt:Audience"]!;
@@ -17,6 +18,7 @@ public static class TokenUtils
         {
             new Claim("id", Guid.NewGuid().ToString()),
             new Claim("username", username),
+            new Claim(JwtRegisteredClaimNames.NameId, userId),
             new Claim(JwtRegisteredClaimNames.Jti, refreshToken),
             new Claim(ClaimTypes.Role, role)
         };
