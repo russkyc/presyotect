@@ -1,8 +1,9 @@
 <script lang="ts" setup>
 import {Form, type FormSubmitEvent} from "@primevue/forms";
 import {zodResolver} from "@primevue/forms/resolvers/zod";
+import {EstablishmentsService} from "@services/data/establishments-service.ts";
 import {useActionsStore} from "@stores/actions-store";
-import {Button, InputText, Message, MultiSelect} from "primevue";
+import {Button, InputText, Message, MultiSelect, Password} from "primevue";
 import {useConfirm} from "primevue/useconfirm";
 import {useToast} from "primevue/usetoast";
 import {onMounted, ref} from "vue";
@@ -16,8 +17,10 @@ import type {BreadcrumbItem, Personnel} from "@/types/Interfaces.ts";
 const toast = useToast();
 const confirm = useConfirm();
 const actionsStore = useActionsStore();
+const availableEstablishments = ref();
 
 const initialValues = ref<Personnel>({
+    password: "", username: "",
     id: "",
     nickname: "",
     fullName: "",
@@ -33,11 +36,15 @@ const resolver = ref(zodResolver(
     z.object({
         nickname: z.string().nullable(),
         fullName: z.string().min(1, {message: "Full name is required."}),
+        username: z.string().min(1, {message: "Username is required."}),
+        password: z.string().min(1, {message: "Password is required."}),
         assignedEstablishments: z.array(z.string()).nullable()
     })
 ));
 
-onMounted(() => {
+onMounted(async () => {
+    const establishments = await EstablishmentsService.getEstablishments();
+    availableEstablishments.value = establishments.map(e => ({label: e.name, value: e.id}));
     actionsStore.addPendingActions();
 });
 
@@ -148,13 +155,53 @@ const onFormSubmit = async (form: FormSubmitEvent) => {
                 </Message>
               </div>
               <div class="flex flex-col gap-1">
+                <label for="username">Username</label>
+                <InputText
+                  fluid
+                  name="username"
+                  placeholder="a unique username"
+                  type="text"
+                  variant="filled"
+                />
+                <Message
+                  v-if="$form.username?.invalid"
+                  severity="error"
+                  size="small"
+                  variant="simple"
+                >
+                  {{ $form.username.error?.message }}
+                </Message>
+              </div>
+              <div class="flex flex-col gap-1">
+                <label for="password">Password</label>
+                <Password
+                  fluid
+                  name="password"
+                  placeholder="A secure and strong password"
+                  type="text"
+                  variant="filled"
+                  toggle-mask
+                />
+                <Message
+                  v-if="$form.password?.invalid"
+                  severity="error"
+                  size="small"
+                  variant="simple"
+                >
+                  {{ $form.password.error?.message }}
+                </Message>
+              </div>
+              <div class="flex flex-col gap-1">
                 <label for="assignedEstablishments">Assigned Establishments (multiple, optional)</label>
                 <MultiSelect
                   :max-selected-labels="3"
-                  :options="[]"
+                  :options="availableEstablishments"
+                  option-value="value"
+                  option-label="label"
                   fluid
                   name="assignedEstablishments"
                   placeholder="Select establishments"
+                  filter
                   variant="filled"
                 />
                 <Message

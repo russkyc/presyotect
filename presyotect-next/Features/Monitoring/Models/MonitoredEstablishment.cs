@@ -1,6 +1,11 @@
-﻿namespace Presyotect.Features.Monitoring.Models;
+﻿using System.Text.Json.Serialization;
+using LiteDB;
+using Presyotect.Core.Contracts;
+using Presyotect.Utilities;
 
-public class MonitoredEstablishment
+namespace Presyotect.Features.Monitoring.Models;
+
+public class MonitoredEstablishment : DbEntity
 {
     public string Name { get; set; }
     public string CityMunicipality { get; set; }

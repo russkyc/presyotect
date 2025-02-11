@@ -2,10 +2,16 @@ import {useAuthStore} from "@stores/auth-store.ts";
 import {useMonitoringStore} from "@stores/monitoring-store.ts";
 import {getAxiosConfig} from "@utils/ApiUtils.ts";
 import axios from "axios";
-import type {MonitoredEstablishment, Product} from "@/types/Interfaces.ts";
+import type {MonitoredEstablishment, MonitoredPrice, Product} from "@/types/Interfaces.ts";
 
 export class MonitoringService {
 
+    static async postMonitoredPrice(monitoredPrice: MonitoredPrice): Promise<Product | undefined> {
+        const axiosConfig = getAxiosConfig();
+        const response = await axios.post("/monitoring/monitored-price", monitoredPrice, axiosConfig);
+        return response.data.content;
+    }
+    
     static async getAssignedEstablishmentsCount(): Promise<number> {
         const monitoringStore = useMonitoringStore();
         const isOnline = await monitoringStore.isOnline;
