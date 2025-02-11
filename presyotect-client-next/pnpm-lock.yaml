@@ -8,6 +8,9 @@ importers:
 
   .:
     dependencies:
+      '@limonische/vue3-transition-expand':
+        specifier: ^2.0.2
+        version: 2.0.2
       '@primevue/core':
         specifier: ^4.2.5
         version: 4.2.5(vue@3.5.13(typescript@5.6.3))
@@ -837,6 +840,9 @@ packages:
 
   '@jridgewell/trace-mapping@0.3.25':
     resolution: {integrity: sha512-vNk6aEwybGtawWmy/PzwnGDOjCkLWSD2wqvjGGAgOAwCGWySYXfYoxt00IJkTF+8Lb57DwOb3Aa0o9CApepiYQ==}
+
+  '@limonische/vue3-transition-expand@2.0.2':
+    resolution: {integrity: sha512-UKDGGOPANOaQMik1KoDANlAZ203gX9A4HGD99ZdHytU68vsXCjPvMJe6OYBlhTp+NsvjBjzlAZmg9Gi/DtSwwQ==}
 
   '@nodelib/fs.scandir@2.1.5':
     resolution: {integrity: sha512-vq24Bq3ym5HEQm2NKCr3yXDwjc7vTsEThRDnkp2DK9p1uqLR+DHurm/NOTo0KG7HYHU7eppKZj3MyqYuMBf62g==}
@@ -3829,6 +3835,8 @@ snapshots:
     dependencies:
       '@jridgewell/resolve-uri': 3.1.2
       '@jridgewell/sourcemap-codec': 1.5.0
+
+  '@limonische/vue3-transition-expand@2.0.2': {}
 
   '@nodelib/fs.scandir@2.1.5':
     dependencies:

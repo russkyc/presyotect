@@ -11,6 +11,7 @@ public class ProductEndpoints : GenericEndpoint<Product>, IEndpointRouteHandlerB
         var group = endpoints.MapApiGroup("products")
             .WithTags("Products");
 
+        group.MapPost("/import", OnImport);
         group.MapGet("/", OnGet);
         group.MapGet("/count", OnGetCount);
         group.MapPost("/", OnAdd);
@@ -19,4 +20,8 @@ public class ProductEndpoints : GenericEndpoint<Product>, IEndpointRouteHandlerB
         group.MapDelete("/{id}", OnDelete);
     }
 
+    private static async Task<IResult> OnImport(HttpContext context)
+    {
+        return null;
+    }
 }

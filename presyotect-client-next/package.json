@@ -9,6 +9,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@limonische/vue3-transition-expand": "^2.0.2",
     "@primevue/core": "^4.2.5",
     "@primevue/forms": "^4.2.5",
     "@types/node": "^22.13.1",
