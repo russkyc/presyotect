@@ -46,13 +46,14 @@ export interface CityMunicipality {
 export interface Product {
     id?: string,
     key: string | null,
-    sku: string | null,
+    sku?: string | null,
     name: string,
     size: string | null,
     status?: string,
-    category: string[] | null,
+    category?: string[] | null,
     classification: string | null,
-    srp: number | null
+    srp?: number | null,
+    monitoredPrices?: MonitoredPrice[] | null
 }
 
 export interface MonitoredEstablishment {
@@ -90,4 +91,14 @@ export interface Personnel {
     nickname: string;
     fullName: string;
     assignedEstablishments?: string[] | null;
+}
+
+export interface MonitoredPrice {
+    created?: Date | null;
+    productId?: string | null;
+    personnelId?: string | null;
+    establishmentId?: string | null;
+    price: number | null;
+    remarks?: string | null;
+    status?: string | null;
 }

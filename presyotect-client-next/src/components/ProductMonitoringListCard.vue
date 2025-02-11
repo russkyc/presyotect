@@ -1,19 +1,31 @@
 <script setup lang="ts">
-
 import {TransitionExpand} from "@limonische/vue3-transition-expand";
+import {Form, type FormSubmitEvent} from "@primevue/forms";
+import {zodResolver} from "@primevue/forms/resolvers/zod";
+import {useAuthStore} from "@stores/auth-store.ts";
+import {useMonitoringStore} from "@stores/monitoring-store.ts";
 import {onClickOutside} from "@vueuse/core";
-import {Button, Card, IconField, InputIcon, InputText} from "primevue";
+import {orderBy} from "natural-orderby";
+import {Button, Card, InputNumber, InputText, Message} from "primevue";
 import {useConfirm} from "primevue/useconfirm";
-import {ref} from "vue";
-import type {Product} from "@/types/Interfaces.ts";
+import {useToast} from "primevue/usetoast";
+import {onMounted, ref} from "vue";
+import {z} from "zod";
+import {MonitoringService} from "@/services/data/monitoring-service.ts";
+import type {MonitoredPrice, Product} from "@/types/Interfaces.ts";
 
-defineProps<{
+const props = defineProps<{
   product: Product
 }>();
 
 const confirm = useConfirm();
+const toast = useToast();
+
+
 const showDetails = ref(false);
 const card = ref(null);
+const lastMonitoredPrice = ref();
+const productValue = ref(props.product);
 
 onClickOutside(card, () => {
     showDetails.value = false;
@@ -28,9 +40,45 @@ const formatter = new Intl.NumberFormat("default", {
     currency: "PHP",
 });
 
-const setCurrentPrice = () => {
+const initialValues = ref<MonitoredPrice>({
+    created: new Date(),
+    price: null,
+    remarks: null,
+    status: null,
+    personnelId: null,
+    establishmentId: null
+});
+
+const resolver = ref(zodResolver(
+    z.object({
+        price: z.number().min(1, {message: "Price must be a positive number."}),
+        remarks: z.string().nullable()
+    })
+));
+
+onMounted(() => getLastMonitoredPrice());
+
+const getLastMonitoredPrice = () => {
+    const monitoringStore = useMonitoringStore();
+    const monitoredPrices = productValue.value.monitoredPrices?.filter(mp => mp.establishmentId === monitoringStore.activeEstablishment?.id) ?? [];
+    const orderedMonitoredPrices = orderBy<MonitoredPrice>(monitoredPrices, [mp => mp.created], ["desc"]);
+    if (orderedMonitoredPrices.length > 0) {
+        lastMonitoredPrice.value = orderedMonitoredPrices[0].price;
+    }
+};
+
+const onFormSubmit = async (form: FormSubmitEvent) => {
+    if (!form.valid) {
+        toast.add({
+            severity: "error",
+            summary: "Invalid Price",
+            detail: "Please enter a valid price.",
+            life: 2000
+        });
+        return;
+    }
     confirm.require({
-        message: "Are you sure you want to update the price?",
+        message: "Are you sure you want to set the new price?",
         header: "Confirmation",
         rejectProps: {
             label: "Cancel",
@@ -40,11 +88,39 @@ const setCurrentPrice = () => {
             label: "Update"
         },
         accept: async () => {
+            const authStore = useAuthStore();
+            const monitoringStore = useMonitoringStore();
+            const monitoredPrice = form.values as MonitoredPrice;
+
+            monitoredPrice.productId = props.product.id;
+            monitoredPrice.price = monitoredPrice.price!;
+            monitoredPrice.personnelId = authStore.userClaims?.nameid;
+            monitoredPrice.establishmentId = monitoringStore.activeEstablishment?.id;
+            
+            console.log(monitoringStore.activeEstablishment);
+
+            const response = await MonitoringService.postMonitoredPrice(monitoredPrice);
+            productValue.value.monitoredPrices?.push(monitoredPrice);
+            if (!response) {
+                toast.add({
+                    severity: "error",
+                    summary: "Price Not Updated",
+                    detail: "An error occurred while updating the price.",
+                    life: 2000
+                });
+                return;
+            }
+            toast.add({
+                severity: "success",
+                summary: "Price Updated",
+                detail: "Price updated successfully.",
+                life: 2000
+            });
             showDetails.value = false;
+            getLastMonitoredPrice();
         }
     });
-}
-
+};
 </script>
 
 <template>
@@ -60,14 +136,14 @@ const setCurrentPrice = () => {
         >
           <div class="flex flex-col grow">
             <p class="truncate font-semibold leading-normal">
-              {{ product.name }}
+              {{ productValue.name }}
             </p>
             <p class="truncate text-sm font-semibold opacity-60">
-              {{ product.size }}
+              {{ productValue.size }}
             </p>
           </div>
           <p class="font-bold text-md">
-            {{ formatter.format(0) }}
+            {{ lastMonitoredPrice ? formatter.format(lastMonitoredPrice) : "No data" }}
           </p>
         </div>
         <TransitionExpand :duration="320">
@@ -80,7 +156,7 @@ const setCurrentPrice = () => {
                 SKU / Barcode
               </p>
               <p class="font-semibold">
-                {{ product.sku ?? "none" }}
+                {{ productValue.sku ?? "none" }}
               </p>
             </div>
             <div class="flex gap-4">
@@ -99,39 +175,62 @@ const setCurrentPrice = () => {
                 {{ formatter.format(0) }}
               </p>
             </div>
-            <div class="flex flex-col gap-3 mt-3">
-              <div class="flex-flex-col gap-1">
-                <IconField
-                  class="[&>.p-inputtext:not(:first-child)]:ps-7"
-                >
-                  <InputIcon>
-                    <p>₱</p>
-                  </InputIcon>
-                  <InputText
+            <Form
+              :initial-values="initialValues"
+              :resolver="resolver"
+              v-slot="$form"
+              class="flex flex-col gap-4 mt-3"
+              @submit="onFormSubmit"
+            >
+              <div class="flex flex-col gap-2">
+                <div class="flex-flex-col gap-1">
+                  <label for="price">Current Price</label>
+                  <InputNumber
                     autofocus
                     fluid
-                    name="currentPrice"
+                    mode="currency"
+                    currency="PHP"
+                    locale="en-US"
+                    name="price"
                     placeholder="0.00"
+                    type="number"
+                    variant="filled"
+                  />
+                  <Message
+                    v-if="$form.price?.invalid"
+                    severity="error"
+                    size="small"
+                    variant="simple"
+                  >
+                    {{ $form.price.error?.message }}
+                  </Message>
+                </div>
+                <div class="flex-flex-col gap-1">
+                  <label for="remarks">Remarks (optional)</label>
+                  <InputText
+                    fluid
+                    name="remarks"
+                    placeholder="Remarks"
                     type="text"
                     variant="filled"
                   />
-                </IconField>
+                  <Message
+                    v-if="$form.remarks?.invalid"
+                    severity="error"
+                    size="small"
+                    variant="simple"
+                  >
+                    {{ $form.remarks.error?.message }}
+                  </Message>
+                </div>
               </div>
               <Button
                 label="Submit"
                 type="submit"
-                @click="setCurrentPrice"
               >
                 Set Current Price
               </Button>
-              <Button
-                label="Submit"
-                type="submit"
-                variant="outlined"
-              >
-                Set No Movement
-              </Button>
-            </div>
+            </Form>
           </div>
         </TransitionExpand>
       </div>
@@ -140,5 +239,4 @@ const setCurrentPrice = () => {
 </template>
 
 <style scoped>
-
 </style>
