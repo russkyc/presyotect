@@ -17,7 +17,7 @@ export const useMonitoringStore = defineStore(
                 const apiHost = import.meta.env.VITE_API_HOST;
                 await axios.get("/check",{
                     baseURL: apiHost,
-                    timeout: 200
+                    timeout: 2000
                 })
                 return true;
             } catch {
