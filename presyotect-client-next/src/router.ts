@@ -10,6 +10,7 @@ import PersonnelView from "@features/personnel/PersonnelView.vue";
 import AddProductView from "@features/products/AddProductView.vue";
 import ProductsView from "@features/products/ProductsView.vue";
 import SettingsView from "@features/settings/SettingsView.vue";
+import AddPersonnelView from "@features/personnel/AddPersonnelView.vue";
 import {refreshToken} from "@services/auth/auth-service.ts";
 import {useActionsStore} from "@stores/actions-store.ts";
 import {useAuthStore} from "@stores/auth-store.ts";
@@ -88,11 +89,25 @@ const routes = [
     {
         name: "personnel",
         path: Routes.Personnel,
-        component: PersonnelView,
-        meta: {
-            title: "Personnel",
-            roles: [Roles.Admin]
-        }
+        children: [
+            {
+                name: "personnel-home",
+                path: "",
+                component: PersonnelView,
+                meta: {
+                    title: "Personnel",
+                    roles: [Roles.Admin]
+                }
+            },
+            {
+                path: "add",
+                component: AddPersonnelView,
+                meta: {
+                    title: "Personnel",
+                    roles: [Roles.Admin]
+                }
+            }
+        ]
     },
     {
         name: "analytics",

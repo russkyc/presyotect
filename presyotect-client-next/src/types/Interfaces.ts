@@ -73,3 +73,10 @@ export interface Establishment {
     email?: string;
     socials?: Record<string, string>;
 }
+
+export interface Personnel {
+    id?: string;
+    nickname: string;
+    fullName: string;
+    assignedEstablishments?: string[] | null;
+}
