@@ -6,11 +6,11 @@ import EstablishmentsView from "@features/establishments/EstablishmentsView.vue"
 import PriceMonitoringView from "@features/monitoring/PriceMonitoringView.vue";
 import NotAuthorizedView from "@features/NotAuthorizedView.vue";
 import NotFoundView from "@features/NotFoundView.vue";
+import AddPersonnelView from "@features/personnel/AddPersonnelView.vue";
 import PersonnelView from "@features/personnel/PersonnelView.vue";
 import AddProductView from "@features/products/AddProductView.vue";
 import ProductsView from "@features/products/ProductsView.vue";
 import SettingsView from "@features/settings/SettingsView.vue";
-import AddPersonnelView from "@features/personnel/AddPersonnelView.vue";
 import {refreshToken} from "@services/auth/auth-service.ts";
 import {useActionsStore} from "@stores/actions-store.ts";
 import {useAuthStore} from "@stores/auth-store.ts";
@@ -171,13 +171,7 @@ router.beforeEach(async (to, _, next) => {
     const toNameIsLogin = to.name === "login";
     
     if (!tokenIsNull && authStore.isTokenExpired) {
-        try {
-            await refreshToken();
-        } catch {
-            console.error("Token refresh failed");
-            next({name: "login"});
-            return;
-        }
+        await refreshToken();
     }
 
     if (actionsStore.hasPendingActions) {

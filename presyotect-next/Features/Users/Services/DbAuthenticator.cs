@@ -94,6 +94,11 @@ public class DbAuthenticator(IConfiguration configuration, ILiteDatabaseAsync da
     public Task<Validation> ValidateRefreshToken(RefreshTokenRequest refreshTokenRequest)
     {
         var validation = new Validation();
+        if (string.IsNullOrWhiteSpace(refreshTokenRequest.Token))
+        {
+            validation.Message = "Token cannot be null.";
+            return Task.FromResult(validation);
+        }
         var principal = TokenUtils.GetPrincipalFromExpiredToken(configuration, refreshTokenRequest.Token);
         if (principal == null)
         {

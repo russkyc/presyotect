@@ -1,5 +1,5 @@
 import {refreshToken} from "@services/auth/auth-service.ts";
-import {useIdle, useIntervalFn} from "@vueuse/core";
+import {useIntervalFn} from "@vueuse/core";
 import {jwtDecode} from "jwt-decode";
 import {defineStore} from "pinia";
 import {computed, ref} from "vue";
@@ -9,7 +9,6 @@ export const useAuthStore = defineStore(
     "authStore",
     () => {
         const token = ref();
-        const {idle} = useIdle(5 * 60 * 1000);
         const userClaims = computed(() => {
             if (token.value == null){
                 return null;
@@ -27,16 +26,12 @@ export const useAuthStore = defineStore(
         });
 
         const checkTokenExpiration = async () => {
-            console.log("Idle: ", idle.value);
-            if (isTokenExpired.value && !idle.value) {
-                console.log("Checking token expiration...");
+            if (isTokenExpired.value) {
                 await refreshToken();
             }
         };
 
         useIntervalFn(checkTokenExpiration, 15 * 60 * 1000);
-
-        checkTokenExpiration();
 
         return {token, userClaims, isTokenExpired};
     },

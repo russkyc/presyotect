@@ -7,7 +7,6 @@ import router from "@/router.ts";
 import type {AuthState} from "@/types/Interfaces.ts";
 
 export async function login(username: string, password: string): Promise<AuthState> {
-
     const authStore = useAuthStore();
     const axiosConfig = getAxiosConfig();
 
@@ -27,15 +26,17 @@ export async function login(username: string, password: string): Promise<AuthSta
 }
 
 export async function refreshToken(): Promise<void> {
-    
     const authStore = useAuthStore();
     const axiosConfig = getAxiosConfig();
 
     try {
+        console.log("fetching refresh token..");
         const result = await axios.post("/auth/refresh-token", {token: authStore.token}, axiosConfig);
-        authStore.token = result.data.content;
+        if (result.data.success === false && authStore.isTokenExpired) {
+            await logout();
+        }
     } catch {
-        await logout();
+        console.log("failed to refresh token.");
     }
 }
 
