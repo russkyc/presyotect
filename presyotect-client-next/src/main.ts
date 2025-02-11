@@ -21,4 +21,10 @@ app.use(PrimeVue, {
 app.use(ToastService);
 app.use(ConfirmationService);
 
+app.directive("focus", {
+    mounted(el) {
+        el.focus()
+    }
+})
+
 app.mount("#app");

@@ -1,7 +1,9 @@
 <script setup lang="ts">
 
 import {TransitionExpand} from "@limonische/vue3-transition-expand";
-import {Button, Card} from "primevue";
+import {onClickOutside} from "@vueuse/core";
+import {Button, Card, IconField, InputIcon, InputText} from "primevue";
+import {useConfirm} from "primevue/useconfirm";
 import {ref} from "vue";
 import type {Product} from "@/types/Interfaces.ts";
 
@@ -9,7 +11,13 @@ defineProps<{
   product: Product
 }>();
 
+const confirm = useConfirm();
 const showDetails = ref(false);
+const card = ref(null);
+
+onClickOutside(card, () => {
+    showDetails.value = false;
+});
 
 const toggleShow = () => {
     showDetails.value = !showDetails.value;
@@ -20,11 +28,29 @@ const formatter = new Intl.NumberFormat("default", {
     currency: "PHP",
 });
 
+const setCurrentPrice = () => {
+    confirm.require({
+        message: "Are you sure you want to update the price?",
+        header: "Confirmation",
+        rejectProps: {
+            label: "Cancel",
+            severity: "secondary"
+        },
+        acceptProps: {
+            label: "Update"
+        },
+        accept: async () => {
+            showDetails.value = false;
+        }
+    });
+}
+
 </script>
 
 <template>
   <Card
-    class="rounded-lg [&>.p-card-body]:p-4"
+    ref="card"
+    class="rounded-lg [&>.p-card-body]:p-4 [&>.p-card-body]:pt-3"
   >
     <template #content>
       <div class="flex flex-col">
@@ -33,7 +59,7 @@ const formatter = new Intl.NumberFormat("default", {
           @click="toggleShow"
         >
           <div class="flex flex-col grow">
-            <p class="truncate font-semibold leading-none">
+            <p class="truncate font-semibold leading-normal">
               {{ product.name }}
             </p>
             <p class="truncate text-sm font-semibold opacity-60">
@@ -54,7 +80,7 @@ const formatter = new Intl.NumberFormat("default", {
                 SKU / Barcode
               </p>
               <p class="font-semibold">
-                {{ product.sku }}
+                {{ product.sku ?? "none" }}
               </p>
             </div>
             <div class="flex gap-4">
@@ -74,18 +100,36 @@ const formatter = new Intl.NumberFormat("default", {
               </p>
             </div>
             <div class="flex flex-col gap-3 mt-3">
+              <div class="flex-flex-col gap-1">
+                <IconField
+                  class="[&>.p-inputtext:not(:first-child)]:ps-7"
+                >
+                  <InputIcon>
+                    <p>₱</p>
+                  </InputIcon>
+                  <InputText
+                    autofocus
+                    fluid
+                    name="currentPrice"
+                    placeholder="0.00"
+                    type="text"
+                    variant="filled"
+                  />
+                </IconField>
+              </div>
               <Button
                 label="Submit"
                 type="submit"
+                @click="setCurrentPrice"
               >
-                Set Price Movement
+                Set Current Price
               </Button>
               <Button
                 label="Submit"
                 type="submit"
                 variant="outlined"
               >
-                No Price Movement
+                Set No Movement
               </Button>
             </div>
           </div>
