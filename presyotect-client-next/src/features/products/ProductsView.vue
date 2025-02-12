@@ -27,6 +27,14 @@ const breadcrumbs: BreadcrumbItem[] = [
     {label: "Products"}
 ];
 
+const selectedClassifications = ref<string[]>([]);
+const availableClassifications = ref([
+    {shortName: "Basic", name: "Basic Necessities"},
+    {shortName: "Prime", name: "Prime Commodities"},
+    {shortName: "Construction", name: "Construction Materials"},
+    {shortName: "School", name: "School Supplies"}
+]);
+
 const items = [
     {
         label: "Import",
@@ -42,7 +50,8 @@ const selectedProduct = ref();
 const products = ref();
 const filters = ref({
     global: {value: null, matchMode: FilterMatchMode.CONTAINS},
-    name: {value: null, matchMode: FilterMatchMode.STARTS_WITH}
+    name: {value: null, matchMode: FilterMatchMode.STARTS_WITH},
+    classifications: {value: null, matchMode: FilterMatchMode.EQUALS}
 });
 
 onMounted(() => {
@@ -112,6 +121,14 @@ const menuModel = ref([
     }
 ]);
 
+const selectClassification = (classification: string) => {
+    if (selectedClassifications.value.includes(classification)) {
+        selectedClassifications.value = selectedClassifications.value.filter((selected: string) => selected !== classification);
+    } else {
+        selectedClassifications.value.push(classification);
+    }
+}
+
 </script>
 
 <template>
@@ -125,38 +142,54 @@ const menuModel = ref([
       <template v-if="!isMobile">
         <PageCard v-if="!isMobile">
           <template #card-title>
-            <IconField>
-              <InputIcon>
-                <svg
-                  class="lucide lucide-search my-auto"
-                  fill="none"
-                  height="16"
-                  stroke="currentColor"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  viewBox="0 0 24 24"
-                  width="16"
-                  xmlns="http://www.w3.org/2000/svg"
+            <div class="flex gap-4">
+              <IconField>
+                <InputIcon>
+                  <svg
+                    class="lucide lucide-search my-auto"
+                    fill="none"
+                    height="16"
+                    stroke="currentColor"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    viewBox="0 0 24 24"
+                    width="16"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <circle
+                      cx="11"
+                      cy="11"
+                      r="8"
+                    />
+                    <path d="m21 21-4.3-4.3" />
+                  </svg>
+                </InputIcon>
+                <InputText
+                  v-model="filters['global'].value"
+                  class="max-sm:grow md:w-80"
+                  fluid
+                  name="search"
+                  placeholder="Find Product"
+                  type="text"
+                  variant="filled"
+                />
+              </IconField>
+              <div class="flex gap-2 flex-wrap">
+                <template
+                  v-for="classification in availableClassifications"
+                  :key="classification.shortName"
                 >
-                  <circle
-                    cx="11"
-                    cy="11"
-                    r="8"
-                  />
-                  <path d="m21 21-4.3-4.3" />
-                </svg>
-              </InputIcon>
-              <InputText
-                v-model="filters['global'].value"
-                class="max-sm:grow md:w-80"
-                fluid
-                name="search"
-                placeholder="Find Product"
-                type="text"
-                variant="filled"
-              />
-            </IconField>
+                  <Chip
+                    :data-selected="selectedClassifications.includes(classification.name)"
+                    @click="selectClassification(classification.name)"
+                    class="text-sm leading-none pb-1.5 my-auto py-1 px-3 font-semibold rounded-full text-[--p-primary-color] border bg-[--p-highlight-background] data-[selected=true]:text-[--p-primary-contrast-color] data-[selected=true]:border-[--p-primary-active-color] data-[selected=true]:bg-[--p-primary-color]"
+                  >
+                    {{ classification.shortName }}
+                  </Chip>
+                </template>
+              </div>
+            </div>
           </template>
           <template #card-actions>
             <SplitButton

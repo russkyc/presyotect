@@ -95,6 +95,10 @@ export interface Personnel {
     assignedEstablishments?: string[] | null;
 }
 
+/*
+* Price Monitoring Types
+*/
+
 export interface MonitoredPrice {
     created?: Date | null;
     productId?: string | null;
@@ -103,4 +107,22 @@ export interface MonitoredPrice {
     price: number | null;
     remarks?: string | null;
     status?: string | null;
+}
+
+export interface PriceMonitoringRecordPrice {
+    establishmentId: string;
+    establishmentName: string;
+    price: string;
+    recorded: Date;
+    status: string;
+    cityMunicipality?: string;
+}
+
+export interface PriceMonitoringRecord {
+    productId: string;
+    productName: string;
+    productSize: string;
+    productClassification: string;
+    productCategories?: string[] | null;
+    monitoredPrices?: PriceMonitoringRecordPrice[] | null
 }
