@@ -24,7 +24,7 @@ componentStore.$subscribe(() => {
 <template>
   <aside
     :style="{width: activeWidth}"
-    class="sticky top-0 sidebar h-[calc(100vh-63.2px)] flex flex-col transition-all duration-100 border-r p-3 bg-[--p-surface-0] gap-2"
+    class="sticky top-0 sidebar border-surface-200 dark:border-surface-700 h-[calc(100vh-63.2px)] flex flex-col transition-all duration-100 border-r p-3 bg-surface-0 dark:bg-surface-900 gap-2"
   >
     <NavLink
       content="Dashboard"

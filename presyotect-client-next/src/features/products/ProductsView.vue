@@ -180,13 +180,15 @@ const selectClassification = (classification: string) => {
                   v-for="classification in availableClassifications"
                   :key="classification.shortName"
                 >
-                  <Chip
-                    :data-selected="selectedClassifications.includes(classification.name)"
-                    @click="selectClassification(classification.name)"
-                    class="text-sm leading-none pb-1.5 my-auto py-1 px-3 font-semibold rounded-full text-[--p-primary-color] border bg-[--p-highlight-background] data-[selected=true]:text-[--p-primary-contrast-color] data-[selected=true]:border-[--p-primary-active-color] data-[selected=true]:bg-[--p-primary-color]"
-                  >
-                    {{ classification.shortName }}
-                  </Chip>
+                  <div class="card flex justify-center">
+                    <Chip
+                      :data-selected="selectedClassifications.includes(classification.name)"
+                      @click="selectClassification(classification.name)"
+                      class="text-sm leading-none pb-1.5 my-auto py-1 px-3 font-semibold rounded-full text-[--p-primary-color] border bg-[--p-highlight-background] data-[selected=true]:text-[--p-primary-contrast-color] data-[selected=true]:border-[--p-primary-active-color] data-[selected=true]:bg-[--p-primary-color]"
+                    >
+                      {{ classification.shortName }}
+                    </Chip>
+                  </div>
                 </template>
               </div>
             </div>
