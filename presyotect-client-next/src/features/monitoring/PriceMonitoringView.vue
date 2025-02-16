@@ -1,10 +1,11 @@
 <script lang="ts" setup>
+import {AddressService} from "@services/data/address-service.ts";
 import {MonitoringService} from "@services/data/monitoring-service.ts";
 import {useMonitoringStore} from "@stores/monitoring-store.ts";
 import {breakpointsTailwind, useBreakpoints, watchDebounced} from "@vueuse/core";
-import {Button, Card, Chip, DatePicker, IconField, InputIcon, InputText} from "primevue";
+import {Button, Card, Chip, IconField, InputIcon, InputText, Select} from "primevue";
 import {useConfirm} from "primevue/useconfirm";
-import {onMounted, ref} from "vue";
+import {onBeforeMount, onMounted, ref} from "vue";
 import ActiveMonitoredEstablishmentCard from "@/components/ActiveMonitoredEstablishmentCard.vue";
 import Page from "@/components/Page.vue";
 import PageCard from "@/components/PageCard.vue";
@@ -23,6 +24,8 @@ const filter = ref<string>("");
 
 const establishments = ref();
 const filteredEstablishments = ref();
+const citiesMunicipalities = ref();
+const location = ref();
 
 const products = ref();
 const filteredProducts = ref();
@@ -35,7 +38,14 @@ const availableClassifications = ref([
     {shortName: "School", name: "School Supplies"}
 ]);
 
-onMounted(() => {
+onBeforeMount(async () => {
+    const addressDataCityMunicipality = await AddressService.GetCitiesMunicipalitiesByProvince("050500000");
+    const dataCityMunicipality = addressDataCityMunicipality.map((cityMunicipality) => cityMunicipality.name);
+    citiesMunicipalities.value = ["All (Albay)",...dataCityMunicipality];
+    location.value = citiesMunicipalities.value[0];
+});
+
+onMounted(async () => {
     if (monitoringStore.activeEstablishment) {
         MonitoringService.getMonitoredProducts().then((response) => {
             const establishmentFilteredProducts = response?.filter((product:Product) => monitoringStore.activeEstablishment!.classifications.includes(product.classification!));
@@ -125,6 +135,7 @@ const selectClassification = (classification: string) => {
 
 <template>
   <Page
+    show-drawer-toggle
     :breadcrumbs="breadcrumbs"
     subtitle="View latest recorded prices and product price movements"
     title="Price Monitoring"
@@ -282,7 +293,12 @@ const selectClassification = (classification: string) => {
           </template>
           <template #card-actions>
             <div class="flex gap-4">
-              <DatePicker />
+              <Select
+                v-model="location"
+                :options="citiesMunicipalities"
+                variant="filled"
+                class="w-48"
+              />
             </div>
           </template>
         </PageCard>
@@ -349,6 +365,12 @@ const selectClassification = (classification: string) => {
         </div>
       </template>
     </template>
+    <template #drawer-header>
+      <h2 class="font-medium text-xl">
+        Configuration
+      </h2>
+    </template>
+    <template #drawer-content />
   </Page>
 </template>
 
