@@ -101,9 +101,7 @@ const navigate = (url: string | undefined) => {
     <template #header>
       <slot name="drawer-header" />
     </template>
-    <template>
-      <slot name="drawer-content" />
-    </template>
+    <slot name="drawer-content" />
     <template #footer>
       <slot name="drawer-footer" />
     </template>

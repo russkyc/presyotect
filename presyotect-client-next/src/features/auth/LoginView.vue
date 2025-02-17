@@ -73,7 +73,7 @@ const authenticate = async (form: FormSubmitEvent) => {
 
 <template>
   <div class="flex grow bg-surface-100 dark:bg-surface-950 text-surface-700 dark:text-surface-0">
-    <div class="relative flex flex-col w-full border-surface-200 dark:border-surface-700 lg:border-r lg:w-2/5 bg-surface-100 dark:bg-surface-950 text-surface-700 dark:text-surface-0">
+    <div class="relative flex flex-col w-full border-surface-200 dark:border-surface-700 lg:border-r lg:w-2/5 bg-white dark:bg-surface-950 text-surface-700 dark:text-surface-0">
       <img
         alt=""
         class="absolute top-8 left-8 h-6 block max-md:hidden"

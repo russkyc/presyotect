@@ -35,6 +35,12 @@ const availableClassifications = ref([
     {shortName: "School", name: "School Supplies"}
 ]);
 
+const availableCategories = ref([
+    "Powdered Milk",
+    "Canned Goods",
+    "Bottled Water"
+]);
+
 const items = [
     {
         label: "Import",
@@ -308,6 +314,39 @@ const selectClassification = (classification: string) => {
           <Card class="grow rounded-lg" />
         </div>
       </template>
+    </template>
+    <template #drawer-header>
+      <h2 class="font-medium text-xl">
+        Configuration
+      </h2>
+    </template>
+    <template #drawer-content>
+      <div class="flex flex-col gap-4">
+        <h3 class="text-lg font-medium">
+          Classifications
+        </h3>
+        <div class="flex flex-col gap-3">
+          <template v-for="classification in availableClassifications">
+            <Card class="grow rounded-lg">
+              <template #content>
+                <p>{{ classification.name }}</p>
+              </template>
+            </Card>
+          </template>
+        </div>
+        <h3 class="text-lg font-medium">
+          Categories
+        </h3>
+        <div class="flex flex-col gap-3">
+          <template v-for="category in availableCategories">
+            <Card class="grow rounded-lg">
+              <template #content>
+                <p>{{ category }}</p>
+              </template>
+            </Card>
+          </template>
+        </div>
+      </div>
     </template>
   </Page>
 </template>
