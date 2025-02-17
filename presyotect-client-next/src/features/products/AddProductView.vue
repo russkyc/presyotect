@@ -2,6 +2,7 @@
 
 import {Form, type FormSubmitEvent} from "@primevue/forms";
 import {zodResolver} from "@primevue/forms/resolvers/zod";
+import {ConfigurationService} from "@services/data/configuration-service.ts";
 import {useActionsStore} from "@stores/actions-store";
 import {Button, InputText, Message, MultiSelect, Select} from "primevue";
 import {useConfirm} from "primevue/useconfirm";
@@ -33,12 +34,7 @@ const breadcrumbs: BreadcrumbItem[] = [
     {label: "Add"}
 ];
 
-const availableCategories = ref([
-    "Basic Necessities",
-    "Prime Commodities",
-    "Construction Materials",
-    "School Supplies"
-]);
+const availableCategories = ref();
 
 const availableClassifications = ref([
     "Basic Necessities",
@@ -60,6 +56,10 @@ const resolver = ref(zodResolver(
 
 onMounted(() => {
     actionsStore.addPendingActions();
+
+    ConfigurationService.getCategories().then((response) => {
+        availableCategories.value = response;
+    });
 });
 
 const onFormSubmit = async (form: FormSubmitEvent) => {

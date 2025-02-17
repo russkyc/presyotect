@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 
 import {FilterMatchMode} from "@primevue/core";
+import {ConfigurationService} from "@services/data/configuration-service.ts";
 import {breakpointsTailwind, useBreakpoints} from "@vueuse/core";
 import {
     Card,
@@ -63,6 +64,9 @@ const filters = ref({
 onMounted(() => {
     ProductsService.getProducts().then((response) => {
         products.value = response;
+    });
+    ConfigurationService.getCategories().then((response) => {
+        availableCategories.value = response;
     });
 });
 
