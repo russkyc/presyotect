@@ -49,7 +49,7 @@ const resolver = ref(zodResolver(
         key: z.string().nullable(),
         name: z.string().min(1, {message: "Product name is required."}),
         size: z.string().min(1, {message: "Product size is required."}),
-        classification: z.string(),
+        classification: z.string({message: "Product classification is required."}),
         category: z.array(z.string()).nullable()
     })
 ));
@@ -236,6 +236,8 @@ const onFormSubmit = async (form: FormSubmitEvent) => {
                   :max-selected-labels="3"
                   :options="availableCategories"
                   fluid
+                  option-label="name"
+                  option-value="name"
                   name="category"
                   placeholder="Select categories"
                   variant="filled"

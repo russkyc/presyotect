@@ -1,5 +1,4 @@
-﻿using System.Text.Json;
-using Presyotect.Core.Contracts;
+﻿using Presyotect.Core.Contracts;
 using Presyotect.Features.Users.Models;
 using Presyotect.Features.Users.Services;
 using Presyotect.Utilities;
@@ -42,28 +41,36 @@ public class AuthEndpoints : IEndpointRouteHandlerBuilder
         RefreshTokenRequest refreshTokenRequest)
     {
         var response = new ResponseData<string>();
-        var validation = await authenticator.ValidateRefreshToken(refreshTokenRequest);
-
-        if (!validation.Valid)
+        try
         {
-            response.Success = false;
-            response.Errors = ["Invalid refresh token."];
+            var validation = await authenticator.ValidateRefreshToken(refreshTokenRequest);
+            if (!validation.Valid)
+            {
+                response.Success = false;
+                response.Errors = ["Invalid refresh token."];
+                return Results.Ok(response);
+            }
+
+            var newTokenValidation = await authenticator.RefreshToken(refreshTokenRequest);
+
+            if (!newTokenValidation.Valid)
+            {
+                response.Success = false;
+                response.Errors = ["Invalid refresh token."];
+                return Results.Ok(response);
+            }
+
+            response.Success = true;
+            response.Message = "Refresh token validated, Issued new token.";
+            response.Content = newTokenValidation.Message;
+
             return Results.Ok(response);
         }
-
-        var newTokenValidation = await authenticator.RefreshToken(refreshTokenRequest);
-
-        if (!newTokenValidation.Valid)
+        catch (Exception e)
         {
             response.Success = false;
-            response.Errors = ["Invalid refresh token."];
+            response.Errors = ["Token is expired"];
             return Results.Ok(response);
         }
-
-        response.Success = true;
-        response.Message = "Refresh token validated, Issued new token.";
-        response.Content = newTokenValidation.Message;
-
-        return Results.Ok(response);
     }
 }

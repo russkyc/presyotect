@@ -95,6 +95,19 @@ export interface Personnel {
     assignedEstablishments?: string[] | null;
 }
 
+export interface Category {
+    id?: string | null;
+    name: string;
+    group: string;
+    shortName: string;
+}
+
+export interface Classification {
+    id?: string | null;
+    name: string;
+    shortName: string;
+}
+
 /*
 * Price Monitoring Types
 */
