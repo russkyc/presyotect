@@ -1,9 +1,22 @@
 <script lang="ts" setup>
+import {FilterMatchMode} from "@primevue/core";
 import {AddressService} from "@services/data/address-service.ts";
 import {MonitoringService} from "@services/data/monitoring-service.ts";
 import {useMonitoringStore} from "@stores/monitoring-store.ts";
 import {breakpointsTailwind, useBreakpoints, watchDebounced} from "@vueuse/core";
-import {Button, Card, Chip, IconField, InputIcon, InputText, Select} from "primevue";
+import {
+    Button,
+    Card,
+    Checkbox,
+    Chip,
+    Column,
+    DataTable,
+    DatePicker,
+    IconField,
+    InputIcon,
+    InputText,
+    Select
+} from "primevue";
 import {useConfirm} from "primevue/useconfirm";
 import {onBeforeMount, onMounted, ref} from "vue";
 import ActiveMonitoredEstablishmentCard from "@/components/ActiveMonitoredEstablishmentCard.vue";
@@ -22,6 +35,12 @@ const breadcrumbs: BreadcrumbItem[] = [
 
 const filter = ref<string>("");
 
+const filters = ref({
+    global: {value: null, matchMode: FilterMatchMode.CONTAINS},
+    name: {value: null, matchMode: FilterMatchMode.STARTS_WITH},
+    classifications: {value: null, matchMode: FilterMatchMode.EQUALS}
+});
+
 const establishments = ref();
 const filteredEstablishments = ref();
 const citiesMunicipalities = ref();
@@ -29,6 +48,7 @@ const location = ref();
 
 const products = ref();
 const filteredProducts = ref();
+const dates = ref();
 
 const selectedClassifications = ref<string[]>([]);
 const availableClassifications = ref([
@@ -38,17 +58,29 @@ const availableClassifications = ref([
     {shortName: "School", name: "School Supplies"}
 ]);
 
+const dateRanges = ref([
+    "Last 7 Days",
+    "Last 14 Days",
+    "Last 30 days",
+    "Last 3 Months",
+    "Last 6 Months",
+    "Current Year",
+    "Custom"
+]);
+
+const dateRange = ref("Last 7 Days");
+
 onBeforeMount(async () => {
     const addressDataCityMunicipality = await AddressService.GetCitiesMunicipalitiesByProvince("050500000");
     const dataCityMunicipality = addressDataCityMunicipality.map((cityMunicipality) => cityMunicipality.name);
-    citiesMunicipalities.value = ["All (Albay)",...dataCityMunicipality];
+    citiesMunicipalities.value = ["All (Albay)", ...dataCityMunicipality];
     location.value = citiesMunicipalities.value[0];
 });
 
 onMounted(async () => {
     if (monitoringStore.activeEstablishment) {
         MonitoringService.getMonitoredProducts().then((response) => {
-            const establishmentFilteredProducts = response?.filter((product:Product) => monitoringStore.activeEstablishment!.classifications.includes(product.classification!));
+            const establishmentFilteredProducts = response?.filter((product: Product) => monitoringStore.activeEstablishment!.classifications.includes(product.classification!));
             products.value = establishmentFilteredProducts;
             filteredProducts.value = establishmentFilteredProducts;
         });
@@ -63,9 +95,9 @@ onMounted(async () => {
 watchDebounced(filter, (value) => {
     if (value && value.length > 0) {
         if (monitoringStore.activeEstablishment) {
-            filteredProducts.value = products.value.filter((product:Product) => product.name.toLowerCase().includes(value.toLowerCase()));
+            filteredProducts.value = products.value.filter((product: Product) => product.name.toLowerCase().includes(value.toLowerCase()));
         } else {
-            filteredEstablishments.value = establishments.value.filter((establishment:Establishment) => establishment.name.toLowerCase().includes(value.toLowerCase()));
+            filteredEstablishments.value = establishments.value.filter((establishment: Establishment) => establishment.name.toLowerCase().includes(value.toLowerCase()));
         }
     } else {
         if (monitoringStore.activeEstablishment) {
@@ -91,13 +123,13 @@ const startMonitoring = (establishment: MonitoredEstablishment) => {
         accept: async () => {
             monitoringStore.activeEstablishment = establishment;
             MonitoringService.getMonitoredProducts().then((response) => {
-                const establishmentFilteredProducts = response?.filter((product:Product) => monitoringStore.activeEstablishment!.classifications.includes(product.classification!));
+                const establishmentFilteredProducts = response?.filter((product: Product) => monitoringStore.activeEstablishment!.classifications.includes(product.classification!));
                 products.value = establishmentFilteredProducts;
                 filteredProducts.value = establishmentFilteredProducts;
             });
         }
     });
-    
+
 };
 
 const endMonitoring = () => {
@@ -120,7 +152,7 @@ const endMonitoring = () => {
             });
         }
     });
-    
+
 };
 
 const selectClassification = (classification: string) => {
@@ -193,7 +225,15 @@ const selectClassification = (classification: string) => {
             stroke-linecap="round"
             stroke-linejoin="round"
             class="lucide lucide-scan-barcode my-auto shrink-0"
-          ><path d="M3 7V5a2 2 0 0 1 2-2h2" /><path d="M17 3h2a2 2 0 0 1 2 2v2" /><path d="M21 17v2a2 2 0 0 1-2 2h-2" /><path d="M7 21H5a2 2 0 0 1-2-2v-2" /><path d="M8 7v10" /><path d="M12 7v10" /><path d="M17 7v10" /></svg>
+          >
+            <path d="M3 7V5a2 2 0 0 1 2-2h2" />
+            <path d="M17 3h2a2 2 0 0 1 2 2v2" />
+            <path d="M21 17v2a2 2 0 0 1-2 2h-2" />
+            <path d="M7 21H5a2 2 0 0 1-2-2v-2" />
+            <path d="M8 7v10" />
+            <path d="M12 7v10" />
+            <path d="M17 7v10" />
+          </svg>
           <p class="font-medium my-auto truncate">
             Barcode Scanner
           </p>
@@ -239,9 +279,7 @@ const selectClassification = (classification: string) => {
     </template>
     <template #content>
       <template v-if="!isMobile">
-        <PageCard
-          class="grow"
-        >
+        <PageCard>
           <template #card-title>
             <div class="flex gap-4">
               <IconField>
@@ -275,20 +313,6 @@ const selectClassification = (classification: string) => {
                   variant="filled"
                 />
               </IconField>
-              <div class="flex gap-2 flex-wrap">
-                <template
-                  v-for="classification in availableClassifications"
-                  :key="classification.shortName"
-                >
-                  <Chip
-                    :data-selected="selectedClassifications.includes(classification.name)"
-                    @click="selectClassification(classification.name)"
-                    class="text-sm leading-none pb-1.5 my-auto py-1 px-3 font-semibold rounded-full text-[--p-primary-color] border bg-[--p-highlight-background] data-[selected=true]:text-[--p-primary-contrast-color] data-[selected=true]:border-[--p-primary-active-color] data-[selected=true]:bg-[--p-primary-color]"
-                  >
-                    {{ classification.shortName }}
-                  </Chip>
-                </template>
-              </div>
             </div>
           </template>
           <template #card-actions>
@@ -300,6 +324,75 @@ const selectClassification = (classification: string) => {
                 class="w-48"
               />
             </div>
+          </template>
+          <template #card-content>
+            <DataTable
+              v-model:filters="filters"
+              :global-filter-fields="['sku','key', 'name', 'size', 'category']"
+              :rows="8"
+              :rows-per-page-options="[8, 20, 50, 100]"
+              :value="products"
+              context-menu
+              paginator
+              removable-sort
+              table-style="min-width: 50rem"
+            >
+              <Column
+                :sortable="true"
+                class="w-[15%]"
+                field="name"
+                header="Name"
+              />
+              <Column
+                :sortable="true"
+                class="w-[10%]"
+                field="size"
+                header="Size"
+              />
+              <Column
+                :sortable="true"
+                class="w-[10%]"
+                field="category"
+                header="Category"
+              >
+                <template #body="slotProps">
+                  <div
+                    v-if="slotProps.data.category && slotProps.data.category.length > 0"
+                    class="flex gap-2"
+                  >
+                    <Chip
+                      class="py-1 font-medium text-xs px-2 rounded-full text-[--p-primary-color] bg-[--p-highlight-background]"
+                    >
+                      {{ slotProps.data.category[0] }}
+                    </Chip>
+                    <Chip
+                      v-if="slotProps.data.category.length > 1"
+                      class="py-1 px-1.5 font-medium text-xs rounded-full  text-[--p-primary-color] bg-[--p-highlight-background]"
+                    >
+                      +{{ slotProps.data.category.length - 1 }}
+                    </Chip>
+                  </div>
+                </template>
+              </Column>
+              <Column
+                :sortable="true"
+                class="w-[5%]"
+                field="srp"
+                header="Srp"
+              />
+              <Column
+                :sortable="true"
+                class="w-[5%]"
+                field="prevailingPrice"
+                header="Prevailing"
+              />
+              <Column
+                :sortable="true"
+                class="w-[5%]"
+                field="lowestPrice"
+                header="Lowest"
+              />
+            </DataTable>
           </template>
         </PageCard>
       </template>
@@ -335,7 +428,9 @@ const selectClassification = (classification: string) => {
                         {{ establishment.categories[0] }}
                       </p>
                     </div>
-                    <div class="flex grow-0 mb-auto rounded-md bg-[--p-primary-color] text-[--p-primary-contrast-color] p-2">
+                    <div
+                      class="flex grow-0 mb-auto rounded-md bg-[--p-primary-color] text-[--p-primary-contrast-color] p-2"
+                    >
                       <svg
                         :height="24"
                         :width="24"
@@ -370,7 +465,52 @@ const selectClassification = (classification: string) => {
         Configuration
       </h2>
     </template>
-    <template #drawer-content />
+    <template #drawer-content>
+      <div class="flex flex-col gap-4">
+        <h3 class="text-lg font-medium">
+          Date Range
+        </h3>
+        <div class="flex flex-col gap-3">
+          <Select
+            v-model="dateRange"
+            :options="dateRanges"
+            variant="filled"
+          />
+          <DatePicker
+            v-model="dates"
+            v-if="dateRange === 'Custom'"
+            selection-mode="range"
+            variant="filled"
+            :manual-input="false"
+            :show-icon="true"
+          />
+        </div>
+        <h3 class="text-lg font-medium">
+          Visible Products
+        </h3>
+        <div class="flex flex-col gap-3">
+          <template
+            v-for="classification in availableClassifications"
+            :key="classification.id"
+          >
+            <Card class="grow rounded-lg [&>.p-card-body]:p-3">
+              <template #content>
+                <div class="flex">
+                  <p class="grow">
+                    {{ classification.name }}
+                  </p>
+                  <Checkbox
+                    @change="selectClassification(classification.shortName)"
+                    binary
+                    class="[&>.p-checkbox-box]:rounded-md"
+                  />
+                </div>
+              </template>
+            </Card>
+          </template>
+        </div>
+      </div>
+    </template>
   </Page>
 </template>
 

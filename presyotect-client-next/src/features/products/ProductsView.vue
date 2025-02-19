@@ -8,6 +8,7 @@ import {breakpointsTailwind, useBreakpoints} from "@vueuse/core";
 import {
     Button,
     Card,
+    Checkbox,
     Chip,
     Column,
     ContextMenu,
@@ -307,22 +308,6 @@ const selectClassification = (selectedClassification: Classification) => {
                   variant="filled"
                 />
               </IconField>
-              <div class="flex gap-2 flex-wrap">
-                <template
-                  v-for="classification in availableClassifications"
-                  :key="classification.shortName"
-                >
-                  <div class="card flex justify-center">
-                    <Chip
-                      :data-selected="selectedClassifications.includes(classification)"
-                      @click="selectClassification(classification)"
-                      class="text-sm leading-none pb-1.5 my-auto py-1 px-3 font-semibold rounded-full text-[--p-primary-color] border bg-[--p-highlight-background] data-[selected=true]:text-[--p-primary-contrast-color] data-[selected=true]:border-[--p-primary-active-color] data-[selected=true]:bg-[--p-primary-color]"
-                    >
-                      {{ classification.name }}
-                    </Chip>
-                  </div>
-                </template>
-              </div>
             </div>
           </template>
           <template #card-actions>
@@ -458,7 +443,15 @@ const selectClassification = (selectedClassification: Classification) => {
           >
             <Card class="grow rounded-lg [&>.p-card-body]:p-3">
               <template #content>
-                <p>{{ classification.name }}</p>
+                <div class="flex">
+                  <p class="grow">
+                    {{ classification.name }}
+                  </p>
+                  <Checkbox
+                    binary
+                    class="[&>.p-checkbox-box]:rounded-md"
+                  />
+                </div>
               </template>
             </Card>
           </template>
@@ -500,7 +493,15 @@ const selectClassification = (selectedClassification: Classification) => {
               class="grow rounded-lg [&>.p-card-body]:p-3"
             >
               <template #content>
-                <p>{{ category.name }}</p>
+                <div class="flex">
+                  <p class="grow">
+                    {{ category.name }}
+                  </p>
+                  <Checkbox
+                    binary
+                    class="[&>.p-checkbox-box]:rounded-md"
+                  />
+                </div>
               </template>
             </Card>
           </template>

@@ -1,32 +1,34 @@
 <script lang="ts" setup>
 import {FilterMatchMode} from "@primevue/core";
+import {Form, type FormSubmitEvent} from "@primevue/forms";
+import {zodResolver} from "@primevue/forms/resolvers/zod";
+import {ConfigurationService} from "@services/data/configuration-service.ts";
 import {breakpointsTailwind, useBreakpoints} from "@vueuse/core";
 import {
+    Button,
     Card,
+    Checkbox,
     Chip,
     Column,
     ContextMenu,
     DataTable,
     type DataTableRowContextMenuEvent,
+    Dialog,
     IconField,
     InputIcon,
     InputText,
+    Message,
     SplitButton,
     useToast
 } from "primevue";
 import {useConfirm} from "primevue/useconfirm";
 import {onMounted, ref} from "vue";
+import {z} from "zod";
 import Page from "@/components/Page.vue";
 import PageCard from "@/components/PageCard.vue";
 import router from "@/router.ts";
 import {EstablishmentsService} from "@/services/data/establishments-service.ts";
-import type {BreadcrumbItem, Establishment} from "@/types/Interfaces.ts";
-import {Form, type FormSubmitEvent} from "@primevue/forms";
-import {zodResolver} from "@primevue/forms/resolvers/zod";
-import {ConfigurationService} from "@services/data/configuration-service.ts";
-import {z} from "zod";
-import {Button, Dialog, Message} from "primevue";
-import type {Category, Classification} from "@/types/Interfaces.ts";
+import type {BreadcrumbItem, Category, Classification, Establishment} from "@/types/Interfaces.ts";
 
 const breadcrumbs: BreadcrumbItem[] = [
     {label: "Establishments"}
@@ -455,7 +457,15 @@ const selectClassification = (selectedClassification: Classification) => {
           >
             <Card class="grow rounded-lg [&>.p-card-body]:p-3">
               <template #content>
-                <p>{{ classification.name }}</p>
+                <div class="flex">
+                  <p class="grow">
+                    {{ classification.name }}
+                  </p>
+                  <Checkbox
+                    binary
+                    class="[&>.p-checkbox-box]:rounded-md"
+                  />
+                </div>
               </template>
             </Card>
           </template>
@@ -497,7 +507,15 @@ const selectClassification = (selectedClassification: Classification) => {
               class="grow rounded-lg [&>.p-card-body]:p-3"
             >
               <template #content>
-                <p>{{ category.name }}</p>
+                <div class="flex">
+                  <p class="grow">
+                    {{ category.name }}
+                  </p>
+                  <Checkbox
+                    binary
+                    class="[&>.p-checkbox-box]:rounded-md"
+                  />
+                </div>
               </template>
             </Card>
           </template>
