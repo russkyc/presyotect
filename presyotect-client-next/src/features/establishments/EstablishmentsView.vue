@@ -120,7 +120,7 @@ const addEstablishment = () => {
     router.push({path: "/establishments/add"});
 };
 
-const selectedClassifications = ref<Classification[]>([]);
+/*const selectedClassifications = ref<Classification[]>([]);*/
 const availableClassifications = ref<Classification[]>([]);
 const availableCategories = ref<Category[]>([]);
 
@@ -250,14 +250,14 @@ onMounted(() => {
     GetCategories();
 });
 
-const selectClassification = (selectedClassification: Classification) => {
+/*const selectClassification = (selectedClassification: Classification) => {
     const classification = selectedClassifications.value.find(classification => classification == selectedClassification);
     if (classification) {
         selectedClassifications.value = selectedClassifications.value.filter((selected: Classification) => selected != selectedClassification);
     } else {
         selectedClassifications.value.push(selectedClassification);
     }
-}
+}*/
 
 </script>
 
