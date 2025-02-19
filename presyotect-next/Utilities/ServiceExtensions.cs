@@ -1,4 +1,5 @@
 ﻿using System.Text;
+using JsonFlatFileDataStore;
 using LiteDB.Async;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -45,6 +46,13 @@ public static class ServiceExtensions
             var configuration = services.GetRequiredService<IConfiguration>();
             var database = new LiteDatabaseAsync(configuration["ConnectionStrings:LiteDB"]);
             return database;
+        });
+
+        builder.Services.AddSingleton<IDataStore>(services =>
+        {
+            var configuration = services.GetRequiredService<IConfiguration>();
+            var datastore = new DataStore(configuration["Configuration:Path"], reloadBeforeGetCollection: true);
+            return datastore;
         });
     }
 

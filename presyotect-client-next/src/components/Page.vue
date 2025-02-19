@@ -96,10 +96,15 @@ const navigate = (url: string | undefined) => {
   </div>
   <Drawer
     v-model:visible="openDrawer"
-    header="Right Drawer"
     position="right"
   >
+    <template #header>
+      <slot name="drawer-header" />
+    </template>
     <slot name="drawer-content" />
+    <template #footer>
+      <slot name="drawer-footer" />
+    </template>
   </Drawer>
 </template>
 

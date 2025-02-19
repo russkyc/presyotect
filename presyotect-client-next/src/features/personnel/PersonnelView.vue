@@ -25,7 +25,13 @@ const breadcrumbs: BreadcrumbItem[] = [
     {label: "Personnel"}
 ];
 
-const items = [
+const addDropdownItems = [
+    {
+        label: "Invite",
+        command: () => {
+            // Invite Command
+        }
+    },
     {
         label: "Import",
         command: () => {
@@ -198,7 +204,7 @@ const addPersonnel = () => {
           </template>
           <template #card-actions>
             <SplitButton
-              :model="items"
+              :model="addDropdownItems"
               @click="addPersonnel"
             >
               <div class="flex gap-2">

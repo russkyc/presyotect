@@ -2,6 +2,7 @@
 
 import {Form, type FormSubmitEvent} from "@primevue/forms";
 import {zodResolver} from "@primevue/forms/resolvers/zod";
+import {ConfigurationService} from "@services/data/configuration-service.ts";
 import {useActionsStore} from "@stores/actions-store";
 import {Button, InputText, Message, MultiSelect, Select} from "primevue";
 import {useConfirm} from "primevue/useconfirm";
@@ -33,12 +34,7 @@ const breadcrumbs: BreadcrumbItem[] = [
     {label: "Add"}
 ];
 
-const availableCategories = ref([
-    "Basic Necessities",
-    "Prime Commodities",
-    "Construction Materials",
-    "School Supplies"
-]);
+const availableCategories = ref();
 
 const availableClassifications = ref([
     "Basic Necessities",
@@ -53,13 +49,17 @@ const resolver = ref(zodResolver(
         key: z.string().nullable(),
         name: z.string().min(1, {message: "Product name is required."}),
         size: z.string().min(1, {message: "Product size is required."}),
-        classification: z.string(),
+        classification: z.string({message: "Product classification is required."}),
         category: z.array(z.string()).nullable()
     })
 ));
 
 onMounted(() => {
     actionsStore.addPendingActions();
+
+    ConfigurationService.getCategories().then((response) => {
+        availableCategories.value = response;
+    });
 });
 
 const onFormSubmit = async (form: FormSubmitEvent) => {
@@ -236,6 +236,8 @@ const onFormSubmit = async (form: FormSubmitEvent) => {
                   :max-selected-labels="3"
                   :options="availableCategories"
                   fluid
+                  option-label="name"
+                  option-value="name"
                   name="category"
                   placeholder="Select categories"
                   variant="filled"

@@ -38,7 +38,9 @@ monitoringStore.$onAction((action) => {
 
 </script>
 <template>
-  <div class="grid h-screen grid-cols-[1fr] lg:grid-cols-[auto_1fr] grid-rows-[auto_1fr_auto] bg-[--p-primary-contrast-color] text-[--p-text-color]">
+  <div
+    class="grid h-screen grid-cols-[1fr] lg:grid-cols-[auto_1fr] grid-rows-[auto_1fr_auto] bg-surface-100 dark:bg-surface-950 text-surface-700 dark:text-surface-0"
+  >
     <Toast
       class="max-sm:hidden mt-12 lg:mt-16"
       position="top-right"

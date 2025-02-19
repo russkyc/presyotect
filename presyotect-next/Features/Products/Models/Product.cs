@@ -1,5 +1,4 @@
-﻿using LiteDB;
-using Presyotect.Core.Contracts;
+﻿using Presyotect.Core.Contracts;
 using Presyotect.Features.Monitoring.Models;
 
 namespace Presyotect.Features.Products.Models;
