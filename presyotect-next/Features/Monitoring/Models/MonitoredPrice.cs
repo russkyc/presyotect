@@ -4,9 +4,15 @@ namespace Presyotect.Features.Monitoring.Models;
 
 public class MonitoredPrice : DbEntity
 {
-    public string ProductId { get; set; }
-    public string PersonnelId { get; set; }
-    public string EstablishmentId { get; set; }
+    public Guid ProductId { get; set; }
+    public string ProductName { get; set; }
+    public string ProductSize { get; set; }
+    public ICollection<string> ProductCategories { get; set; }
+    public string ProductClassification { get; set; }
+    public Guid PersonnelId { get; set; }
+    public Guid EstablishmentId { get; set; }
+    public string EstablishmentName { get; set; }
+    public string CityMunicipality { get; set; }
     public float Price { get; set; }
     public string? Remarks { get; set; }
     public string Status { get; set; }

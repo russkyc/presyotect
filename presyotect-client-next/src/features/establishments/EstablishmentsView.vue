@@ -132,15 +132,14 @@ const initialClassificationValues = ref<Classification>({ name: "", shortName: "
 
 const categoryResolver = ref(zodResolver(
     z.object({
-        name: z.string().min(1, { message: "Category name is required." }),
-        shortName: z.string().min(1, {message: "Short name is required"})
+        name: z.string().min(1, { message: "Category name is required." })
     })
 ));
 
 const classificationResolver = ref(zodResolver(
     z.object({
         name: z.string().min(1, { message: "Classification name is required." }),
-        shortName: z.string().min(1, {message: "Short name is required"})
+        shortName: z.string().nullable()
     })
 ));
 
@@ -567,7 +566,7 @@ onMounted(() => {
           <InputText
             fluid
             name="name"
-            placeholder="Category name"
+            placeholder="Full label eg; Supermarket"
             type="text"
             variant="filled"
           />
@@ -578,24 +577,6 @@ onMounted(() => {
             variant="simple"
           >
             {{ $form.name.error?.message }}
-          </Message>
-        </div>
-        <div class="flex flex-col gap-1">
-          <label for="shortName">Short Name</label>
-          <InputText
-            fluid
-            name="shortName"
-            placeholder="Classification name"
-            type="text"
-            variant="filled"
-          />
-          <Message
-            v-if="$form.shortName?.invalid"
-            severity="error"
-            size="small"
-            variant="simple"
-          >
-            {{ $form.shortName.error?.message }}
           </Message>
         </div>
       </div>
@@ -632,7 +613,7 @@ onMounted(() => {
           <InputText
             fluid
             name="name"
-            placeholder="Classification name"
+            placeholder="Full label eg; Basic Necessities"
             type="text"
             variant="filled"
           />
@@ -650,7 +631,7 @@ onMounted(() => {
           <InputText
             fluid
             name="shortName"
-            placeholder="Classification name"
+            placeholder="Shortened label eg; BN or Basic"
             type="text"
             variant="filled"
           />

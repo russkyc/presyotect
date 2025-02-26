@@ -8,5 +8,5 @@ public class Personnel : DbEntity
     public string Password { get; set; }
     public string FullName { get; set; }
     public string? Nickname { get; set; }
-    public string[] AssignedEstablishments { get; set; }
+    public ICollection<Guid> AssignedEstablishments { get; set; }
 }
