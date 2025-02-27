@@ -1,5 +1,4 @@
 ﻿using System.Linq.Dynamic.Core;
-using LiteDB;
 using LiteDB.Async;
 using LiteDB.Queryable;
 using Microsoft.AspNetCore.Authorization;
@@ -122,13 +121,13 @@ public abstract class GenericEndpoint<T> where T : DbEntity
     protected static async Task<IResult> OnDelete(
         HttpContext context,
         ILiteDatabaseAsync database,
-        string id)
+        Guid id)
     {
         var response = new ResponseData<T>();
         var collection = database.GetCollection<T>();
         var product = await collection
             .AsQueryable()
-            .FirstOrDefaultAsync(p => p.Deleted == null && p.Id == new ObjectId(id));
+            .FirstOrDefaultAsync(p => p.Deleted == null && p.Id == id);
 
         if (product is null)
         {

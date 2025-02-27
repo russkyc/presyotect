@@ -98,9 +98,15 @@ const onFormSubmit = async (form: FormSubmitEvent) => {
 
             monitoredPrice.created = new Date();
             monitoredPrice.productId = props.product.id;
+            monitoredPrice.productName = props.product.name;
+            monitoredPrice.productSize = props.product.size;
+            monitoredPrice.productClassification = props.product.classification;
+            monitoredPrice.productCategories = props.product.category;
             monitoredPrice.price = monitoredPrice.price!;
             monitoredPrice.personnelId = authStore.userClaims?.nameid;
             monitoredPrice.establishmentId = monitoringStore.activeEstablishment?.id;
+            monitoredPrice.establishmentName = monitoringStore.activeEstablishment?.name;
+            monitoredPrice.cityMunicipality = monitoringStore.activeEstablishment?.cityMunicipality;
 
             initialValues.value.created = new Date();
           

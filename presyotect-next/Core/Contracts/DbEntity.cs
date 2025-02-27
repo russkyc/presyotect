@@ -1,13 +1,9 @@
-﻿using System.Text.Json.Serialization;
-using LiteDB;
-using Presyotect.Utilities;
-
+﻿
 namespace Presyotect.Core.Contracts;
 
 public abstract class DbEntity
 {
-    [JsonConverter(typeof(ObjectIdConverter))]
-    public ObjectId Id { get; set; }
+    public Guid Id { get; set; }
 
     public string? Key { get; set; }
     public DateTime? Created { get; set; } = DateTime.Now;

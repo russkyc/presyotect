@@ -99,13 +99,13 @@ export interface Category {
     id?: string | null;
     name: string;
     group: string;
-    shortName: string;
+    shortName?: string | null;
 }
 
 export interface Classification {
     id?: string | null;
     name: string;
-    shortName: string;
+    shortName?: string | null;
 }
 
 /*
@@ -115,8 +115,14 @@ export interface Classification {
 export interface MonitoredPrice {
     created?: Date | null;
     productId?: string | null;
+    productName?: string | null;
+    productSize?: string | null;
+    productCategories?: string[] | null;
+    productClassification?: string | null;
     personnelId?: string | null;
     establishmentId?: string | null;
+    establishmentName?: string | null;
+    cityMunicipality?: string | null;
     price: number | null;
     remarks?: string | null;
     status?: string | null;
