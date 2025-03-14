@@ -12,6 +12,7 @@ public class EstablishmentEndpoints : GenericEndpoint<Establishment>, IEndpointR
             .WithTags("Establishments");
 
         group.MapGet("/", OnGet);
+        group.MapGet("/{id}",OnGetById);
         group.MapGet("/count", OnGetCount);
         group.MapPost("/", OnAdd);
         group.MapPatch("/", OnUpdate);

@@ -29,6 +29,29 @@ public abstract class GenericEndpoint<T> where T : DbEntity
         return Results.Ok(response);
     }
 
+    protected static async Task<IResult> OnGetById(HttpContext context, [FromServices] LiteDatabaseAsync database, [FromRoute] Guid id)
+    {
+        var response = new ResponseData<T>();
+        var collection = database.GetCollection<T>();
+        
+        var product = await collection
+            .AsQueryable()
+            .FirstOrDefaultAsync(p => p.Deleted == null && p.Id == id);
+
+        if (product is null)
+        {
+            response.Success = false;
+            response.Message = "Record not found";
+            return Results.Ok(response);
+        }
+        
+        response.Success = true;
+        response.Content = product;
+        response.Message = "Record fetched successfully";
+        
+        return Results.Ok(response);
+    }
+
     protected static async Task<IResult> OnGet(
         HttpContext context,
         ILiteDatabaseAsync database,
