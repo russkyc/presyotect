@@ -2,6 +2,7 @@
 import {Form, type FormSubmitEvent} from "@primevue/forms";
 import {zodResolver} from "@primevue/forms/resolvers/zod";
 import {AddressService} from "@services/data/address-service.ts";
+import {ConfigurationService} from "@services/data/configuration-service.ts";
 import {useActionsStore} from "@stores/actions-store";
 import {Button, InputText, Message, MultiSelect, Select} from "primevue";
 import {useConfirm} from "primevue/useconfirm";
@@ -52,12 +53,7 @@ const availableCategories = ref([
     "Wet Market"
 ]);
 
-const availableClassifications = ref([
-    "Basic Necessities",
-    "Prime Commodities",
-    "Construction Materials",
-    "School Supplies"
-]);
+const availableClassifications = ref();
 
 const availableTags = ref([
     "Gravel and Sand",
@@ -106,6 +102,9 @@ onMounted(async () => {
     const addressDataCityMunicipality = await AddressService.GetCitiesMunicipalitiesByProvince("050500000");
     citiesMunicipalities.value = addressDataCityMunicipality.map((cityMunicipality) => cityMunicipality.name);
     actionsStore.addPendingActions();
+    ConfigurationService.getClassifications().then((response) => {
+        availableClassifications.value = response;
+    });
 });
 
 const onFormSubmit = async (form: FormSubmitEvent) => {
@@ -253,6 +252,8 @@ const onFormSubmit = async (form: FormSubmitEvent) => {
                   :options="availableClassifications"
                   fluid
                   name="classifications"
+                  option-label="name"
+                  option-value="name"
                   placeholder="Select classifications"
                   variant="filled"
                 />
@@ -271,6 +272,8 @@ const onFormSubmit = async (form: FormSubmitEvent) => {
                   :options="availableClassifications"
                   fluid
                   name="subClassifications"
+                  option-label="name"
+                  option-value="name"
                   placeholder="Select sub-classifications"
                   variant="filled"
                 />

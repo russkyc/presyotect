@@ -36,12 +36,7 @@ const breadcrumbs: BreadcrumbItem[] = [
 
 const availableCategories = ref();
 
-const availableClassifications = ref([
-    "Basic Necessities",
-    "Prime Commodities",
-    "Construction Materials",
-    "School Supplies"
-]);
+const availableClassifications = ref();
 
 const resolver = ref(zodResolver(
     z.object({
@@ -59,6 +54,9 @@ onMounted(() => {
 
     ConfigurationService.getCategories().then((response) => {
         availableCategories.value = response;
+    });
+    ConfigurationService.getClassifications().then((response) => {
+        availableClassifications.value = response;
     });
 });
 
@@ -218,6 +216,8 @@ const onFormSubmit = async (form: FormSubmitEvent) => {
                   :options="availableClassifications"
                   fluid
                   name="classification"
+                  option-label="name"
+                  option-value="name"
                   placeholder="Select classification"
                   variant="filled"
                 />
