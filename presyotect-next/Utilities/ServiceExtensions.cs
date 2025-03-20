@@ -1,4 +1,6 @@
 ﻿using System.Text;
+using Hangfire;
+using Hangfire.Storage.SQLite;
 using JsonFlatFileDataStore;
 using LiteDB.Async;
 using Microsoft.AspNetCore.Authentication;
@@ -13,7 +15,7 @@ namespace Presyotect.Utilities;
 
 public static class ServiceExtensions
 {
-    public static void AddCoreServices(this WebApplicationBuilder builder)
+    public static void  AddCoreServices(this WebApplicationBuilder builder)
     {
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddCors();
@@ -37,6 +39,12 @@ public static class ServiceExtensions
                     Type = SecuritySchemeType.ApiKey
                 });
             });
+        builder.Services.AddHangfire(configuration => configuration
+            .SetDataCompatibilityLevel(CompatibilityLevel.Version_180)
+            .UseSimpleAssemblyNameTypeSerializer()
+            .UseRecommendedSerializerSettings()
+            .UseSQLiteStorage("hangfire.sqlite"))
+            .AddHangfireServer();
     }
 
     public static void AddDataServices(this WebApplicationBuilder builder)

@@ -1,3 +1,5 @@
+using Hangfire;
+using Hangfire.Storage.SQLite;
 using Presyotect.Utilities;
 using Scalar.AspNetCore;
 
@@ -21,6 +23,10 @@ app.UseCors(
 app.UseAuthentication();
 app.UseAuthorization();
 
+#if DEBUG
+app.UseHangfireDashboard();
+#endif
+
 app.UseSwagger(options => { options.RouteTemplate = "/openapi/{documentName}.json"; });
 app.MapScalarApiReference(endpointPrefix: "_api_docs", options => { options.Theme = ScalarTheme.Kepler; });
 #if DEBUG
@@ -36,5 +42,11 @@ app.MapFallbackToFile("index.html");
 
 app.MapEndpoints();
 app.MapGet("/_api/check", () => true);
+
+app.Lifetime.ApplicationStarted.Register(() =>
+{
+    var jobManager = app.Services.GetRequiredService<IRecurringJobManager>();
+    jobManager.AddOrUpdate("write-every-minute", () => Console.WriteLine(DateTime.Now), Cron.Minutely);
+});
 
 app.Run();

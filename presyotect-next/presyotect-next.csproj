@@ -16,6 +16,9 @@
     </PropertyGroup>
 
     <ItemGroup>
+        <PackageReference Include="Hangfire.AspNetCore" Version="1.8.18" />
+        <PackageReference Include="Hangfire.Core" Version="1.8.18" />
+        <PackageReference Include="Hangfire.Storage.SQLite" Version="0.4.2" />
         <PackageReference Include="jsonflatfiledatastore" Version="2.4.2" />
         <PackageReference Include="LiteDB" Version="5.0.21" />
         <PackageReference Include="LiteDB.Queryable" Version="9.0.0" />
