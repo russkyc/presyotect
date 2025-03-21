@@ -68,6 +68,7 @@ public class MonitoringEndpoints : IEndpointRouteHandlerBuilder
     {
         var monitoringScheduleCollection = database.GetCollection<MonitoringSchedule>();
         var monitoredPricesCollection = database.GetCollection<MonitoredPrice>();
+        
         var currentMonitoringId = DateTime.Now.StartOfWeek().AsIdentifier();
         var response = new ResponseData<MonitoredPrice>();
 
@@ -82,7 +83,7 @@ public class MonitoringEndpoints : IEndpointRouteHandlerBuilder
 
         price.MonitoringIdentifier = schedule.MonitoringId;
         price.MonitoringScheduleId = schedule.Id;
-        
+
         await monitoredPricesCollection.InsertAsync(price);
         
         response.Success = true;
