@@ -4,6 +4,11 @@ namespace Presyotect.Utilities;
 
 public static class DateTimeExtensions
 {
+    public static string AsIdentifier(this DateTime date)
+    {
+        return date.ToString("yyyyMMdd");
+    }
+    
     public static DateTime NextOfWeekday(this DateTime date)
     {
         int daysToAdd = ((int)date.DayOfWeek - (int)date.DayOfWeek + 7) % 7;

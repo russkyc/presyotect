@@ -1,6 +1,7 @@
 using Cron.Core;
 using Cron.Core.Enums;
 using Hangfire;
+using Presyotect.Features.Monitoring.Services;
 using Presyotect.Utilities;
 using Scalar.AspNetCore;
 
@@ -46,20 +47,7 @@ app.MapGet("/_api/check", () => true);
 
 app.Lifetime.ApplicationStarted.Register(() =>
 {
-    var jobManager = app.Services.GetRequiredService<IRecurringJobManager>();
-    
-    var schedule = new CronBuilder()
-        .Add(CronTimeSections.Minutes, 0)
-        .Add(CronTimeSections.Hours, 7)
-        .Add(CronDays.Monday);
-    
-    jobManager.AddOrUpdate(
-        "run-every-thurs",
-        () => Console.Write("its 4:12"),
-        schedule.ToString, new RecurringJobOptions()
-        {
-            TimeZone = TimeZoneInfo.Local
-        });
+    _ = app.Services.GetRequiredService<MonitoringScheduler>();
 });
 
 app.Run();
