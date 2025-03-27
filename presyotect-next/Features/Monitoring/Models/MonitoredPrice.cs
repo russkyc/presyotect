@@ -11,7 +11,7 @@ public class MonitoredPrice : DbEntity
     public string ProductSize { get; set; }
     public decimal Price { get; set; }
     public string? Remarks { get; set; }
-    public ICollection<string> ProductCategories { get; set; }
+    public ICollection<string>? ProductCategories { get; set; }
     public string ProductClassification { get; set; }
     public MonitoringStatus Status { get; set; }
     

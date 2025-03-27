@@ -101,7 +101,6 @@ public class MonitoringEndpoints : IEndpointRouteHandlerBuilder
         var response = new ResponseData<int>();
         await using var dbContext = await dbContextFactory.CreateDbContextAsync();
         var personnel = await dbContext.Personnel
-            .Include(p => p.AssignedEstablishments)
             .FirstOrDefaultAsync(p => p.Deleted == null && p.Id == personnelId);
 
         if (personnel is null)
@@ -128,7 +127,6 @@ public class MonitoringEndpoints : IEndpointRouteHandlerBuilder
         await using var dbContext = await dbContextFactory.CreateDbContextAsync();
         
         var personnel = await dbContext.Personnel
-            .Include(p => p.AssignedEstablishments)
             .FirstOrDefaultAsync(p => p.Deleted == null && p.Id == personnelId);
 
         if (personnel is null)
@@ -161,7 +159,6 @@ public class MonitoringEndpoints : IEndpointRouteHandlerBuilder
         await using var dbContext = await dbContextFactory.CreateDbContextAsync();
         
         var personnel = await dbContext.Personnel
-            .Include(p => p.AssignedEstablishments)
             .FirstOrDefaultAsync(p => p.Deleted == null && p.Id == personnelId);
 
 
