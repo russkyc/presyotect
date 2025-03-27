@@ -66,36 +66,27 @@ public class MonitoringEndpoints : IEndpointRouteHandlerBuilder
         ILiteDatabaseAsync database,
         MonitoredPrice price)
     {
+        var monitoringScheduleCollection = database.GetCollection<MonitoringSchedule>();
+        var monitoredPricesCollection = database.GetCollection<MonitoredPrice>();
+        
+        var currentMonitoringId = DateTime.Now.StartOfWeek().AsIdentifier();
         var response = new ResponseData<MonitoredPrice>();
-        var collection = database.GetCollection<Product>();
 
-        var product = await collection
-            .FindOneAsync(p => p.Deleted == null && p.Id == price.ProductId);
+        var schedule = await monitoringScheduleCollection
+            .FindOneAsync(p => p.Deleted == null && p.MonitoringId.Equals(currentMonitoringId));
 
-        if (product is null)
+        if (schedule is null)
         {
-            response.Errors = ["Product does not exist."];
+            response.Errors = ["No schedule for the current week."];
             return Results.Ok(response);
         }
 
-        if (product.MonitoredPrices is null)
-        {
-            product.MonitoredPrices = [price];
-        }
-        else
-        {
-            product.MonitoredPrices = [price, ..product.MonitoredPrices];
-        }
+        price.MonitoringIdentifier = schedule.MonitoringId;
+        price.MonitoringScheduleId = schedule.Id;
 
-        var updated = await collection.UpdateAsync(product);
-        await database.CommitAsync();
-        if (!updated)
-        {
-            response.Errors = ["Unable to record price movement."];
-            return Results.Ok(response);
-        }
-
-        response.Success = updated;
+        await monitoredPricesCollection.InsertAsync(price);
+        
+        response.Success = true;
         response.Message = "Price entry recorded.";
         response.Content = price;
 
@@ -187,7 +178,6 @@ public class MonitoringEndpoints : IEndpointRouteHandlerBuilder
 
         var products = await database
             .GetCollection<Product>()
-            .Include(p => p.MonitoredPrices)
             .FindAsync(p => p.Deleted == null && classifications.Contains(p.Classification));
 
         response.Content = products;

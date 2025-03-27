@@ -104,6 +104,7 @@ const onFormSubmit = async (form: FormSubmitEvent) => {
             monitoredPrice.productCategories = props.product.category;
             monitoredPrice.price = monitoredPrice.price!;
             monitoredPrice.personnelId = authStore.userClaims?.nameid;
+            monitoredPrice.personnelName = authStore.userClaims?.username;
             monitoredPrice.establishmentId = monitoringStore.activeEstablishment?.id;
             monitoredPrice.establishmentName = monitoringStore.activeEstablishment?.name;
             monitoredPrice.cityMunicipality = monitoringStore.activeEstablishment?.cityMunicipality;
@@ -127,7 +128,7 @@ const onFormSubmit = async (form: FormSubmitEvent) => {
                 try {
                     const response = await MonitoringService.postMonitoredPrice(monitoredPrice);
                     if (!response) {
-                        throw new Error("Failed to update price online");
+                        return;
                     }
                     productValue.value.monitoredPrices?.push(monitoredPrice);
                     showDetails.value = false;

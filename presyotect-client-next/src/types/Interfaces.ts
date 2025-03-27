@@ -120,6 +120,7 @@ export interface MonitoredPrice {
     productCategories?: string[] | null;
     productClassification?: string | null;
     personnelId?: string | null;
+    personnelName?: string | null;
     establishmentId?: string | null;
     establishmentName?: string | null;
     cityMunicipality?: string | null;

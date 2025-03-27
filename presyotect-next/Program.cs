@@ -1,5 +1,7 @@
+using Cron.Core;
+using Cron.Core.Enums;
 using Hangfire;
-using Hangfire.Storage.SQLite;
+using Presyotect.Features.Monitoring.Services;
 using Presyotect.Utilities;
 using Scalar.AspNetCore;
 
@@ -45,8 +47,7 @@ app.MapGet("/_api/check", () => true);
 
 app.Lifetime.ApplicationStarted.Register(() =>
 {
-    var jobManager = app.Services.GetRequiredService<IRecurringJobManager>();
-    jobManager.AddOrUpdate("write-every-minute", () => Console.WriteLine(DateTime.Now), Cron.Minutely);
+    _ = app.Services.GetRequiredService<MonitoringScheduler>();
 });
 
 app.Run();

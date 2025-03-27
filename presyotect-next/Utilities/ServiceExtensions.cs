@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.Net.Http.Headers;
 using Microsoft.OpenApi.Models;
+using Presyotect.Features.Monitoring.Services;
 using Presyotect.Features.Users;
 using Presyotect.Features.Users.Services;
 
@@ -39,7 +40,10 @@ public static class ServiceExtensions
                     Type = SecuritySchemeType.ApiKey
                 });
             });
-        builder.Services.AddHangfire(configuration => configuration
+        builder.Services
+            .AddSingleton<MonitoringScheduler>();
+        builder.Services
+            .AddHangfire(configuration => configuration
             .SetDataCompatibilityLevel(CompatibilityLevel.Version_180)
             .UseSimpleAssemblyNameTypeSerializer()
             .UseRecommendedSerializerSettings()
