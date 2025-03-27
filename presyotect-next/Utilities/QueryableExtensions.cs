@@ -1,4 +1,4 @@
-﻿using LiteDB.Queryable;
+﻿using Microsoft.EntityFrameworkCore;
 using Presyotect.Core.Contracts;
 
 namespace Presyotect.Utilities;

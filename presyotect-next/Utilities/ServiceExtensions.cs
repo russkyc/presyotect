@@ -2,11 +2,9 @@
 using Hangfire;
 using Hangfire.Storage.SQLite;
 using JsonFlatFileDataStore;
-using kDg.FileBaseContext.Extensions;
-using kDg.FileBaseContext.Serializers;
-using LiteDB.Async;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.Net.Http.Headers;
 using Microsoft.OpenApi.Models;
@@ -57,18 +55,8 @@ public static class ServiceExtensions
     public static void AddDataServices(this WebApplicationBuilder builder)
     {
         builder.Services
-            .AddDbContextFactory<AppDbContext>(options => options.UseFileBaseContextDatabase("presyotect",
-                null,
-                services => services.AddCsvRowDataSerializer()
-                ));
+            .AddDbContextFactory<AppDbContext>(options => options.UseSqlite("Data Source=presyotect.sqlite"));
         
-        builder.Services.AddSingleton<ILiteDatabaseAsync>(services =>
-        {
-            var configuration = services.GetRequiredService<IConfiguration>();
-            var database = new LiteDatabaseAsync(configuration["ConnectionStrings:LiteDB"]);
-            return database;
-        });
-
         builder.Services.AddSingleton<IDataStore>(services =>
         {
             var configuration = services.GetRequiredService<IConfiguration>();

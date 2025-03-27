@@ -1,8 +1,9 @@
 ﻿using System.Text.Json;
-using LiteDB.Async;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.EntityFrameworkCore;
 using Presyotect.Core.Abstractions;
 using Presyotect.Core.Contracts;
+using Presyotect.Data;
 using Presyotect.Features.Users.Models;
 using Presyotect.Utilities;
 
@@ -26,18 +27,18 @@ public class PersonnelEndpoints : GenericEndpoint<Personnel>, IEndpointRouteHand
     [Authorize(Roles = "admin, superadmin")]
     protected static async Task<IResult> OnAddPersonnel(
         HttpContext context,
-        ILiteDatabaseAsync database,
+        IDbContextFactory<AppDbContext> dbContextFactory,
         Personnel personnel)
     {
+        await using var dbContext = await dbContextFactory.CreateDbContextAsync();
         personnel.Password = personnel.Password.Hash();
         Console.WriteLine(JsonSerializer.Serialize(personnel));
         var response = new ResponseData<Personnel>();
-        var collection = database.GetCollection<Personnel>();
-        var id = await collection.InsertAsync(personnel);
+        var entry = await dbContext.Personnel.AddAsync(personnel);
+        await dbContext.SaveChangesAsync();
 
-        personnel.Id = id;
         response.Success = true;
-        response.Content = personnel;
+        response.Content = entry.Entity;
         response.Message = "Personnel has been added.";
 
         return Results.Ok(response);

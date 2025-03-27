@@ -3,14 +3,15 @@ using Presyotect.Utilities;
 using System.Collections.Concurrent;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
-using LiteDB;
-using LiteDB.Async;
+using Microsoft.EntityFrameworkCore;
 using Presyotect.Core.Types;
+using Presyotect.Data;
 using JsonSerializer = System.Text.Json.JsonSerializer;
 
 namespace Presyotect.Features.Users.Services;
 
-public class DbAuthenticator(IConfiguration configuration, ILiteDatabaseAsync database) : IAuthenticator
+public class DbAuthenticator(IConfiguration configuration, IDbContextFactory<AppDbContext> dbContextFactory)
+    : IAuthenticator
 {
     private static readonly ConcurrentDictionary<string, string> RefreshTokens = new();
 
@@ -21,8 +22,8 @@ public class DbAuthenticator(IConfiguration configuration, ILiteDatabaseAsync da
 
         Console.WriteLine(JsonSerializer.Serialize(credential));
 
-        var personnelCollection = database.GetCollection<Personnel>();
-        var personnel = await personnelCollection.FindOneAsync(personnel =>
+        await using var dbContext = await dbContextFactory.CreateDbContextAsync();
+        var personnel = await dbContext.Personnel.FirstOrDefaultAsync(personnel =>
             personnel.Username.Equals(credential.Username)
             && personnel.Password.Equals(passwordHash));
 
@@ -33,8 +34,7 @@ public class DbAuthenticator(IConfiguration configuration, ILiteDatabaseAsync da
             return validation;
         }
 
-        var accountCollection = database.GetCollection<Account>();
-        var account = await accountCollection.FindOneAsync(account =>
+        var account = await dbContext.Accounts.FirstOrDefaultAsync(account =>
             account.Username.Equals(credential.Username)
             && account.Password.Equals(passwordHash));
 
@@ -62,31 +62,32 @@ public class DbAuthenticator(IConfiguration configuration, ILiteDatabaseAsync da
         var refreshToken = TokenUtils.CreateRefreshToken();
         var passwordHash = credential.Password.Hash();
 
-        var personnelCollection = database.GetCollection<Personnel>();
-        var personnel = await personnelCollection.FindOneAsync(personnel =>
+        await using var dbContext = await dbContextFactory.CreateDbContextAsync();
+        var personnel = await dbContext.Personnel.FirstOrDefaultAsync(personnel =>
             personnel.Username.Equals(credential.Username)
             && personnel.Password.Equals(passwordHash));
 
         if (personnel is not null)
         {
             RefreshTokens[credential.Username] = refreshToken;
-            return TokenUtils.CreateToken(configuration, personnel.Id.ToString(), personnel.Nickname ?? personnel.FullName,
+            return TokenUtils.CreateToken(configuration, personnel.Id.ToString(),
+                personnel.Nickname ?? personnel.FullName,
                 refreshToken, Role.Personnel);
         }
 
-        var accountCollection = database.GetCollection<Account>();
-        var account = await accountCollection.FindOneAsync(account =>
+        var account = await dbContext.Accounts.FirstOrDefaultAsync(account =>
             account.Username.Equals(credential.Username)
             && account.Password.Equals(passwordHash));
 
         if (account is not null)
         {
             RefreshTokens[credential.Username] = refreshToken;
-            return TokenUtils.CreateToken(configuration, account.Id.ToString(), account.Nickname, refreshToken, Role.Personnel);
+            return TokenUtils.CreateToken(configuration, account.Id.ToString(), account.Nickname, refreshToken,
+                Role.Personnel);
         }
 
         RefreshTokens[credential.Username] = refreshToken;
-        var token = TokenUtils.CreateToken(configuration, ObjectId.Empty.ToString(), credential.Username, refreshToken,
+        var token = TokenUtils.CreateToken(configuration, Guid.NewGuid().ToString(), credential.Username, refreshToken,
             credential.Username);
         return token;
     }
@@ -99,6 +100,7 @@ public class DbAuthenticator(IConfiguration configuration, ILiteDatabaseAsync da
             validation.Message = "Token cannot be null.";
             return Task.FromResult(validation);
         }
+
         var principal = TokenUtils.GetPrincipalFromExpiredToken(configuration, refreshTokenRequest.Token);
         if (principal == null)
         {

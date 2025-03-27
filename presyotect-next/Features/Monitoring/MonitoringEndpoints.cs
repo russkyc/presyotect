@@ -1,12 +1,9 @@
-﻿using System.Collections.Immutable;
-using LiteDB.Async;
-using LiteDB.Queryable;
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.EntityFrameworkCore;
 using Presyotect.Core.Contracts;
-using Presyotect.Features.Establishments.Models;
+using Presyotect.Data;
 using Presyotect.Features.Monitoring.Models;
 using Presyotect.Features.Products.Models;
-using Presyotect.Features.Users.Models;
 using Presyotect.Utilities;
 
 namespace Presyotect.Features.Monitoring;
@@ -27,25 +24,27 @@ public class MonitoringEndpoints : IEndpointRouteHandlerBuilder
 
     private static async Task<IResult> OnGetMonitoredPrices(
         HttpContext context,
-        ILiteDatabaseAsync database,
+        IDbContextFactory<AppDbContext> dbContextFactory,
         string? cityMunicipality = null,
         DateTime? startDate = null,
         DateTime? endDate = null)
     {
         var response = new ResponseData<IEnumerable<MonitoredPrice>>();
-        var collection = database.GetCollection<MonitoredPrice>();
+        await using var database = await dbContextFactory.CreateDbContextAsync();
 
-        var queryable = collection.AsQueryable();
+        var queryable = database.MonitoredPrices
+            .AsQueryable();
 
         if (!string.IsNullOrWhiteSpace(cityMunicipality))
         {
             queryable = queryable.Where(m => m.CityMunicipality.Equals(cityMunicipality));
         }
-        
+
         if (startDate is not null)
         {
             queryable = queryable.Where(m => m.Created > startDate);
-        } else if (startDate is not null && endDate is not null)
+        }
+        else if (startDate is not null && endDate is not null)
         {
             queryable = queryable.Where(m => m.Created >= startDate
                                              && m.Created <= endDate);
@@ -56,24 +55,24 @@ public class MonitoringEndpoints : IEndpointRouteHandlerBuilder
         response.Success = true;
         response.Message = "Successfully listed monitoring information";
         response.Content = monitoredPrices;
-        
+
         return Results.Empty;
     }
 
     [Authorize]
     private static async Task<IResult> OnPostMonitoredPrice(
         HttpContext context,
-        ILiteDatabaseAsync database,
+        IDbContextFactory<AppDbContext> dbContextFactory,
         MonitoredPrice price)
     {
-        var monitoringScheduleCollection = database.GetCollection<MonitoringSchedule>();
-        var monitoredPricesCollection = database.GetCollection<MonitoredPrice>();
-        
+        await using var dbContext = await dbContextFactory.CreateDbContextAsync();
+
         var currentMonitoringId = DateTime.Now.StartOfWeek().AsIdentifier();
         var response = new ResponseData<MonitoredPrice>();
 
-        var schedule = await monitoringScheduleCollection
-            .FindOneAsync(p => p.Deleted == null && p.MonitoringId.Equals(currentMonitoringId));
+        var schedule = await dbContext
+            .MonitoringSchedules
+            .FirstOrDefaultAsync(p => p.Deleted == null && p.MonitoringId.Equals(currentMonitoringId));
 
         if (schedule is null)
         {
@@ -84,24 +83,26 @@ public class MonitoringEndpoints : IEndpointRouteHandlerBuilder
         price.MonitoringIdentifier = schedule.MonitoringId;
         price.MonitoringScheduleId = schedule.Id;
 
-        await monitoredPricesCollection.InsertAsync(price);
-        
+        var entry = await dbContext.MonitoredPrices.AddAsync(price);
+        await dbContext.SaveChangesAsync();
+
         response.Success = true;
         response.Message = "Price entry recorded.";
-        response.Content = price;
+        response.Content = entry.Entity;
 
         return Results.Ok(response);
     }
 
     [Authorize]
     private static async Task<IResult> OnGetAssignedEstablishmentsCount(HttpContext context,
-        ILiteDatabaseAsync database,
+        IDbContextFactory<AppDbContext> dbContextFactory,
         Guid personnelId)
     {
         var response = new ResponseData<int>();
-        var personnel = await database.GetCollection<Personnel>()
+        await using var dbContext = await dbContextFactory.CreateDbContextAsync();
+        var personnel = await dbContext.Personnel
             .Include(p => p.AssignedEstablishments)
-            .FindOneAsync(p => p.Deleted == null && p.Id == personnelId);
+            .FirstOrDefaultAsync(p => p.Deleted == null && p.Id == personnelId);
 
         if (personnel is null)
         {
@@ -120,13 +121,15 @@ public class MonitoringEndpoints : IEndpointRouteHandlerBuilder
     [Authorize]
     private static async Task<IResult> OnGetAssignedEstablishments(
         HttpContext context,
-        ILiteDatabaseAsync database,
+        IDbContextFactory<AppDbContext> dbContextFactory,
         Guid personnelId)
     {
         var response = new ResponseData<IEnumerable<MonitoredEstablishment>>();
-        var personnel = await database.GetCollection<Personnel>()
+        await using var dbContext = await dbContextFactory.CreateDbContextAsync();
+        
+        var personnel = await dbContext.Personnel
             .Include(p => p.AssignedEstablishments)
-            .FindOneAsync(p => p.Deleted == null && p.Id == personnelId);
+            .FirstOrDefaultAsync(p => p.Deleted == null && p.Id == personnelId);
 
         if (personnel is null)
         {
@@ -135,8 +138,9 @@ public class MonitoringEndpoints : IEndpointRouteHandlerBuilder
             return Results.Ok(response);
         }
 
-        var establishments = await database.GetCollection<Establishment>()
-            .FindAsync(e => personnel.AssignedEstablishments.Contains(e.Id));
+        var establishments = await dbContext.Establishments
+            .Where(e => personnel.AssignedEstablishments.Contains(e.Id))
+            .ToListAsync();
 
         var mappedEstablishments = establishments.Select(e => e.SimpleMap<MonitoredEstablishment>());
 
@@ -150,13 +154,15 @@ public class MonitoringEndpoints : IEndpointRouteHandlerBuilder
     [Authorize]
     private static async Task<IResult> OnGetAllMonitoredProducts(
         HttpContext context,
-        ILiteDatabaseAsync database,
+        IDbContextFactory<AppDbContext> dbContextFactory,
         Guid personnelId)
     {
         var response = new ResponseData<IEnumerable<Product>>();
-        var personnel = await database.GetCollection<Personnel>()
+        await using var dbContext = await dbContextFactory.CreateDbContextAsync();
+        
+        var personnel = await dbContext.Personnel
             .Include(p => p.AssignedEstablishments)
-            .FindOneAsync(p => p.Deleted == null && p.Id == personnelId);
+            .FirstOrDefaultAsync(p => p.Deleted == null && p.Id == personnelId);
 
 
         if (personnel is null)
@@ -168,17 +174,18 @@ public class MonitoringEndpoints : IEndpointRouteHandlerBuilder
 
         string[] classifications = [];
 
-        var establishments = await database.GetCollection<Establishment>()
-            .FindAsync(e => personnel.AssignedEstablishments.Contains(e.Id));
-        
-        establishments.ToImmutableList()
-            .ForEach(e => classifications = [..e.Classifications]);
+        var establishments = await dbContext.Establishments
+            .Where(e => personnel.AssignedEstablishments.Contains(e.Id))
+            .ToListAsync();
+
+        establishments.ForEach(e => classifications = [..e.Classifications]);
 
         classifications = classifications.Distinct().ToArray();
 
-        var products = await database
-            .GetCollection<Product>()
-            .FindAsync(p => p.Deleted == null && classifications.Contains(p.Classification));
+        var products = await dbContext
+            .Products
+            .Where(p => p.Deleted == null && classifications.Contains(p.Classification))
+            .ToListAsync();
 
         response.Content = products;
         response.Message = "Listing of assigned products successful.";

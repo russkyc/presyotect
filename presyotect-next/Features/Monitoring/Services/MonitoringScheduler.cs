@@ -1,5 +1,6 @@
 ﻿using Hangfire;
-using LiteDB.Async;
+using Microsoft.EntityFrameworkCore;
+using Presyotect.Data;
 using Presyotect.Features.Monitoring.Models;
 using Presyotect.Utilities;
 
@@ -7,14 +8,11 @@ namespace Presyotect.Features.Monitoring.Services;
 
 public class MonitoringScheduler
 {
-    private readonly ILiteDatabaseAsync _database;
-    private readonly IRecurringJobManager _recurringJobManager;
+    private readonly IDbContextFactory<AppDbContext> _dbContextFactory;
 
-    public MonitoringScheduler(IRecurringJobManager recurringJobManager, ILiteDatabaseAsync database)
+    public MonitoringScheduler(IRecurringJobManager recurringJobManager, IDbContextFactory<AppDbContext> dbContextFactory)
     {
-        _recurringJobManager = recurringJobManager;
-        _database = database;
-        
+        _dbContextFactory = dbContextFactory;
         recurringJobManager.AddOrUpdate(
             "check-monitoring-schedules",
             () => CreateSchedule(),
@@ -23,11 +21,12 @@ public class MonitoringScheduler
 
     public async Task CreateSchedule()
     {
-        var collection = _database.GetCollection<MonitoringSchedule>();
+        await using var dbContext = await _dbContextFactory.CreateDbContextAsync();
         var startOfWeek = DateTime.Now.StartOfWeek();
         var endOfWeek = DateTime.Now.EndOfWeek();
         var monitoringId = startOfWeek.AsIdentifier();
-        var entryCount = await collection.CountAsync(schedule => schedule.MonitoringId.Equals(monitoringId));
+        var entryCount = await dbContext.MonitoringSchedules
+            .CountAsync(schedule => schedule.MonitoringId.Equals(monitoringId));
 
         if (entryCount > 0)
         {
@@ -42,6 +41,7 @@ public class MonitoringScheduler
             EndDate = endOfWeek
         };
 
-        await collection.InsertAsync(schedule);
+        await dbContext.MonitoringSchedules.AddAsync(schedule);
+        await dbContext.SaveChangesAsync();
     }
 }
