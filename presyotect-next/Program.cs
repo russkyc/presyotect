@@ -45,9 +45,4 @@ app.MapFallbackToFile("index.html");
 app.MapEndpoints();
 app.MapGet("/_api/check", () => true);
 
-app.Lifetime.ApplicationStarted.Register(() =>
-{
-    _ = app.Services.GetRequiredService<MonitoringScheduler>();
-});
-
 app.Run();

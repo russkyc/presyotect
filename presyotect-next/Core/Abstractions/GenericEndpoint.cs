@@ -1,9 +1,9 @@
 ﻿using System.Linq.Dynamic.Core;
-using LiteDB.Async;
-using LiteDB.Queryable;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Presyotect.Core.Contracts;
+using Presyotect.Data;
 using Presyotect.Utilities;
 using DbEntity = Presyotect.Core.Contracts.DbEntity;
 
@@ -13,14 +13,14 @@ public abstract class GenericEndpoint<T> where T : DbEntity
 {
     protected static async Task<IResult> OnGetCount(
         HttpContext context,
-        ILiteDatabaseAsync database,
+        IDbContextFactory<AppDbContext> dbContextFactory,
         [FromQuery] string? query = null)
     {
         var response = new ResponseData<int>();
-        var collection = database.GetCollection<T>();
-        var count = await collection.AsQueryable()
-            .Where(p => p.Deleted == null)
-            .CountAsync();
+        await using var database = await dbContextFactory.CreateDbContextAsync();
+        var count = await database
+            .Set<T>()
+            .CountAsync(p => p.Deleted == null);
 
         response.Success = true;
         response.Message = "Total count successful";
@@ -29,13 +29,14 @@ public abstract class GenericEndpoint<T> where T : DbEntity
         return Results.Ok(response);
     }
 
-    protected static async Task<IResult> OnGetById(HttpContext context, [FromServices] LiteDatabaseAsync database, [FromRoute] Guid id)
+    protected static async Task<IResult> OnGetById(HttpContext context,
+        [FromServices] IDbContextFactory<AppDbContext> dbContextFactory, [FromRoute] Guid id)
     {
         var response = new ResponseData<T>();
-        var collection = database.GetCollection<T>();
-        
-        var product = await collection
-            .AsQueryable()
+        await using var database = await dbContextFactory.CreateDbContextAsync();
+
+        var product = await database
+            .Set<T>()
             .FirstOrDefaultAsync(p => p.Deleted == null && p.Id == id);
 
         if (product is null)
@@ -44,27 +45,27 @@ public abstract class GenericEndpoint<T> where T : DbEntity
             response.Message = "Record not found";
             return Results.Ok(response);
         }
-        
+
         response.Success = true;
         response.Content = product;
         response.Message = "Record fetched successfully";
-        
+
         return Results.Ok(response);
     }
 
     protected static async Task<IResult> OnGet(
-        HttpContext context,
-        ILiteDatabaseAsync database,
+        HttpContext context, 
+        IDbContextFactory<AppDbContext> dbContextFactory,
         [FromQuery] string? query = null,
         [FromQuery] string? orderBy = null,
         [FromQuery] int page = 0,
         [FromQuery] int pageSize = int.MaxValue)
     {
         var response = new ResponseData<IEnumerable<T>>();
-        var collection = database.GetCollection<T>();
+        await using var database = await dbContextFactory.CreateDbContextAsync();
 
-        var queryable = collection
-            .AsQueryable()
+        var queryable = database
+            .Set<T>()
             .Where(p => p.Deleted == null);
 
         if (query is not null)
@@ -90,16 +91,16 @@ public abstract class GenericEndpoint<T> where T : DbEntity
     [Authorize]
     protected static async Task<IResult> OnAdd(
         HttpContext context,
-        ILiteDatabaseAsync database,
+        IDbContextFactory<AppDbContext> dbContextFactory,
         T product)
     {
         var response = new ResponseData<T>();
-        var collection = database.GetCollection<T>();
-        var id = await collection.InsertAsync(product);
+        await using var database = await dbContextFactory.CreateDbContextAsync();
+        var entry = await database.Set<T>().AddAsync(product);
+        await database.SaveChangesAsync();
 
-        product.Id = id;
         response.Success = true;
-        response.Content = product;
+        response.Content = entry.Entity;
         response.Message = "Record has been added.";
 
         return Results.Ok(response);
@@ -108,32 +109,35 @@ public abstract class GenericEndpoint<T> where T : DbEntity
     [Authorize]
     protected static async Task<IResult> OnUpdate(
         HttpContext context,
-        ILiteDatabaseAsync database,
+        IDbContextFactory<AppDbContext> dbContextFactory,
         T product)
     {
         var response = new ResponseData<T>();
-        var collection = database.GetCollection<T>();
-        var updated = await collection.UpdateAsync(product);
+        await using var database = await dbContextFactory.CreateDbContextAsync();
+        var entry = database.Set<T>().Update(product);
+        await database.SaveChangesAsync();
 
-        response.Success = updated;
-        response.Content = product;
+        response.Success = true;
+        response.Content = entry.Entity;
         response.Message = "Record has been updated.";
 
         return Results.Ok(response);
     }
-    
+
     [Authorize]
     protected static async Task<IResult> OnUpdateRange(
         HttpContext context,
-        ILiteDatabaseAsync database,
+        IDbContextFactory<AppDbContext> dbContextFactory,
         IEnumerable<T> product)
     {
         var response = new ResponseData<IEnumerable<T>>();
-        var collection = database.GetCollection<T>();
+        await using var database = await dbContextFactory.CreateDbContextAsync();
+        
         var responseContent = product as T[] ?? product.ToArray();
-        var updated = await collection.UpdateAsync(responseContent);
+        database.Set<T>().UpdateRange(responseContent);
+        await database.SaveChangesAsync();
 
-        response.Success = updated > 0;
+        response.Success = true;
         response.Content = responseContent;
         response.Message = "Records have been updated.";
 
@@ -143,23 +147,24 @@ public abstract class GenericEndpoint<T> where T : DbEntity
     [Authorize]
     protected static async Task<IResult> OnDelete(
         HttpContext context,
-        ILiteDatabaseAsync database,
+        IDbContextFactory<AppDbContext> dbContextFactory,
         Guid id)
     {
         var response = new ResponseData<T>();
-        var collection = database.GetCollection<T>();
-        var product = await collection
-            .AsQueryable()
-            .FirstOrDefaultAsync(p => p.Deleted == null && p.Id == id);
+        await using var database = await dbContextFactory.CreateDbContextAsync();
+        var entity = await database.Set<T>().FirstOrDefaultAsync(p => p.Deleted == null && p.Id == id);
 
-        if (product is null)
+        if (entity is null)
         {
             response.Message = "Record does not exist.";
             return Results.Ok(response);
         }
 
-        product.Deleted = DateTime.Now;
-        response.Success = await collection.UpdateAsync(product);
+        database.Set<T>().Update(entity);
+        await database.SaveChangesAsync();
+
+        entity.Deleted = DateTime.Now;
+        response.Success = true;
         response.Message = "Record has been deleted.";
         return Results.Ok(response);
     }
