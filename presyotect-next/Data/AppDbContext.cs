@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Presyotect.Features.Configuration.Models;
 using Presyotect.Features.Establishments.Models;
 using Presyotect.Features.Monitoring.Models;
 using Presyotect.Features.Products.Models;
@@ -18,4 +19,7 @@ public class AppDbContext : DbContext
     public DbSet<MonitoredPrice> MonitoredPrices { get; set; }
     public DbSet<Account> Accounts { get; set; }
     public DbSet<Personnel> Personnel { get; set; }
+    public DbSet<Category> Categories { get; set; }
+    public DbSet<Classification> Classifications { get; set; }
+    public DbSet<MonitoringSchedule> MonitoringSchedules { get; set; }
 }

@@ -1,9 +1,9 @@
 ﻿using System.Linq.Dynamic.Core;
-using LiteDB.Async;
-using LiteDB.Queryable;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Presyotect.Core.Abstractions;
 using Presyotect.Core.Contracts;
+using Presyotect.Data;
 using Presyotect.Features.Configuration.Models;
 using Presyotect.Utilities;
 
@@ -26,13 +26,15 @@ public class CategoryEndpoints : GenericEndpoint<Category>, IEndpointRouteHandle
 
     protected static async Task<IResult> OnGetCategoriesCount(
         HttpContext context,
-        ILiteDatabaseAsync database,
+        IDbContextFactory<AppDbContext> dbContextFactory,
         [FromQuery] string? group = null,
         [FromQuery] string? query = null)
     {
         var response = new ResponseData<int>();
-        var collection = database.GetCollection<Category>();
-        var queryable = collection
+        await using var database = await dbContextFactory.CreateDbContextAsync();
+        
+        var queryable = database
+            .Categories
             .AsQueryable()
             .Where(p => p.Deleted == null);
 
@@ -52,7 +54,7 @@ public class CategoryEndpoints : GenericEndpoint<Category>, IEndpointRouteHandle
 
     protected static async Task<IResult> OnGetCategories(
         HttpContext context,
-        ILiteDatabaseAsync database,
+        IDbContextFactory<AppDbContext> dbContextFactory,
         [FromQuery] string? group = null,
         [FromQuery] string? query = null,
         [FromQuery] string? orderBy = null,
@@ -60,11 +62,11 @@ public class CategoryEndpoints : GenericEndpoint<Category>, IEndpointRouteHandle
         [FromQuery] int pageSize = int.MaxValue)
     {
         var response = new ResponseData<IEnumerable<Category>>();
-        var collection = database.GetCollection<Category>();
+        await using var database = await dbContextFactory.CreateDbContextAsync();
 
-        var queryable = collection
-            .AsQueryable()
-            .Where(p => p.Deleted == null);
+        var queryable = database
+                .Categories
+                .Where(p => p.Deleted == null);
 
         if (query is not null)
         {
